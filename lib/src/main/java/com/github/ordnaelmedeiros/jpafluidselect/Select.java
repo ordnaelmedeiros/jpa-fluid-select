@@ -1,5 +1,7 @@
 package com.github.ordnaelmedeiros.jpafluidselect;
 
+import java.util.function.Consumer;
+
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 
@@ -18,12 +20,16 @@ public class Select {
 		this.builder = this.em.getCriteriaBuilder();
 	}
 	
-	public <T> From<T> from(Class<T> classe) {
-		return new From<>(this, classe);
+	public <T> From<T, T> from(Class<T> classFrom) {
+		return new From<>(this, classFrom, classFrom);
 	}
 	
-	public Select extractToBuilder(ContainerSelect c) {
-		c.setBuilder(builder);
+	public <T> From<T, Long> fromCount(Class<T> classFrom) {
+		return new From<>(this, classFrom, Long.class).count();
+	}
+	
+	public Select extractBuilder(Consumer<CriteriaBuilder> b) {
+		b.accept(this.builder);
 		return this;
 	}
 	

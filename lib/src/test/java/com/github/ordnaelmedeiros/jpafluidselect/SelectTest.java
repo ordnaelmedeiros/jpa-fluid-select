@@ -10,6 +10,7 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.JoinType;
 
 import org.junit.After;
@@ -154,7 +155,7 @@ public class SelectTest {
 		List<People> lista = new Select(em)
 			.from(People.class)
 			.where()
-				.or()
+				.orGroup()
 					.equal(People_.id, 1l)
 					.equal(People_.id, 2l)
 				.end()
@@ -175,7 +176,7 @@ public class SelectTest {
 		List<People> lista = new Select(em)
 			.from(People.class)
 			.where()
-				.or()
+				.orGroup()
 					.equal(People_.id, 1l)
 					.ifCan(notFindById2).equal(People_.id, 2l)
 				.end()
@@ -194,7 +195,7 @@ public class SelectTest {
 			.from(People.class)
 			.where()
 				.like(People_.name, "%e%")
-				.or()
+				.orGroup()
 					.equal(People_.id, 1l)
 					.equal(People_.id, 2l)
 					.equal(People_.id, 5l)
@@ -235,15 +236,41 @@ public class SelectTest {
 	}
 	
 	@Test
+	public void t010DeveBuscarPeopleCount() {
+		
+		Long count = new Select(em)
+			.fromCount(People.class)
+			.getSingleResult();
+		
+		assertEquals(7, count.intValue());
+		
+	}
+	
+	@Test
+	public void t010DeveBuscarPeopleCount5() {
+		
+		Long count = new Select(em)
+			.fromCount(People.class)
+			.where()
+				.not().equal(People_.id, 1l)
+				.not().equal(People_.id, 5l)
+			.end()
+			.getSingleResult();
+		
+		assertEquals(5, count.intValue());
+		
+	}
+	
+	public CriteriaBuilder builder;
+	
+	@Test
 	public void t010DeveBuscarComJoinAdress() {
 		
-		ContainerSelect c = new ContainerSelect();
-		
-		List<People> lista = new Select(em).extractToBuilder(c)
+		List<People> lista = new Select(em).extractBuilder(b -> this.builder = b)
 			.from(People.class)
 			.join(People_.address)
 				.on()
-					.or()
+					.orGroup()
 						.equal(Address_.street, "Rua 1")
 						.equal(Address_.street, "Rua 9999")
 					.end()
@@ -256,10 +283,10 @@ public class SelectTest {
 			.end()
 			.where()
 				.like(People_.name, "%a%")
-				.or()
+				.orGroup()
 					.equal(People_.id, 1l)
 					.equal(People_.id, 2l)
-					.add(r -> c.builder().equal(r.get(People_.id), 5l))
+					.add(r -> builder.equal(r.get(People_.id), 5l))
 				.end()
 			.end()
 			.getResultList()

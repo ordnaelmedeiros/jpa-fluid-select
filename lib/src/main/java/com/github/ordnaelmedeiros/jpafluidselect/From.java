@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -14,18 +15,20 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import lombok.Getter;
 
-public class From<T> {
+public class From<T,R> {
 	
-	private Class<T> classe;
+	private Class<T> classFrom;
+	private Class<R> classReturn;
+	
 	private EntityManager em;
 	
 	@Getter
-	private CriteriaQuery<T> query;
+	private CriteriaQuery<R> query;
 	
 	@Getter
 	private Root<T> root;
 
-	private PredicateContainer<T, T, From<T>> where;
+	private PredicateContainer<T, T, From<T,R>> where;
 	
 	@SuppressWarnings("rawtypes")
 	@Getter
@@ -35,15 +38,26 @@ public class From<T> {
 	@Getter
 	private CriteriaBuilder builder;
 	
-	public From(Select select, Class<T> classe) {
-		this.classe = classe;
+	public From(Select select, Class<T> classFrom, Class<R> classReturn) {
+		this.classFrom = classFrom;
+		this.classReturn = classReturn;
 		builder = select.getBuilder();
 		em = select.getEm();
-		this.query = select.getBuilder().createQuery(this.classe);
-		this.root = query.from(this.classe);
+		this.query = select.getBuilder().createQuery(this.classReturn);
+		this.root = query.from(this.classFrom);
 	}
 	
-	public PredicateContainer<T, T, From<T>> where() {
+	protected From<T,R> count() {
+		if (this.classReturn.equals(Long.class)) {
+			Expression<Long> count = builder.count(this.root);
+			@SuppressWarnings("unchecked")
+			Expression<R> e = (Expression<R>)count;
+			this.query.select(e);
+		}
+		return this;
+	}
+	
+	public PredicateContainer<T, T, From<T,R>> where() {
 		if (this.where==null) {
 			this.where = new PredicateContainer<>(this.builder, this.root, PredicateContainer.Type.AND, this);
 		}
@@ -65,46 +79,45 @@ public class From<T> {
 		}
 	}
 	
-	public List<T> getResultList() {
+	public List<R> getResultList() {
 		
 		Predicate predicate = generatePredicate();
 		if (predicate!=null) {
 			this.query.where(predicate);
 		}
-		List<T> result = this.em.createQuery(this.query).getResultList();
+		List<R> result = this.em.createQuery(this.query).getResultList();
 		
 		return result;
 		
 	}
 	
-	public T getSingleResult() {
+	public R getSingleResult() {
 		
 		Predicate predicate = generatePredicate();
 		if (predicate!=null) {
 			this.query.where(predicate);
 		}
 		
-		T result = this.em.createQuery(this.query).getSingleResult();
-		
+		R result = this.em.createQuery(this.query).getSingleResult();
 		return result;
 		
 	}
 	
-	public <A> Join<T, T,A,From<T>> join(SingularAttribute<T, A> atribute) {
+	public <A> Join<T, T,A,From<T,R>> join(SingularAttribute<T, A> atribute) {
 		
-		Join<T, T, A, From<T>> j = new Join<>(builder, root, atribute, JoinType.INNER, this);
+		Join<T, T, A, From<T,R>> j = new Join<>(builder, root, atribute, JoinType.INNER, this);
 		this.joins.add(j);
 		
 		return j;
 	}
 
-	public <A> Join<T, T,A,From<T>> join(ListAttribute<T, A> atribute) {
+	public <A> Join<T, T,A,From<T,R>> join(ListAttribute<T, A> atribute) {
 		return this.join(JoinType.INNER, atribute);
 	}
 	
-	public <A> Join<T, T,A,From<T>> join(JoinType type, ListAttribute<T, A> atribute) {
+	public <A> Join<T, T,A,From<T,R>> join(JoinType type, ListAttribute<T, A> atribute) {
 		
-		Join<T, T, A, From<T>> j = new Join<>(builder, root, atribute, type, this);
+		Join<T, T, A, From<T,R>> j = new Join<>(builder, root, atribute, type, this);
 		this.joins.add(j);
 		
 		return j;

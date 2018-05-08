@@ -83,36 +83,28 @@ public class PredicateContainer<T,D,V> {
 		
 	}
 	
-	public PredicateContainer<T,D,PredicateContainer<T,D,V>> or() {
-		return this.or(true);
+	public PredicateContainer<T,D,PredicateContainer<T,D,V>> orGroup() {
+		return this.group(Type.OR);
 	}
 	
-	public PredicateContainer<T,D,PredicateContainer<T,D,V>> or(boolean condition) {
-		if (condition) {
-			PredicateContainer<T,D,PredicateContainer<T,D,V>> predicateContainer = new PredicateContainer<>(this.builder, this.from, PredicateContainer.Type.OR, this);
-			this.container.add(predicateContainer);
-			return predicateContainer;
-		} else {
-			PredicateContainer<T,D,PredicateContainer<T,D,V>> predicateContainer = new PredicateContainer<>(this.builder, this.from, PredicateContainer.Type.IGNORE, this);
-			this.container.add(predicateContainer);
-			return predicateContainer;
-		}
-	}
-
-	public PredicateContainer<T,D,PredicateContainer<T,D,V>> and() {
-		return this.and(true);
+	public PredicateContainer<T,D,PredicateContainer<T,D,V>> andGroup() {
+		return this.group(Type.AND);
 	}
 	
-	public PredicateContainer<T,D,PredicateContainer<T,D,V>> and(boolean condition) {
-		if (condition) {
-			PredicateContainer<T,D,PredicateContainer<T,D,V>> predicateContainer = new PredicateContainer<>(this.builder, this.from, PredicateContainer.Type.AND, this);
-			this.container.add(predicateContainer);
-			return predicateContainer;
-		} else {
-			PredicateContainer<T,D,PredicateContainer<T,D,V>> predicateContainer = new PredicateContainer<>(this.builder, this.from, PredicateContainer.Type.IGNORE, this);
-			this.container.add(predicateContainer);
-			return predicateContainer;
+	public PredicateContainer<T,D,PredicateContainer<T,D,V>> group(Type t) {
+		
+		if (!isCan) {
+			t = PredicateContainer.Type.IGNORE;
 		}
+		
+		PredicateContainer<T,D,PredicateContainer<T,D,V>> predicateContainer = new PredicateContainer<>(this.builder, this.from, t, this);
+		
+		this.isNot = false;
+		this.isCan = true;
+		
+		this.container.add(predicateContainer);
+		return predicateContainer;
+		
 	}
 	
 	
@@ -183,12 +175,12 @@ public class PredicateContainer<T,D,V> {
 		return this;
 	}
 	
-	public <A> PredicateContainer<T,D,V> equal(SingularAttribute<D, A> field) {
+	public <A> PredicateContainer<T,D,V> isNull(SingularAttribute<D, A> field) {
 		add(b().isNull(f(field)));
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T,D,V> equal22(SingularAttribute<D, A> field, A value1, A value2) {
+	public <A extends Comparable<A>> PredicateContainer<T,D,V> between(SingularAttribute<D, A> field, A value1, A value2) {
 		add(b().between(f(field), value1, value2));
 		return this;
 	}
