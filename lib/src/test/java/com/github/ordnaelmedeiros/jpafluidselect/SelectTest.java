@@ -168,6 +168,26 @@ public class SelectTest {
 	}
 	
 	@Test
+	public void t010DeveBuscarComId1Condition() {
+		
+		boolean notFindById2 = false;
+		
+		List<People> lista = new Select(em)
+			.from(People.class)
+			.where()
+				.or()
+					.equal(People_.id, 1l)
+					.ifCan(notFindById2).equal(People_.id, 2l)
+				.end()
+			.end()
+			.getResultList()
+			;
+		assertEquals(1, lista.size());
+		assertEquals(1, lista.get(0).getId().intValue());
+		
+	}
+	
+	@Test
 	public void t010DeveBuscarComId1ComString() {
 		
 		List<People> lista = new Select(em)
@@ -183,6 +203,27 @@ public class SelectTest {
 			.getResultList()
 			;
 		assertEquals(2, lista.size());
+		
+		/*
+		select people1x0_.id as id1_0_, people1x0_.name as name2_0_ 
+		from People1 people1x0_ 
+		where (people1x0_.name like ?) 
+		and (people1x0_.id=1 or people1x0_.id=2 or people1x0_.id=5)
+		*/
+		
+	}
+	
+	@Test
+	public void t010DeveBuscarDiferenteId1() {
+		
+		List<People> lista = new Select(em)
+			.from(People.class)
+			.where()
+				.not().equal(People_.id, 1l)
+			.end()
+			.getResultList()
+			;
+		assertEquals(6, lista.size());
 		
 		/*
 		select people1x0_.id as id1_0_, people1x0_.name as name2_0_ 
