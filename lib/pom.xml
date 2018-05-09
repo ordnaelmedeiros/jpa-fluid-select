@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.github.ordnaelmedeiros</groupId>
 	<artifactId>jpa-fluid-select</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.5-SNAPSHOT</version>
 	<name>JPA Fluid Select</name>
 	<description>JPA Fluid Select</description>
 
@@ -63,6 +63,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-release-plugin</artifactId>
+				<version>2.5.3</version>
 				<configuration>
 					<pushChanges>false</pushChanges>
 				</configuration>
