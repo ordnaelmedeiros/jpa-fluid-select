@@ -2,7 +2,6 @@ package com.github.ordnaelmedeiros.jpafluidselect.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 
@@ -12,8 +11,9 @@ import lombok.Data;
 @Data
 public class Phone {
 
+	public static Long countId = 0l;
+	
 	@Id
-	@GeneratedValue
 	private Long id;
 	
 	@ManyToOne
@@ -23,9 +23,11 @@ public class Phone {
 	private String number;
 	
 	public Phone() {
+		this.setId(++countId);
 	}
 	
 	public Phone(People people, String number) {
+		this();
 		this.people = people;
 		this.number = number;
 	}

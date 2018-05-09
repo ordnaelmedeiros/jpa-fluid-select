@@ -34,6 +34,8 @@ public class From<T,R> {
 	@Getter
 	private List<Join> joins = new ArrayList<>();
 	
+	private Order<T, T, From<T,R>> order;
+	
 
 	@Getter
 	private CriteriaBuilder builder;
@@ -45,6 +47,7 @@ public class From<T,R> {
 		em = select.getEm();
 		this.query = select.getBuilder().createQuery(this.classReturn);
 		this.root = query.from(this.classFrom);
+		this.order = new Order<>(select, root, this);
 	}
 	
 	protected From<T,R> count() {
@@ -65,6 +68,10 @@ public class From<T,R> {
 	}
 
 	private Predicate generatePredicate() {
+		
+		if (!this.order.isEmpty()) {
+			this.query.orderBy(order.getList());
+		}
 		
 		if (!this.joins.isEmpty()) {
 			for (@SuppressWarnings("rawtypes") Join join : this.joins) {
@@ -122,6 +129,19 @@ public class From<T,R> {
 		
 		return j;
 	}
-
+	
+	public Order<T,T,From<T,R>> order() {
+		return this.order;
+	}
+	
+	public From<T,R> orderAsc(SingularAttribute<T, ?> attribute) {
+		this.order().asc(attribute);
+		return this;
+	}
+	
+	public From<T,R> orderDesc(SingularAttribute<T, ?> attribute) {
+		this.order().desc(attribute);
+		return this;
+	}
 	
 }

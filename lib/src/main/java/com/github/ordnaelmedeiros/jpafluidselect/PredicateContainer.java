@@ -117,15 +117,19 @@ public class PredicateContainer<T,D,V> {
 	}
 	
 	private void add(Predicate p) {
+		
 		if (this.isCan) {
+			
 			if (this.isNot) {
-				this.container.add(new PredicateContainer<>(b().not(p)));
-			} else {
-				this.container.add(new PredicateContainer<>(p));
+				p = b().not(p);
 			}
+			
+			this.container.add(new PredicateContainer<>(p));
+			
 		}
 		this.isNot = false;
 		this.isCan = true;
+		
 	}
 	
 	private boolean isNot = false;
@@ -145,6 +149,11 @@ public class PredicateContainer<T,D,V> {
 		return this;
 	}
 
+	public PredicateContainer<T,D,V> iEqual(SingularAttribute<D, String> field, String value) {
+		add(b().equal(b().upper(b().trim(f(field))), value.trim().toUpperCase()));
+		return this;
+	}
+	
 	public <A> PredicateContainer<T,D,V> in(SingularAttribute<D, A> field, A[] values) {
 		add(b().in(f(field)).in(values));
 		return this;
@@ -152,6 +161,11 @@ public class PredicateContainer<T,D,V> {
 	
 	public PredicateContainer<T,D,V> like(SingularAttribute<D, String> field, String value) {
 		add(b().like(f(field), value));
+		return this;
+	}
+	
+	public PredicateContainer<T,D,V> iLike(SingularAttribute<D, String> field, String value) {
+		add(b().like(b().upper(b().trim(f(field))), value.trim().toUpperCase()));
 		return this;
 	}
 	

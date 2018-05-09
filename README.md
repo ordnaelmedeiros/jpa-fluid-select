@@ -42,7 +42,7 @@ Exemple 2:
 	.from(People.class)
 	.where()
 		.like(People_.name, "%e%")
-		.or()
+		.orGroup()
 			.equal(People_.id, 1l)
 			.equal(People_.id, 2l)
 			.equal(People_.id, 5l)
