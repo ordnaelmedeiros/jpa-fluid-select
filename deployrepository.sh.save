@@ -1,0 +1,3 @@
+echo "Start deploy maven repository"
+
+echo "$1"
