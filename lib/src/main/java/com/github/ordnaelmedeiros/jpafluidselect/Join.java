@@ -1,6 +1,7 @@
 package com.github.ordnaelmedeiros.jpafluidselect;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.JoinType;
@@ -20,6 +21,11 @@ public class Join<O1, O, T, V> {
 	
 	@SuppressWarnings("rawtypes")
 	private List<Join> joins;
+	
+	public Join<O1,O,T,V> extract(Consumer<javax.persistence.criteria.Join<O, T>> j) {
+		j.accept(jpaJoin);
+		return this;
+	}
 
 	public Join(CriteriaBuilder builder, javax.persistence.criteria.From<O1, O> root, SingularAttribute<O, T> atribute, JoinType joinType, V back) {
 		
@@ -55,7 +61,9 @@ public class Join<O1, O, T, V> {
 	}
 	
 	public void generatePredicate() {
-		this.jpaJoin.on(on.generatePredicate());
+		if (this.on!=null) {
+			this.jpaJoin.on(on.generatePredicate());
+		}
 	}
 	
 }

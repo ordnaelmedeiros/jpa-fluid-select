@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.From;
+import javax.persistence.criteria.Path;
 import javax.persistence.metamodel.SingularAttribute;
 
 public class Order<T, D, R> {
@@ -38,6 +39,17 @@ public class Order<T, D, R> {
 		return this;
 	}
 
+	public Order<T,D,R> asc(Path<String> path) {
+		orders.add(b().asc(path));
+		return this;
+	}
+	
+	public Order<T,D,R> desc(Path<String> path) {
+		orders.add(b().desc(path));
+		return this;
+	}
+	
+
 	public boolean isEmpty() {
 		return this.orders.isEmpty();
 	}
@@ -45,5 +57,5 @@ public class Order<T, D, R> {
 	public List<javax.persistence.criteria.Order> getList() {
 		return orders;
 	}
-	
+
 }
