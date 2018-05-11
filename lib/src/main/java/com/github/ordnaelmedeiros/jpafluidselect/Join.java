@@ -22,7 +22,7 @@ public class Join<O1, O, T, V> {
 	@SuppressWarnings("rawtypes")
 	private List<Join> joins;
 	
-	public Join<O1,O,T,V> extract(Consumer<javax.persistence.criteria.Join<O, T>> j) {
+	public Join<O1,O,T,V> extractJoin(Consumer<javax.persistence.criteria.Join<O, T>> j) {
 		j.accept(jpaJoin);
 		return this;
 	}

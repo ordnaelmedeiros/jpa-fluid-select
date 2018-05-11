@@ -155,7 +155,7 @@ public class PredicateContainer<T,D,V> {
 	}
 	
 	public <A> PredicateContainer<T,D,V> in(SingularAttribute<D, A> field, A[] values) {
-		add(b().in(f(field)).in(values));
+		add(f(field).in(values));
 		return this;
 	}
 	
