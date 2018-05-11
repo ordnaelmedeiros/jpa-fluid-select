@@ -29,10 +29,10 @@ public class JoinOrderSelectTest extends SelectTestBase {
 		
 		List<People> lista = new Select(em).extractBuilder(b -> this.builder = b)
 			.from(People.class)
-			.join(People_.address).extract(j -> this.joinAdress = j)
+			.join(People_.address).extractJoin(j -> this.joinAdress = j)
 			.end()
 			.order()
-				.asc(joinAdress.get(Address_.street))
+				.asc(joinAdress, Address_.street)
 				.desc(People_.id)
 			.end()
 			.getResultList()

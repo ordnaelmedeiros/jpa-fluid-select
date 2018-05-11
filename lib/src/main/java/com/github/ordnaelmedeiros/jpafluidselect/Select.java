@@ -28,6 +28,11 @@ public class Select {
 		return new From<>(this, classFrom, Long.class).count();
 	}
 	
+	public <T> From<T, Object[]> fromMultSelect(Class<T> classFrom) {
+		return new From<>(this, classFrom, Object[].class).multselect();
+	}
+	
+	
 	public Select extractBuilder(Consumer<CriteriaBuilder> b) {
 		b.accept(this.builder);
 		return this;

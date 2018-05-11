@@ -36,7 +36,7 @@ public class From<T,R> {
 	
 	private Order<T, T, From<T,R>> order;
 	
-
+	
 	@Getter
 	private CriteriaBuilder builder;
 	
@@ -60,6 +60,21 @@ public class From<T,R> {
 		return this;
 	}
 	
+
+	protected From<T,R> multselect() {
+		
+		return this;
+	}
+	
+	private SelectFields<T, From<T,R>> fields = null;
+	
+	public SelectFields<T,From<T,R>> fields() {
+		if (this.fields==null) {
+			this.fields = new SelectFields<>(this.root, this);
+		}
+		return this.fields;
+	}
+	
 	public PredicateContainer<T, T, From<T,R>> where() {
 		if (this.where==null) {
 			this.where = new PredicateContainer<>(this.builder, this.root, PredicateContainer.Type.AND, this);
@@ -68,6 +83,10 @@ public class From<T,R> {
 	}
 
 	private Predicate generatePredicate() {
+		
+		if (this.fields!=null && !this.fields.isEmpty()) {
+			this.query.multiselect(this.fields.getFields());
+		}
 		
 		if (!this.order.isEmpty()) {
 			this.query.orderBy(order.getList());
@@ -143,5 +162,5 @@ public class From<T,R> {
 		this.order().desc(attribute);
 		return this;
 	}
-	
+
 }
