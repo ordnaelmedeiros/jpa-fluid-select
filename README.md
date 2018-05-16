@@ -18,41 +18,117 @@ https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
 - JPA Static Metamodel Generator (recommended):
 	- https://docs.jboss.org/hibernate/orm/5.0/topical/html/metamodelgen/MetamodelGenerator.html
 
-Exemple 1:
+
+## All
 ```javascript
-	EntityManager em = ...;
-	People o = new Select(em)
-		.from(People.class)
-		.where()
-			.equal(People_.id, 1l)
-		.end()
-		.getSingleResult();
-/*
-SQL generated
-select people0_.id as id1_1_, people0_.address_id as address_3_1_, people0_.name as name2_1_ 
-from People people0_
-where people0_.id=1
-*/
+List<People> lista = new Select(em)
+	.from(People.class)
+	.getResultList();
 ```
 
-Exemple 2:
-
+## Where
 ```javascript
-	List<People> lista = new Select(em)
+People p = new Select(em)
+	.from(People.class)
+	.where()
+		.equal(People_.id, 1)
+	.end()
+	.getSingleResult()
+```
+
+
+## OrderBy
+```javascript
+List<People> lista1 = new Select(em)
+	.from(People.class)
+	.orderDesc(People_.id)
+	.getResultList();
+	
+List<People> lista1 = new Select(em)
+	.from(People.class)
+	.order()
+		.asc(People_.name)
+		.desc(People_.id)
+	.end()
+	.getResultList();
+```
+
+
+## Count
+```javascript
+Long count = new Select(em)
+	.fromCount(People.class)
+	.where()
+		.like(People_.name, "%le%")
+	.end()
+	.getSingleResult();
+```
+
+## Not
+```javascript
+List<People> lista = new Select(em)
+	.from(People.class)
+	.where()
+		.not().equal(People_.id, 1)
+	.end()
+	.getResultList()
+```
+
+## WhereGroup
+```javascript
+List<People> lista = new Select(em)
 	.from(People.class)
 	.where()
 		.like(People_.name, "%e%")
+		// and (
 		.orGroup()
-			.equal(People_.id, 1l)
-			.equal(People_.id, 2l)
-			.equal(People_.id, 5l)
+			.equal(People_.id, 1)
+			// or
+			.equal(People_.id, 2)
+			// or
+			.equal(People_.id, 5)
+		.end()
+		// )
+	.end()
+	.getResultList()
+```
+
+## Join
+```javascript
+List<People> lista = new Select(em)
+	.from(People.class)
+	.join(People_.address)
+		.on()
+			.orGroup()
+				.equal(Address_.street, "One")
+				.equal(Address_.street, "9999")
+			.end()
 		.end()
 	.end()
-	.getResultList();
-/*
-select people1x0_.id as id1_0_, people1x0_.name as name2_0_ 
-from People1 people1x0_ 
-where (people1x0_.name like ?) 
-and (people1x0_.id=1 or people1x0_.id=2 or people1x0_.id=5)
-*/
+	.join(JoinType.LEFT, People_.phones)
+		.on()
+			.equal(Phone_.number, "123")
+		.end()
+	.end()
+	.where()
+		.like(People_.name, "%a%")
+	.end()
+	.getResultList()
+```
+
+## CustomFields
+```javascript
+List<Object[]> lista = new Select(em)
+	.fromMultSelect(People.class)
+	.join(People_.address).extractJoin(j -> this.joinAdress = j).end()
+	.fields() // fields returns
+		.add(People_.id)
+		.add(People_.name)
+		.add(joinAdress, Address_.street)
+	.end()
+	.where()
+		.in(People_.id, new Long[] {1, 2})
+	.end()
+	.orderAsc(People_.id)
+	.getResultList()
 ```
