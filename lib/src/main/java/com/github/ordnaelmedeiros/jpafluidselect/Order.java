@@ -7,7 +7,6 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.SingularAttribute;
 
 public class Order<T, D, R> {

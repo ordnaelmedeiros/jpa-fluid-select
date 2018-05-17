@@ -25,7 +25,7 @@ public class MultiSelectTest extends SelectTestBase {
 	public void t010DeveBuscarComJoinAdress() {
 		
 		List<Object[]> lista = new Select(em)
-			.fromMultSelect(People.class)
+			.fromMultiSelect(People.class)
 			.join(People_.address).extractJoin(j -> this.joinAdress = j)
 			.end()
 			.fields()

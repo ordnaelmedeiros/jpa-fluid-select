@@ -61,7 +61,7 @@ public class From<T,R> {
 	}
 	
 
-	protected From<T,R> multselect() {
+	protected From<T,R> multiselect() {
 		
 		return this;
 	}

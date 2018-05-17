@@ -41,10 +41,11 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 			.getSingleResult()
 			;
 		
+		
 	}
 	
 	@Test
-	public void notSucessFindEqualTrim() {
+	public void sucessFindEqualTrim() {
 		
 		new Select(em)
 			.from(People.class)

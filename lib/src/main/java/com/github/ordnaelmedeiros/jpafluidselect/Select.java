@@ -28,10 +28,13 @@ public class Select {
 		return new From<>(this, classFrom, Long.class).count();
 	}
 	
-	public <T> From<T, Object[]> fromMultSelect(Class<T> classFrom) {
-		return new From<>(this, classFrom, Object[].class).multselect();
+	public <T> From<T, Object[]> fromMultiSelect(Class<T> classFrom) {
+		return new From<>(this, classFrom, Object[].class).multiselect();
 	}
 	
+	public <T, E> From<T, E> fromMultiSelect(Class<T> classFrom, Class<E> classRetorno) {
+		return new From<>(this, classFrom, classRetorno).multiselect();
+	}
 	
 	public Select extractBuilder(Consumer<CriteriaBuilder> b) {
 		b.accept(this.builder);
