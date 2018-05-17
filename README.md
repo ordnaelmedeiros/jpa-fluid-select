@@ -74,6 +74,22 @@ List<People> lista = new Select(em)
 	.getResultList()
 ```
 
+## IfCan
+```javascript
+boolean notFindById2 = false;
+		
+List<People> lista = new Select(em)
+	.from(People.class)
+	.where()
+		.orGroup()
+			.equal(People_.id, 1l)
+			.ifCan(notFindById2).equal(People_.id, 2l)
+		.end()
+	.end()
+	.getResultList()
+	;
+```
+
 ## WhereGroup
 ```javascript
 List<People> lista = new Select(em)
@@ -131,4 +147,31 @@ List<Object[]> lista = new Select(em)
 	.end()
 	.orderAsc(People_.id)
 	.getResultList()
+```
+
+## CustomFieldsTransform
+```javascript
+public class DTO {
+	
+	private String peopleName;
+	private String peopleStreet;
+	
+	public DTO(String peopleName, String peopleStreet) {
+		this.peopleName = peopleName;
+		this.peopleStreet = peopleStreet;
+	}
+	
+}
+
+DTO dto = new Select(em)
+	.fromMultiSelect(People.class, DTO.class)
+	.join(People_.address).extractJoin(j -> this.joinAdress = j).end()
+	.fields()
+		.add(People_.name)
+		.add(joinAdress, Address_.street)
+	.end()
+	.where()
+		.equal(People_.id, 1l)
+	.end()
+	.getSingleResult();
 ```
