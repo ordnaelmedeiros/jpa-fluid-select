@@ -117,6 +117,30 @@ public class From<T,R> {
 		
 	}
 	
+	public List<R> getResultList(Integer page, Integer limit) {
+		
+		if (page==null || page<1) {
+			page = 1;
+		}
+		if (limit==null || limit<1) {
+			limit = 20;
+		}
+		
+		Predicate predicate = generatePredicate();
+		if (predicate!=null) {
+			this.query.where(predicate);
+		}
+		
+		List<R> result = 
+				this.em.createQuery(this.query)
+					.setFirstResult((page-1)*limit)
+					.setMaxResults(limit)
+					.getResultList();
+		
+		return result;
+		
+	}
+	
 	public R getSingleResult() {
 		
 		Predicate predicate = generatePredicate();
