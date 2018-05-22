@@ -39,7 +39,7 @@ public class GroupBySelectTest extends SelectTestBase {
 		
 		
 		list.stream().forEach(o -> {
-			//System.out.println(String.format("%10s sum: %02d", o));
+			//System.out.println(String.format("%10s count: %02d", o));
 			if (o[0].equals("Leandro")) {
 				this.leandro = o;
 			}
@@ -95,7 +95,7 @@ public class GroupBySelectTest extends SelectTestBase {
 		
 		/*
 		list.stream().forEach(o -> {
-			System.out.println(String.format("%10s sum: %02d", o));
+			System.out.println(String.format("%10s count: %02d", o));
 		});
 		*/
 		assertEquals(4l, list.size());

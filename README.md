@@ -187,3 +187,25 @@ List<Object[]> list = new Select(em)
 	.getResultList(2, 3);
 	//(page, limit)
 ```
+
+## GroupBy
+```javascript
+List<Object[]> list = new Select(em)
+	.fromMultiSelect(People.class)
+	.join(People_.address).extractJoin(j -> this.joinAddress = j).end()
+	.fields()
+		.add(this.joinAddress, Address_.street)
+		.count(People_.id)
+	.end()
+	.group()
+		.add(this.joinAddress, Address_.street)
+	.end()
+	.order()
+		.asc(this.joinAddress, Address_.street)
+	.end()
+	.getResultList();
+
+list.stream().forEach(o -> {
+	System.out.println(String.format("%10s count: %02d", o));
+});
+```
