@@ -209,3 +209,15 @@ list.stream().forEach(o -> {
 	System.out.println(String.format("%10s count: %02d", o));
 });
 ```
+
+## Distinct
+```javascript
+List<Object[]> list = new Select(em)
+	.fromMultiSelect(Address.class)
+	.distinct()
+	.fields()
+		.add(Address_.street)
+	.end()
+	.orderAsc(Address_.street)
+	.getResultList();
+```

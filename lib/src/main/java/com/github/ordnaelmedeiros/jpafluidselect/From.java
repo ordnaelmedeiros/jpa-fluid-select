@@ -13,6 +13,8 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 
+import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
+
 import lombok.Getter;
 
 public class From<T,R> {
@@ -195,6 +197,11 @@ public class From<T,R> {
 	
 	public GroupBy<T,T,From<T,R>> group() {
 		return this.groupBy;
+	}
+
+	public From<T,R> distinct() {
+		this.query.distinct(true);
+		return this;
 	}
 
 }
