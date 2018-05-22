@@ -114,8 +114,6 @@ public class GroupBySelectTest extends SelectTestBase {
 		
 	}
 	
-	
-
 	@Test
 	public void testCountDistinctStreet() {
 		
@@ -137,6 +135,34 @@ public class GroupBySelectTest extends SelectTestBase {
 			assertEquals(o[1], 1l);
 		});
 		
+		Object result = new Select(em)
+			.fromMultiSelect(Address.class)
+			.fields()
+				.countDistinct(Address_.street)
+			.end()
+			.getSingleResult();
+		
+		assertEquals(result, 4l);
+		
+	}
+	
+	@Test
+	public void testMinMaxStreet() {
+		
+		Object[] list = new Select(em)
+			.fromMultiSelect(Address.class)
+			.fields()
+				.countDistinct(Address_.street)
+				.min(Address_.id)
+				.max(Address_.id)
+			.end()
+			.getSingleResult();
+		
+		//assertEquals(4, list.size());
+		//System.out.println(String.format("count: %02d min: %02d max: %02d", list));
+		assertEquals(4l, list[0]);
+		assertEquals(1l, list[1]);
+		assertEquals(7l, list[2]);
 		
 	}
 	

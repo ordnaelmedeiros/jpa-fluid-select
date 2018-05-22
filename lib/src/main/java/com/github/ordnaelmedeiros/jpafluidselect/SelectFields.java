@@ -46,7 +46,6 @@ public class SelectFields<T, B> {
 		return this;
 	}
 	
-
 	public <N> SelectFields<T,B> countDistinct(SingularAttribute<T, N> attribute) {
 		Expression<Long> count = this.builder.countDistinct(this.root.get(attribute));
 		lista.add(count);
@@ -68,6 +67,29 @@ public class SelectFields<T, B> {
 		lista.add(count);
 		return this;
 	}
+	
+	public <N extends Number> SelectFields<T,B> min(SingularAttribute<T, N> attribute) {
+		Expression<N> sum = this.builder.min(this.root.get(attribute));
+		lista.add(sum);
+		return this;
+	}
+	public <J, Y, A extends Number> SelectFields<T,B> min(Join<J, Y> join, SingularAttribute<Y, A> attribute) {
+		Expression<A> count = this.builder.min(join.get(attribute));
+		lista.add(count);
+		return this;
+	}
+	
+	public <N extends Number> SelectFields<T,B> max(SingularAttribute<T, N> attribute) {
+		Expression<N> sum = this.builder.max(this.root.get(attribute));
+		lista.add(sum);
+		return this;
+	}
+	public <J, Y, A extends Number> SelectFields<T,B> max(Join<J, Y> join, SingularAttribute<Y, A> attribute) {
+		Expression<A> count = this.builder.max(join.get(attribute));
+		lista.add(count);
+		return this;
+	}
+	
 	
 	public boolean isEmpty() {
 		return this.lista.isEmpty();
