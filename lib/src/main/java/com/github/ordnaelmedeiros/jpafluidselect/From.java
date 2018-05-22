@@ -35,6 +35,7 @@ public class From<T,R> {
 	private List<Join> joins = new ArrayList<>();
 	
 	private Order<T, T, From<T,R>> order;
+	private GroupBy<T, T, From<T,R>> groupBy;
 	
 	
 	@Getter
@@ -48,6 +49,7 @@ public class From<T,R> {
 		this.query = select.getBuilder().createQuery(this.classReturn);
 		this.root = query.from(this.classFrom);
 		this.order = new Order<>(select, root, this);
+		this.groupBy = new GroupBy(root, this);
 	}
 	
 	protected From<T,R> count() {
@@ -70,7 +72,7 @@ public class From<T,R> {
 	
 	public SelectFields<T,From<T,R>> fields() {
 		if (this.fields==null) {
-			this.fields = new SelectFields<>(this.root, this);
+			this.fields = new SelectFields<>(this.builder, this.root, this);
 		}
 		return this.fields;
 	}
@@ -90,6 +92,10 @@ public class From<T,R> {
 		
 		if (!this.order.isEmpty()) {
 			this.query.orderBy(order.getList());
+		}
+		
+		if (!this.groupBy.isEmpty()) {
+			this.query.groupBy(this.groupBy.getList());
 		}
 		
 		if (!this.joins.isEmpty()) {
@@ -112,6 +118,30 @@ public class From<T,R> {
 			this.query.where(predicate);
 		}
 		List<R> result = this.em.createQuery(this.query).getResultList();
+		
+		return result;
+		
+	}
+	
+	public List<R> getResultList(Integer page, Integer limit) {
+		
+		if (page==null || page<1) {
+			page = 1;
+		}
+		if (limit==null || limit<1) {
+			limit = 20;
+		}
+		
+		Predicate predicate = generatePredicate();
+		if (predicate!=null) {
+			this.query.where(predicate);
+		}
+		
+		List<R> result = 
+				this.em.createQuery(this.query)
+					.setFirstResult((page-1)*limit)
+					.setMaxResults(limit)
+					.getResultList();
 		
 		return result;
 		
@@ -161,6 +191,10 @@ public class From<T,R> {
 	public From<T,R> orderDesc(SingularAttribute<T, ?> attribute) {
 		this.order().desc(attribute);
 		return this;
+	}
+	
+	public GroupBy<T,T,From<T,R>> group() {
+		return this.groupBy;
 	}
 
 }

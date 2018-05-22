@@ -82,8 +82,8 @@ List<People> lista = new Select(em)
 	.from(People.class)
 	.where()
 		.orGroup()
-			.equal(People_.id, 1l)
-			.ifCan(notFindById2).equal(People_.id, 2l)
+			.equal(People_.id, 1)
+			.ifCan(notFindById2).equal(People_.id, 2)
 		.end()
 	.end()
 	.getResultList()
@@ -171,7 +171,41 @@ DTO dto = new Select(em)
 		.add(joinAdress, Address_.street)
 	.end()
 	.where()
-		.equal(People_.id, 1l)
+		.equal(People_.id, 1)
 	.end()
 	.getSingleResult();
+```
+
+## Pagination
+```javascript
+List<Object[]> list = new Select(em)
+	.fromMultiSelect(People.class)
+	.fields()
+		.add(People_.id)
+	.end()
+	.orderAsc(People_.id)
+	.getResultList(2, 3);
+	//(page, limit)
+```
+
+## GroupBy
+```javascript
+List<Object[]> list = new Select(em)
+	.fromMultiSelect(People.class)
+	.join(People_.address).extractJoin(j -> this.joinAddress = j).end()
+	.fields()
+		.add(this.joinAddress, Address_.street)
+		.count(People_.id)
+	.end()
+	.group()
+		.add(this.joinAddress, Address_.street)
+	.end()
+	.order()
+		.asc(this.joinAddress, Address_.street)
+	.end()
+	.getResultList();
+
+list.stream().forEach(o -> {
+	System.out.println(String.format("%10s count: %02d", o));
+});
 ```
