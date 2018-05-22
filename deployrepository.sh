@@ -9,14 +9,12 @@ git add .
 git commit -m "$commitMessage"
 git push
 
-cd lib
-
-mvn release:clean
-mvn release:prepare
+mvn release:clean -f "lib"
+mvn release:prepare -f "lib"
 
 git push --tags
 git push
 
-mvn release:perform
+mvn release:perform -f "lib"
 
 git push
