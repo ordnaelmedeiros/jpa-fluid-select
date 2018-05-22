@@ -35,13 +35,25 @@ public class SelectFields<T, B> {
 		return this;
 	}
 	
-	public <N extends Number> SelectFields<T,B> count(SingularAttribute<T, N> attribute) {
+	public <N> SelectFields<T,B> count(SingularAttribute<T, N> attribute) {
 		Expression<Long> count = this.builder.count(this.root.get(attribute));
 		lista.add(count);
 		return this;
 	}
-	public <J, Y, A extends Number> SelectFields<T,B> count(Join<J, Y> join, SingularAttribute<Y, A> attribute) {
+	public <J, Y, A> SelectFields<T,B> count(Join<J, Y> join, SingularAttribute<Y, A> attribute) {
 		Expression<Long> count = this.builder.count(join.get(attribute));
+		lista.add(count);
+		return this;
+	}
+	
+
+	public <N> SelectFields<T,B> countDistinct(SingularAttribute<T, N> attribute) {
+		Expression<Long> count = this.builder.countDistinct(this.root.get(attribute));
+		lista.add(count);
+		return this;
+	}
+	public <J, Y, A> SelectFields<T,B> countDistinct(Join<J, Y> join, SingularAttribute<Y, A> attribute) {
+		Expression<Long> count = this.builder.countDistinct(join.get(attribute));
 		lista.add(count);
 		return this;
 	}

@@ -114,4 +114,31 @@ public class GroupBySelectTest extends SelectTestBase {
 		
 	}
 	
+	
+
+	@Test
+	public void testCountDistinctStreet() {
+		
+		List<Object[]> list = new Select(em)
+			.fromMultiSelect(Address.class)
+			.fields()
+				.add(Address_.street)
+				.countDistinct(Address_.street)
+			.end()
+			.group()
+				.add(Address_.street)
+			.end()
+			.getResultList();
+		
+		assertEquals(4, list.size());
+		
+		list.stream().forEach(o -> {
+			//System.out.println(String.format("%10s count: %02d", o));
+			assertEquals(o[1], 1l);
+		});
+		
+		
+	}
+	
+	
 }
