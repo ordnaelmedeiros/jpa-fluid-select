@@ -30,10 +30,8 @@ public class GroupBySelectTest extends SelectTestBase {
 			.fields()
 				.add(People_.name)
 				.count(People_.id)
-			.end()
 			.group()
 				.add(People_.name)
-			.end()
 			.orderAsc(People_.name)
 			.getResultList();
 		
@@ -57,10 +55,8 @@ public class GroupBySelectTest extends SelectTestBase {
 			.fields()
 				.add(People_.name)
 				.sum(People_.id)
-			.end()
 			.group()
 				.add(People_.name)
-			.end()
 			.orderAsc(People_.name)
 			.getResultList();
 		
@@ -84,13 +80,10 @@ public class GroupBySelectTest extends SelectTestBase {
 			.fields()
 				.add(this.joinAddress, Address_.street)
 				.count(People_.id)
-			.end()
 			.group()
 				.add(this.joinAddress, Address_.street)
-			.end()
 			.order()
 				.asc(this.joinAddress, Address_.street)
-			.end()
 			.getResultList();
 		
 		/*
@@ -122,10 +115,8 @@ public class GroupBySelectTest extends SelectTestBase {
 			.fields()
 				.add(Address_.street)
 				.countDistinct(Address_.street)
-			.end()
 			.group()
 				.add(Address_.street)
-			.end()
 			.getResultList();
 		
 		assertEquals(4, list.size());
@@ -139,7 +130,6 @@ public class GroupBySelectTest extends SelectTestBase {
 			.fromMultiSelect(Address.class)
 			.fields()
 				.countDistinct(Address_.street)
-			.end()
 			.getSingleResult();
 		
 		assertEquals(result, 4l);
@@ -155,7 +145,6 @@ public class GroupBySelectTest extends SelectTestBase {
 				.countDistinct(Address_.street)
 				.min(Address_.id)
 				.max(Address_.id)
-			.end()
 			.getSingleResult();
 		
 		//assertEquals(4, list.size());

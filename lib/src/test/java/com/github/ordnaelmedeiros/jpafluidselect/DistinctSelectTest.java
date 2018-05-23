@@ -23,11 +23,10 @@ public class DistinctSelectTest extends SelectTestBase {
 			.distinct()
 			.fields()
 				.add(Address_.street)
-			.end()
 			.orderAsc(Address_.street)
 			.getResultList();
 		
-		System.out.println(list);
+		//System.out.println(list);
 		
 		assertEquals(4, list.size());
 		assertEquals("One", list.get(0));

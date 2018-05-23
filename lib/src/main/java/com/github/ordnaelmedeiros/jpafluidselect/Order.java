@@ -9,13 +9,16 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
 import javax.persistence.metamodel.SingularAttribute;
 
-public class Order<T, D, R> {
+import com.github.ordnaelmedeiros.jpafluidselect.redirect.RedirectFrom;
 
-	private R back;
+public class Order<T, D, R> extends RedirectFrom<T, R> {
+
+	private com.github.ordnaelmedeiros.jpafluidselect.From<T, R> back;
 	private From<T, D> from;
 	private Select select;
 
-	public Order(Select select, From<T, D> from, R back) {
+	public Order(Select select, From<T, D> from, com.github.ordnaelmedeiros.jpafluidselect.From<T, R> back) {
+		super(back);
 		this.select = select;
 		this.from = from;
 		this.back = back;
@@ -25,7 +28,7 @@ public class Order<T, D, R> {
 		return select.getBuilder();
 	}
 
-	public R end() {
+	public com.github.ordnaelmedeiros.jpafluidselect.From<T, R> end() {
 		return this.back;
 	}
 

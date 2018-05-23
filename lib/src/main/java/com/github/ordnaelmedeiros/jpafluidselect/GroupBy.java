@@ -9,17 +9,20 @@ import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Path;
 import javax.persistence.metamodel.SingularAttribute;
 
-public class GroupBy<T, D, R> {
+import com.github.ordnaelmedeiros.jpafluidselect.redirect.RedirectFrom;
 
-	private R back;
+public class GroupBy<T, D, R> extends RedirectFrom<T, R> {
+
+	private com.github.ordnaelmedeiros.jpafluidselect.From<T, R> back;
 	private From<T, D> from;
 
-	public GroupBy(From<T, D> from, R back) {
+	public GroupBy(From<T, D> from, com.github.ordnaelmedeiros.jpafluidselect.From<T, R> jfsForm) {
+		super(jfsForm);
 		this.from = from;
-		this.back = back;
+		this.back = jfsForm;
 	}
 
-	public R end() {
+	public com.github.ordnaelmedeiros.jpafluidselect.From<T, R> end() {
 		return this.back;
 	}
 
