@@ -34,7 +34,6 @@ public class JoinOrderSelectTest extends SelectTestBase {
 			.order()
 				.asc(joinAdress, Address_.street)
 				.desc(People_.id)
-			.end()
 			.getResultList()
 			;
 		

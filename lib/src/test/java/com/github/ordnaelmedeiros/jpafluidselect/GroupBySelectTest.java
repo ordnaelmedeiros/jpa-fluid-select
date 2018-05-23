@@ -30,10 +30,8 @@ public class GroupBySelectTest extends SelectTestBase {
 			.fields()
 				.add(People_.name)
 				.count(People_.id)
-			.end()
 			.group()
 				.add(People_.name)
-			.end()
 			.orderAsc(People_.name)
 			.getResultList();
 		
@@ -57,10 +55,8 @@ public class GroupBySelectTest extends SelectTestBase {
 			.fields()
 				.add(People_.name)
 				.sum(People_.id)
-			.end()
 			.group()
 				.add(People_.name)
-			.end()
 			.orderAsc(People_.name)
 			.getResultList();
 		
@@ -84,13 +80,10 @@ public class GroupBySelectTest extends SelectTestBase {
 			.fields()
 				.add(this.joinAddress, Address_.street)
 				.count(People_.id)
-			.end()
 			.group()
 				.add(this.joinAddress, Address_.street)
-			.end()
 			.order()
 				.asc(this.joinAddress, Address_.street)
-			.end()
 			.getResultList();
 		
 		/*
@@ -113,5 +106,54 @@ public class GroupBySelectTest extends SelectTestBase {
 		assertEquals(2l, list.get(3)[1]);
 		
 	}
+	
+	@Test
+	public void testCountDistinctStreet() {
+		
+		List<Object[]> list = new Select(em)
+			.fromMultiSelect(Address.class)
+			.fields()
+				.add(Address_.street)
+				.countDistinct(Address_.street)
+			.group()
+				.add(Address_.street)
+			.getResultList();
+		
+		assertEquals(4, list.size());
+		
+		list.stream().forEach(o -> {
+			//System.out.println(String.format("%10s count: %02d", o));
+			assertEquals(o[1], 1l);
+		});
+		
+		Object result = new Select(em)
+			.fromMultiSelect(Address.class)
+			.fields()
+				.countDistinct(Address_.street)
+			.getSingleResult();
+		
+		assertEquals(result, 4l);
+		
+	}
+	
+	@Test
+	public void testMinMaxStreet() {
+		
+		Object[] list = new Select(em)
+			.fromMultiSelect(Address.class)
+			.fields()
+				.countDistinct(Address_.street)
+				.min(Address_.id)
+				.max(Address_.id)
+			.getSingleResult();
+		
+		//assertEquals(4, list.size());
+		//System.out.println(String.format("count: %02d min: %02d max: %02d", list));
+		assertEquals(4l, list[0]);
+		assertEquals(1l, list[1]);
+		assertEquals(7l, list[2]);
+		
+	}
+	
 	
 }

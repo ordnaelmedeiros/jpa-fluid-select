@@ -28,7 +28,6 @@ public class SelectOrderByTest extends SelectTestBase {
 				.from(People.class)
 				.order()
 					.asc(People_.id)
-				.end()
 				.getResultList()
 				;
 		
@@ -53,7 +52,6 @@ public class SelectOrderByTest extends SelectTestBase {
 			.from(People.class)
 			.order()
 				.desc(People_.id)
-			.end()
 			.getResultList()
 			;
 		

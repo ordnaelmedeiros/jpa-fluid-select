@@ -32,13 +32,11 @@ public class MultiSelectTest extends SelectTestBase {
 				.add(People_.id)
 				.add(People_.name)
 				.add(joinAdress, Address_.street)
-			.end()
 			.where()
 				.in(People_.id, new Long[] {1l, 2l})
 			.end()
 			.order()
 				.asc(People_.id)
-			.end()
 			.getResultList()
 			;
 		

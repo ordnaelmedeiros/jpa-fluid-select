@@ -22,7 +22,6 @@ public class PaginationSelectTest extends SelectTestBase {
 			.fromMultiSelect(People.class)
 			.fields()
 				.add(People_.id)
-			.end()
 			.orderAsc(People_.id)
 			.getResultList(0, 0);
 		
@@ -40,7 +39,6 @@ public class PaginationSelectTest extends SelectTestBase {
 			.fromMultiSelect(People.class)
 			.fields()
 				.add(People_.id)
-			.end()
 			.orderAsc(People_.id)
 			.getResultList(1, 3);
 		
@@ -58,7 +56,6 @@ public class PaginationSelectTest extends SelectTestBase {
 			.fromMultiSelect(People.class)
 			.fields()
 				.add(People_.id)
-			.end()
 			.orderAsc(People_.id)
 			.getResultList(2, 3);
 		
@@ -76,7 +73,6 @@ public class PaginationSelectTest extends SelectTestBase {
 			.fromMultiSelect(People.class)
 			.fields()
 				.add(People_.id)
-			.end()
 			.orderAsc(People_.id)
 			.getResultList(3, 3);
 		

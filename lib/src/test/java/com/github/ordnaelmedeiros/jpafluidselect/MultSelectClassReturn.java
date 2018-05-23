@@ -30,7 +30,6 @@ public class MultSelectClassReturn extends SelectTestBase {
 			.fields()
 				.add(People_.name)
 				.add(joinAdress, Address_.street)
-			.end()
 			.where()
 				.equal(People_.id, 1l)
 			.end()

@@ -34,8 +34,8 @@ public class From<T,R> {
 	@Getter
 	private List<Join> joins = new ArrayList<>();
 	
-	private Order<T, T, From<T,R>> order;
-	private GroupBy<T, T, From<T,R>> groupBy;
+	private Order<T, T, R> order;
+	private GroupBy<T, T, R> groupBy;
 	
 	
 	@Getter
@@ -49,7 +49,7 @@ public class From<T,R> {
 		this.query = select.getBuilder().createQuery(this.classReturn);
 		this.root = query.from(this.classFrom);
 		this.order = new Order<>(select, root, this);
-		this.groupBy = new GroupBy(root, this);
+		this.groupBy = new GroupBy<>(root, this);
 	}
 	
 	protected From<T,R> count() {
@@ -68,9 +68,9 @@ public class From<T,R> {
 		return this;
 	}
 	
-	private SelectFields<T, From<T,R>> fields = null;
+	private SelectFields<T, R> fields = null;
 	
-	public SelectFields<T,From<T,R>> fields() {
+	public SelectFields<T, R> fields() {
 		if (this.fields==null) {
 			this.fields = new SelectFields<>(this.builder, this.root, this);
 		}
@@ -179,7 +179,7 @@ public class From<T,R> {
 		return j;
 	}
 	
-	public Order<T,T,From<T,R>> order() {
+	public Order<T,T,R> order() {
 		return this.order;
 	}
 	
@@ -193,8 +193,13 @@ public class From<T,R> {
 		return this;
 	}
 	
-	public GroupBy<T,T,From<T,R>> group() {
+	public GroupBy<T,T,R> group() {
 		return this.groupBy;
+	}
+
+	public From<T,R> distinct() {
+		this.query.distinct(true);
+		return this;
 	}
 
 }

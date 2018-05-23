@@ -10,7 +10,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.metamodel.SingularAttribute;
 
-public class PredicateContainer<T,D,V> {
+public class PredicateContainer<T, D, V> {
 	
 	public enum Type {
 		IGNORE, AND, OR
