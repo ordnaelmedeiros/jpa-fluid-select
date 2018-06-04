@@ -1,4 +1,4 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,6 +8,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
@@ -18,11 +19,11 @@ public class PaginationSelectTest extends SelectTestBase {
 	@Test
 	public void testPage0limit20() {
 		
-		List<Object[]> list = new Select(em)
-			.fromMultiSelect(People.class)
+		List<Object[]> list = new FSelect(em)
+			.fromCustomFields(People.class)
 			.fields()
 				.add(People_.id)
-			.orderAsc(People_.id)
+			.order().asc(People_.id)
 			.getResultList(0, 0);
 		
 		assertEquals(7, list.size());
@@ -35,11 +36,11 @@ public class PaginationSelectTest extends SelectTestBase {
 	@Test
 	public void testPaget1limit3() {
 		
-		List<Object[]> list = new Select(em)
-			.fromMultiSelect(People.class)
+		List<Object[]> list = new FSelect(em)
+			.fromCustomFields(People.class)
 			.fields()
 				.add(People_.id)
-			.orderAsc(People_.id)
+			.order().asc(People_.id)
 			.getResultList(1, 3);
 		
 		assertEquals(3, list.size());
@@ -52,11 +53,11 @@ public class PaginationSelectTest extends SelectTestBase {
 	@Test
 	public void testPaget2limit3() {
 		
-		List<Object[]> list = new Select(em)
-			.fromMultiSelect(People.class)
+		List<Object[]> list = new FSelect(em)
+			.fromCustomFields(People.class)
 			.fields()
 				.add(People_.id)
-			.orderAsc(People_.id)
+			.order().asc(People_.id)
 			.getResultList(2, 3);
 		
 		assertEquals(3, list.size());
@@ -69,11 +70,11 @@ public class PaginationSelectTest extends SelectTestBase {
 	@Test
 	public void testPaget3limit3() {
 		
-		List<Object[]> list = new Select(em)
-			.fromMultiSelect(People.class)
+		List<Object[]> list = new FSelect(em)
+			.fromCustomFields(People.class)
 			.fields()
 				.add(People_.id)
-			.orderAsc(People_.id)
+			.order().asc(People_.id)
 			.getResultList(3, 3);
 		
 		assertEquals(1, list.size());

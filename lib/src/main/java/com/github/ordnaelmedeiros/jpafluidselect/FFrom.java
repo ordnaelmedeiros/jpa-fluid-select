@@ -15,7 +15,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import lombok.Getter;
 
-public class From<T,R> {
+public class FFrom<T,R> {
 	
 	private Class<T> classFrom;
 	private Class<R> classReturn;
@@ -28,31 +28,31 @@ public class From<T,R> {
 	@Getter
 	private Root<T> root;
 
-	private PredicateContainer<T, T, From<T,R>> where;
+	private PredicateContainer<T, T, FFrom<T,R>, T, R> where;
 	
 	@SuppressWarnings("rawtypes")
 	@Getter
-	private List<Join> joins = new ArrayList<>();
+	private List<FJoin> joins = new ArrayList<>();
 	
-	private Order<T, T, R> order;
-	private GroupBy<T, T, R> groupBy;
+	private FOrder<T, T, R> order;
+	private FGroupBy<T, T, R> groupBy;
 	
 	
 	@Getter
 	private CriteriaBuilder builder;
 	
-	public From(Select select, Class<T> classFrom, Class<R> classReturn) {
+	public FFrom(FSelect select, Class<T> classFrom, Class<R> classReturn) {
 		this.classFrom = classFrom;
 		this.classReturn = classReturn;
 		builder = select.getBuilder();
 		em = select.getEm();
 		this.query = select.getBuilder().createQuery(this.classReturn);
 		this.root = query.from(this.classFrom);
-		this.order = new Order<>(select, root, this);
-		this.groupBy = new GroupBy<>(root, this);
+		this.order = new FOrder<>(select, root, this);
+		this.groupBy = new FGroupBy<>(root, this);
 	}
 	
-	protected From<T,R> count() {
+	protected FFrom<T,R> count() {
 		if (this.classReturn.equals(Long.class)) {
 			Expression<Long> count = builder.count(this.root);
 			@SuppressWarnings("unchecked")
@@ -63,23 +63,23 @@ public class From<T,R> {
 	}
 	
 
-	protected From<T,R> multiselect() {
+	protected FFrom<T,R> multiselect() {
 		
 		return this;
 	}
 	
-	private SelectFields<T, R> fields = null;
+	private FSelectFields<T, R> fields = null;
 	
-	public SelectFields<T, R> fields() {
+	public FSelectFields<T, R> fields() {
 		if (this.fields==null) {
-			this.fields = new SelectFields<>(this.builder, this.root, this);
+			this.fields = new FSelectFields<>(this.builder, this.root, this);
 		}
 		return this.fields;
 	}
 	
-	public PredicateContainer<T, T, From<T,R>> where() {
+	public PredicateContainer<T, T, FFrom<T,R>, T, R> where() {
 		if (this.where==null) {
-			this.where = new PredicateContainer<>(this.builder, this.root, PredicateContainer.Type.AND, this);
+			this.where = new PredicateContainer<>(this.builder, this.root, PredicateContainer.Type.AND, this, this);
 		}
 		return this.where;
 	}
@@ -99,7 +99,7 @@ public class From<T,R> {
 		}
 		
 		if (!this.joins.isEmpty()) {
-			for (@SuppressWarnings("rawtypes") Join join : this.joins) {
+			for (@SuppressWarnings("rawtypes") FJoin join : this.joins) {
 				join.generatePredicate();
 			}
 		}
@@ -159,45 +159,35 @@ public class From<T,R> {
 		
 	}
 	
-	public <A> Join<T, T,A,From<T,R>> join(SingularAttribute<T, A> atribute) {
+	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(SingularAttribute<T, A> atribute) {
 		
-		Join<T, T, A, From<T,R>> j = new Join<>(builder, root, atribute, JoinType.INNER, this);
+		FJoin<T, T, A, FFrom<T,R>, T, R> j = new FJoin<>(builder, root, atribute, JoinType.INNER, this, this);
 		this.joins.add(j);
 		
 		return j;
 	}
 
-	public <A> Join<T, T,A,From<T,R>> join(ListAttribute<T, A> atribute) {
+	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(ListAttribute<T, A> atribute) {
 		return this.join(JoinType.INNER, atribute);
 	}
 	
-	public <A> Join<T, T,A,From<T,R>> join(JoinType type, ListAttribute<T, A> atribute) {
+	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(JoinType type, ListAttribute<T, A> atribute) {
 		
-		Join<T, T, A, From<T,R>> j = new Join<>(builder, root, atribute, type, this);
+		FJoin<T, T, A, FFrom<T,R>, T, R> j = new FJoin<>(builder, root, atribute, type, this, this);
 		this.joins.add(j);
 		
 		return j;
 	}
 	
-	public Order<T,T,R> order() {
+	public FOrder<T,T,R> order() {
 		return this.order;
 	}
 	
-	public From<T,R> orderAsc(SingularAttribute<T, ?> attribute) {
-		this.order().asc(attribute);
-		return this;
-	}
-	
-	public From<T,R> orderDesc(SingularAttribute<T, ?> attribute) {
-		this.order().desc(attribute);
-		return this;
-	}
-	
-	public GroupBy<T,T,R> group() {
+	public FGroupBy<T,T,R> group() {
 		return this.groupBy;
 	}
 
-	public From<T,R> distinct() {
+	public FFrom<T,R> distinct() {
 		this.query.distinct(true);
 		return this;
 	}

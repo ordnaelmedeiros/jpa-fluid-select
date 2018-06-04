@@ -1,4 +1,4 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,6 +8,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
@@ -16,14 +17,14 @@ import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
 public class DistinctSelectTest extends SelectTestBase {
 	
 	@Test
-	public void testMinMaxStreet() {
+	public void testOrderDistinctStreet() {
 		
-		List<Object[]> list = new Select(em)
-			.fromMultiSelect(Address.class)
+		List<Object[]> list = new FSelect(em)
+			.fromCustomFields(Address.class)
 			.distinct()
 			.fields()
 				.add(Address_.street)
-			.orderAsc(Address_.street)
+			.order().asc(Address_.street)
 			.getResultList();
 		
 		//System.out.println(list);

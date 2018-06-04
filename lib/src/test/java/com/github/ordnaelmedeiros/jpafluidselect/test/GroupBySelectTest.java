@@ -1,4 +1,4 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,6 +10,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
@@ -25,14 +26,14 @@ public class GroupBySelectTest extends SelectTestBase {
 	@Test
 	public void testCount() {
 		
-		List<Object[]> list = new Select(em)
-			.fromMultiSelect(People.class)
+		List<Object[]> list = new FSelect(em)
+			.fromCustomFields(People.class)
 			.fields()
 				.add(People_.name)
 				.count(People_.id)
 			.group()
 				.add(People_.name)
-			.orderAsc(People_.name)
+			.order().asc(People_.name)
 			.getResultList();
 		
 		
@@ -50,14 +51,14 @@ public class GroupBySelectTest extends SelectTestBase {
 	@Test
 	public void testSum() {
 		
-		List<Object[]> list = new Select(em)
-			.fromMultiSelect(People.class)
+		List<Object[]> list = new FSelect(em)
+			.fromCustomFields(People.class)
 			.fields()
 				.add(People_.name)
 				.sum(People_.id)
 			.group()
 				.add(People_.name)
-			.orderAsc(People_.name)
+			.order().asc(People_.name)
 			.getResultList();
 		
 		list.stream().forEach(o -> {
@@ -74,8 +75,8 @@ public class GroupBySelectTest extends SelectTestBase {
 	@Test
 	public void testCountByStreet() {
 		
-		List<Object[]> list = new Select(em)
-			.fromMultiSelect(People.class)
+		List<Object[]> list = new FSelect(em)
+			.fromCustomFields(People.class)
 			.join(People_.address).extractJoin(j -> this.joinAddress = j).end()
 			.fields()
 				.add(this.joinAddress, Address_.street)
@@ -110,8 +111,8 @@ public class GroupBySelectTest extends SelectTestBase {
 	@Test
 	public void testCountDistinctStreet() {
 		
-		List<Object[]> list = new Select(em)
-			.fromMultiSelect(Address.class)
+		List<Object[]> list = new FSelect(em)
+			.fromCustomFields(Address.class)
 			.fields()
 				.add(Address_.street)
 				.countDistinct(Address_.street)
@@ -126,8 +127,8 @@ public class GroupBySelectTest extends SelectTestBase {
 			assertEquals(o[1], 1l);
 		});
 		
-		Object result = new Select(em)
-			.fromMultiSelect(Address.class)
+		Object result = new FSelect(em)
+			.fromCustomFields(Address.class)
 			.fields()
 				.countDistinct(Address_.street)
 			.getSingleResult();
@@ -139,8 +140,8 @@ public class GroupBySelectTest extends SelectTestBase {
 	@Test
 	public void testMinMaxStreet() {
 		
-		Object[] list = new Select(em)
-			.fromMultiSelect(Address.class)
+		Object[] list = new FSelect(em)
+			.fromCustomFields(Address.class)
 			.fields()
 				.countDistinct(Address_.street)
 				.min(Address_.id)

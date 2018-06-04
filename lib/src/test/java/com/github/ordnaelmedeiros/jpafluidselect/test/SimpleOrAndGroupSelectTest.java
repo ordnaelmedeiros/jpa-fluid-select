@@ -1,4 +1,4 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,6 +8,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
@@ -18,14 +19,12 @@ public class SimpleOrAndGroupSelectTest extends SelectTestBase {
 	@Test
 	public void t010DeveBuscarComId1e2() {
 		
-		List<People> lista = new Select(em)
+		List<People> lista = new FSelect(em)
 			.from(People.class)
 			.where()
 				.orGroup()
 					.equal(People_.id, 1l)
 					.equal(People_.id, 2l)
-				.end()
-			.end()
 			.getResultList()
 			;
 		assertEquals(2, lista.size());
@@ -39,14 +38,12 @@ public class SimpleOrAndGroupSelectTest extends SelectTestBase {
 		
 		boolean notFindById2 = false;
 		
-		List<People> lista = new Select(em)
+		List<People> lista = new FSelect(em)
 			.from(People.class)
 			.where()
 				.orGroup()
 					.equal(People_.id, 1l)
 					.ifCan(notFindById2).equal(People_.id, 2l)
-				.end()
-			.end()
 			.getResultList()
 			;
 		assertEquals(1, lista.size());
@@ -57,7 +54,7 @@ public class SimpleOrAndGroupSelectTest extends SelectTestBase {
 	@Test
 	public void t010DeveBuscarComId1ComString() {
 		
-		List<People> lista = new Select(em)
+		List<People> lista = new FSelect(em)
 			.from(People.class)
 			.where()
 				.like(People_.name, "%e%")
@@ -65,8 +62,6 @@ public class SimpleOrAndGroupSelectTest extends SelectTestBase {
 					.equal(People_.id, 1l)
 					.equal(People_.id, 2l)
 					.equal(People_.id, 5l)
-				.end()
-			.end()
 			.getResultList()
 			;
 		assertEquals(2, lista.size());

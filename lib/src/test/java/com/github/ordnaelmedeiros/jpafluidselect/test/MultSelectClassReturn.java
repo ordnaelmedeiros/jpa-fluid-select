@@ -1,4 +1,4 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,6 +8,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
@@ -24,15 +25,14 @@ public class MultSelectClassReturn extends SelectTestBase {
 	@Test
 	public void testTransform() {
 		
-		DTO dto = new Select(em)
-			.fromMultiSelect(People.class, DTO.class)
-			.join(People_.address).extractJoin(j -> this.joinAdress = j).end()
+		DTO dto = new FSelect(em)
+			.fromCustomFields(People.class, DTO.class)
+			.join(People_.address).extractJoin(j -> this.joinAdress = j)
 			.fields()
 				.add(People_.name)
 				.add(joinAdress, Address_.street)
 			.where()
 				.equal(People_.id, 1l)
-			.end()
 			.getSingleResult();
 		
 		assertEquals("Leandro", dto.getPeopleName());

@@ -1,4 +1,4 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -11,6 +11,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
@@ -21,11 +22,10 @@ public class SimpleSelectTest extends SelectTestBase {
 	@Test(expected=NoResultException.class)
 	public void t001NaoDeveTrazerResultado() {
 		
-		new Select(em)
+		new FSelect(em)
 			.from(People.class)
 			.where()
 				.equal(People_.id, 9999999l)
-			.end()
 			.getSingleResult()
 			;
 		
@@ -35,11 +35,10 @@ public class SimpleSelectTest extends SelectTestBase {
 	@Test
 	public void t010DeveBuscarComId1() {
 		
-		People o = new Select(em)
+		People o = new FSelect(em)
 			.from(People.class)
 			.where()
 				.equal(People_.id, 1l)
-			.end()
 			.getSingleResult()
 			;
 		
@@ -50,11 +49,10 @@ public class SimpleSelectTest extends SelectTestBase {
 	@Test(expected=NonUniqueResultException.class)
 	public void t010NaoDeveBuscarUniqueLeandro() {
 		
-		new Select(em)
+		new FSelect(em)
 			.from(People.class)
 			.where()
 				.equal(People_.name, "Leandro")
-			.end()
 			.getSingleResult()
 			;
 		
@@ -63,7 +61,7 @@ public class SimpleSelectTest extends SelectTestBase {
 	@Test
 	public void t010DeveBuscarTodos() {
 		
-		List<People> lista = new Select(em)
+		List<People> lista = new FSelect(em)
 			.from(People.class)
 			.getResultList()
 			;
@@ -74,11 +72,10 @@ public class SimpleSelectTest extends SelectTestBase {
 	@Test
 	public void t010DeveBuscar2Leandro() {
 		
-		List<People> lista = new Select(em)
+		List<People> lista = new FSelect(em)
 			.from(People.class)
 			.where()
 				.equal(People_.name, "Leandro")
-			.end()
 			.getResultList()
 			;
 		assertEquals(2, lista.size());
@@ -92,11 +89,10 @@ public class SimpleSelectTest extends SelectTestBase {
 	@Test
 	public void t010DeveBuscarDiferenteId1() {
 		
-		List<People> lista = new Select(em)
+		List<People> lista = new FSelect(em)
 			.from(People.class)
 			.where()
 				.not().equal(People_.id, 1l)
-			.end()
 			.getResultList()
 			;
 		assertEquals(6, lista.size());
@@ -113,7 +109,7 @@ public class SimpleSelectTest extends SelectTestBase {
 	@Test
 	public void t010DeveBuscarPeopleCount() {
 		
-		Long count = new Select(em)
+		Long count = new FSelect(em)
 			.fromCount(People.class)
 			.getSingleResult();
 		
@@ -124,12 +120,11 @@ public class SimpleSelectTest extends SelectTestBase {
 	@Test
 	public void t010DeveBuscarPeopleCount5() {
 		
-		Long count = new Select(em)
+		Long count = new FSelect(em)
 			.fromCount(People.class)
 			.where()
 				.not().equal(People_.id, 1l)
 				.not().equal(People_.id, 5l)
-			.end()
 			.getSingleResult();
 		
 		assertEquals(5, count.intValue());

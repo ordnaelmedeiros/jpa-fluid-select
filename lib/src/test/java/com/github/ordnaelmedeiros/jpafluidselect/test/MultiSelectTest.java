@@ -1,4 +1,4 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,6 +10,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
@@ -24,17 +25,15 @@ public class MultiSelectTest extends SelectTestBase {
 	@Test
 	public void t010DeveBuscarComJoinAdress() {
 		
-		List<Object[]> lista = new Select(em)
-			.fromMultiSelect(People.class)
+		List<Object[]> lista = new FSelect(em)
+			.fromCustomFields(People.class)
 			.join(People_.address).extractJoin(j -> this.joinAdress = j)
-			.end()
 			.fields()
 				.add(People_.id)
 				.add(People_.name)
 				.add(joinAdress, Address_.street)
 			.where()
 				.in(People_.id, new Long[] {1l, 2l})
-			.end()
 			.order()
 				.asc(People_.id)
 			.getResultList()

@@ -1,58 +1,53 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Join;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
+import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
-import com.github.ordnaelmedeiros.jpafluidselect.models.Phone_;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class JoinSelectTest extends SelectTestBase {
+public class JoinOrderSelectTest extends SelectTestBase {
 	
 	public CriteriaBuilder builder;
+	
+	private Join<People, Address> joinAdress;
 	
 	@Test
 	public void t010DeveBuscarComJoinAdress() {
 		
-		List<People> lista = new Select(em).extractBuilder(b -> this.builder = b)
+		List<People> lista = new FSelect(em).extractBuilder(b -> this.builder = b)
 			.from(People.class)
-			.join(People_.address)
-				.on()
-					.orGroup()
-						.equal(Address_.street, "One")
-						.equal(Address_.street, "9999")
-					.end()
-				.end()
-			.end()
-			.join(JoinType.LEFT, People_.phones)
-				.on()
-					.equal(Phone_.number, "123")
-				.end()
-			.end()
-			.where()
-				.like(People_.name, "%a%")
-				.orGroup()
-					.equal(People_.id, 1l)
-					.equal(People_.id, 2l)
-					.add(r -> builder.equal(r.get(People_.id), 5l))
-				.end()
-			.end()
+			.join(People_.address).extractJoin(j -> this.joinAdress = j)
+			.order()
+				.asc(joinAdress, Address_.street)
+				.desc(People_.id)
 			.getResultList()
 			;
-		assertEquals(2, lista.size());
-		assertEquals(1, lista.get(0).getId().intValue());
-		assertEquals(5, lista.get(1).getId().intValue());
+		
+		lista.forEach(System.out::println);
+		
+		assertEquals(7, lista.size());
+		
+		assertEquals(5, lista.get(0).getId().intValue());
+		assertEquals(1, lista.get(1).getId().intValue());
+		assertEquals(7, lista.get(2).getId().intValue());
+		assertEquals(6, lista.get(3).getId().intValue());
+		assertEquals(4, lista.get(4).getId().intValue());
+		assertEquals(3, lista.get(5).getId().intValue());
+		assertEquals(2, lista.get(6).getId().intValue());
 		
 		/*
 		
