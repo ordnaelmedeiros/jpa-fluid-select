@@ -6,11 +6,13 @@ import java.util.function.Function;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.From;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
+import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 
-public class PredicateContainer<T, D, V> {
+public class PredicateContainer<T, D, V, F1, F2> {
 	
 	public enum Type {
 		IGNORE, AND, OR
@@ -24,15 +26,18 @@ public class PredicateContainer<T, D, V> {
 	private From<T, D> from;
 	private Type type;
 	private V back;
+	
+	private FFrom<F1, F2> fFrom;
 
 	private CriteriaBuilder builder;
 
 
-	public PredicateContainer(CriteriaBuilder builder, From<T, D> from, Type type,  V back) {
+	public PredicateContainer(CriteriaBuilder builder, From<T, D> from, Type type,  V back, FFrom<F1, F2> fFrom) {
 		this.builder = builder;
 		this.from = from;
 		this.type = type;
 		this.back = back;
+		this.fFrom = fFrom;
 	}
 	
 	public PredicateContainer(Predicate predicate) {
@@ -43,7 +48,7 @@ public class PredicateContainer<T, D, V> {
 		return this.back;
 	}
 
-	public PredicateContainer<T, D, V> add(Function<From<T, D>, Predicate> toPredicate) {
+	public PredicateContainer<T, D, V, F1, F2> add(Function<From<T, D>, Predicate> toPredicate) {
 		Predicate p = toPredicate.apply(this.from);
 		this.container.add(new PredicateContainer<>(p));
 		return this;
@@ -83,21 +88,21 @@ public class PredicateContainer<T, D, V> {
 		
 	}
 	
-	public PredicateContainer<T,D,PredicateContainer<T,D,V>> orGroup() {
+	public PredicateContainer<T, D, PredicateContainer<T, D, V, F1, F2>, F1, F2> orGroup() {
 		return this.group(Type.OR);
 	}
 	
-	public PredicateContainer<T,D,PredicateContainer<T,D,V>> andGroup() {
+	public PredicateContainer<T, D, PredicateContainer<T, D, V, F1, F2>, F1, F2> andGroup() {
 		return this.group(Type.AND);
 	}
 	
-	public PredicateContainer<T,D,PredicateContainer<T,D,V>> group(Type t) {
+	public PredicateContainer<T, D, PredicateContainer<T, D, V, F1, F2>, F1, F2> group(Type t) {
 		
 		if (!isCan) {
 			t = PredicateContainer.Type.IGNORE;
 		}
 		
-		PredicateContainer<T,D,PredicateContainer<T,D,V>> predicateContainer = new PredicateContainer<>(this.builder, this.from, t, this);
+		PredicateContainer<T, D, PredicateContainer<T, D, V, F1, F2>, F1, F2> predicateContainer = new PredicateContainer<>(this.builder, this.from, t, this, this.fFrom);
 		
 		this.isNot = false;
 		this.isCan = true;
@@ -133,70 +138,113 @@ public class PredicateContainer<T, D, V> {
 	}
 	
 	private boolean isNot = false;
-	public PredicateContainer<T,D,V> not() {
+	public PredicateContainer<T, D, V, F1, F2> not() {
 		this.isNot = true;
 		return this;
 	}
 	
 	private boolean isCan = true;
-	public PredicateContainer<T,D,V> ifCan(boolean condition) {
+	public PredicateContainer<T, D, V, F1, F2> ifCan(boolean condition) {
 		this.isCan = condition;
 		return this;
 	}
 	
-	public <A> PredicateContainer<T,D,V> equal(SingularAttribute<D, A> field, A value) {
+	public <A> PredicateContainer<T, D, V, F1, F2> equal(SingularAttribute<D, A> field, A value) {
 		add(b().equal(f(field), value));
 		return this;
 	}
 
-	public PredicateContainer<T,D,V> iEqual(SingularAttribute<D, String> field, String value) {
+	public PredicateContainer<T, D, V, F1, F2> iEqual(SingularAttribute<D, String> field, String value) {
 		add(b().equal(b().upper(b().trim(f(field))), value.trim().toUpperCase()));
 		return this;
 	}
 	
-	public <A> PredicateContainer<T,D,V> in(SingularAttribute<D, A> field, A[] values) {
+	public <A> PredicateContainer<T, D, V, F1, F2> in(SingularAttribute<D, A> field, A[] values) {
 		add(f(field).in(values));
 		return this;
 	}
 	
-	public PredicateContainer<T,D,V> like(SingularAttribute<D, String> field, String value) {
+	public PredicateContainer<T, D, V, F1, F2> like(SingularAttribute<D, String> field, String value) {
 		add(b().like(f(field), value));
 		return this;
 	}
 	
-	public PredicateContainer<T,D,V> iLike(SingularAttribute<D, String> field, String value) {
+	public PredicateContainer<T, D, V, F1, F2> iLike(SingularAttribute<D, String> field, String value) {
 		add(b().like(b().upper(b().trim(f(field))), value.trim().toUpperCase()));
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T,D,V> greaterThan(SingularAttribute<D, A> field, A value) {
+	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> greaterThan(SingularAttribute<D, A> field, A value) {
 		add(b().greaterThan(f(field), value));
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T,D,V> greaterThanOrEqualTo(SingularAttribute<D, A> field, A value) {
+	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> greaterThanOrEqualTo(SingularAttribute<D, A> field, A value) {
 		add(b().greaterThanOrEqualTo(f(field), value));
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T,D,V> lessThan(SingularAttribute<D, A> field, A value) {
+	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> lessThan(SingularAttribute<D, A> field, A value) {
 		add(b().lessThan(f(field), value));
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T,D,V> lessThanOrEqualTo(SingularAttribute<D, A> field, A value) {
+	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> lessThanOrEqualTo(SingularAttribute<D, A> field, A value) {
 		add(b().lessThanOrEqualTo(f(field), value));
 		return this;
 	}
 	
-	public <A> PredicateContainer<T,D,V> isNull(SingularAttribute<D, A> field) {
+	public <A> PredicateContainer<T, D, V, F1, F2> isNull(SingularAttribute<D, A> field) {
 		add(b().isNull(f(field)));
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T,D,V> between(SingularAttribute<D, A> field, A value1, A value2) {
+	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> between(SingularAttribute<D, A> field, A value1, A value2) {
 		add(b().between(f(field), value1, value2));
 		return this;
 	}
+	
+	
+	// REDIRECT
+	public CriteriaBuilder getBuilder() {
+		return fFrom.getBuilder();
+	}
+
+	public FSelectFields<F1, F2> fields() {
+		return fFrom.fields();
+	}
+
+	public FGroupBy<F1, F1, F2> group() {
+		return fFrom.group();
+	}
+
+	public FOrder<F1, F1, F2> order() {
+		return fFrom.order();
+	}
+	/*
+	public <A> FJoin<F1, F1, A, FFrom<F1, F2>, F1, F2> join(ListAttribute<F1, A> atribute) {
+		return this.fFrom.join(atribute);
+	}
+
+	public <A> FJoin<F1, F1, A, FFrom<F1, F2>, F1, F2> join(JoinType type, ListAttribute<F1, A> atribute) {
+		return this.fFrom.join(type, atribute);
+	}
+
+	public <A> FJoin<F1, F1, A, FFrom<F1, F2>, F1, F2> join(SingularAttribute<F1, A> atribute) {
+		return this.fFrom.join(atribute);
+	}
+	*/
+	public List<F2> getResultList() {
+		return fFrom.getResultList();
+	}
+
+	public List<F2> getResultList(Integer page, Integer limit) {
+		return fFrom.getResultList(page, limit);
+	}
+
+	public F2 getSingleResult() {
+		return fFrom.getSingleResult();
+	}
+
 	
 }

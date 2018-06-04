@@ -1,4 +1,4 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,6 +8,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
@@ -18,13 +19,13 @@ public class SelectOrderByTest extends SelectTestBase {
 	@Test
 	public void sucessFindOrderAsc() {
 		
-		List<People> lista1 = new Select(em)
+		List<People> lista1 = new FSelect(em)
 			.from(People.class)
-			.orderAsc(People_.id)
+			.order().asc(People_.id)
 			.getResultList()
 			;
 		
-		List<People> lista2 = new Select(em)
+		List<People> lista2 = new FSelect(em)
 				.from(People.class)
 				.order()
 					.asc(People_.id)
@@ -42,13 +43,13 @@ public class SelectOrderByTest extends SelectTestBase {
 	@Test
 	public void sucessFindOrderDesc() {
 		
-		List<People> lista1 = new Select(em)
+		List<People> lista1 = new FSelect(em)
 				.from(People.class)
-				.orderDesc(People_.id)
+				.order().desc(People_.id)
 				.getResultList()
 				;
 		
-		List<People> lista2 = new Select(em)
+		List<People> lista2 = new FSelect(em)
 			.from(People.class)
 			.order()
 				.desc(People_.id)

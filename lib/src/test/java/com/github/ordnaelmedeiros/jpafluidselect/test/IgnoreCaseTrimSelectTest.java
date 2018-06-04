@@ -1,4 +1,4 @@
-package com.github.ordnaelmedeiros.jpafluidselect;
+package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -10,6 +10,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
@@ -20,11 +21,10 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 	@Test(expected=NoResultException.class)
 	public void notSucessFindEqualLowerCase() {
 		
-		new Select(em)
+		new FSelect(em)
 			.from(People.class)
 			.where()
 				.equal(People_.name, "leandro")
-			.end()
 			.getSingleResult()
 			;
 		
@@ -33,11 +33,10 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 	@Test(expected=NoResultException.class)
 	public void notSucessFindEqualNoTrim() {
 		
-		new Select(em)
+		new FSelect(em)
 			.from(People.class)
 			.where()
 				.equal(People_.name, "Rafael")
-			.end()
 			.getSingleResult()
 			;
 		
@@ -47,11 +46,10 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 	@Test
 	public void sucessFindEqualTrim() {
 		
-		new Select(em)
+		new FSelect(em)
 			.from(People.class)
 			.where()
 				.iEqual(People_.name, "Rafael")
-			.end()
 			.getSingleResult()
 			;
 		
@@ -60,11 +58,10 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 	@Test
 	public void sucessFindEqualIgnoreCase() {
 		
-		List<People> peoples = new Select(em)
+		List<People> peoples = new FSelect(em)
 			.from(People.class)
 			.where()
 				.iEqual(People_.name, "leandro")
-			.end()
 			.getResultList()
 			;
 		
@@ -77,11 +74,10 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 	@Test(expected=NoResultException.class)
 	public void notSucessFindLowerCaseLike() {
 		
-		new Select(em)
+		new FSelect(em)
 			.from(People.class)
 			.where()
 				.like(People_.name, "%le%")
-			.end()
 			.getSingleResult()
 			;
 		
@@ -90,11 +86,10 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 	@Test
 	public void sucessFindIgnoreCaseLike() {
 		
-		List<People> peoples = new Select(em)
+		List<People> peoples = new FSelect(em)
 			.from(People.class)
 			.where()
 				.iLike(People_.name, "%le%")
-			.end()
 			.getResultList()
 			;
 		
@@ -107,11 +102,10 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 	@Test(expected=NoResultException.class)
 	public void notSucessFindNoTrimLike() {
 		
-		new Select(em)
+		new FSelect(em)
 			.from(People.class)
 			.where()
 				.like(People_.name, "rafael")
-			.end()
 			.getSingleResult()
 			;
 		
@@ -120,11 +114,10 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 	@Test
 	public void sucessFindTrimLike() {
 		
-		List<People> peoples = new Select(em)
+		List<People> peoples = new FSelect(em)
 			.from(People.class)
 			.where()
 				.iLike(People_.name, "rafael")
-			.end()
 			.getResultList()
 			;
 		

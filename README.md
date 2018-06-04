@@ -8,7 +8,7 @@ https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
 <dependency>
 	<groupId>com.github.ordnaelmedeiros</groupId>
 	<artifactId>jpa-fluid-select</artifactId>
-	<version>0.0.9</version>
+	<version>1.0.0</version>
 </dependency>
 ```
 
@@ -32,7 +32,6 @@ People p = new Select(em)
 	.from(People.class)
 	.where()
 		.equal(People_.id, 1)
-	.end()
 	.getSingleResult()
 ```
 
@@ -41,7 +40,7 @@ People p = new Select(em)
 ```javascript
 List<People> lista1 = new Select(em)
 	.from(People.class)
-	.orderDesc(People_.id)
+	.order().desc(People_.id)
 	.getResultList();
 	
 List<People> lista1 = new Select(em)
@@ -59,7 +58,6 @@ Long count = new Select(em)
 	.fromCount(People.class)
 	.where()
 		.like(People_.name, "%le%")
-	.end()
 	.getSingleResult();
 ```
 
@@ -69,7 +67,6 @@ List<People> lista = new Select(em)
 	.from(People.class)
 	.where()
 		.not().equal(People_.id, 1)
-	.end()
 	.getResultList()
 ```
 
@@ -83,8 +80,6 @@ List<People> lista = new Select(em)
 		.orGroup()
 			.equal(People_.id, 1)
 			.ifCan(notFindById2).equal(People_.id, 2)
-		.end()
-	.end()
 	.getResultList()
 	;
 ```
@@ -124,26 +119,23 @@ List<People> lista = new Select(em)
 		.on()
 			.equal(Phone_.number, "123")
 		.end()
-	.end()
 	.where()
 		.like(People_.name, "%a%")
-	.end()
 	.getResultList()
 ```
 
 ## CustomFields
 ```javascript
 List<Object[]> lista = new Select(em)
-	.fromMultSelect(People.class)
-	.join(People_.address).extractJoin(j -> this.joinAdress = j).end()
+	.fromCustomFields(People.class)
+	.join(People_.address).extractJoin(j -> this.joinAdress = j)
 	.fields() // fields returns
 		.add(People_.id)
 		.add(People_.name)
 		.add(joinAdress, Address_.street)
 	.where()
 		.in(People_.id, new Long[] {1, 2})
-	.end()
-	.orderAsc(People_.id)
+	.order().asc(People_.id)
 	.getResultList()
 ```
 
@@ -162,24 +154,23 @@ public class DTO {
 }
 
 DTO dto = new Select(em)
-	.fromMultiSelect(People.class, DTO.class)
-	.join(People_.address).extractJoin(j -> this.joinAdress = j).end()
+	.fromCustomFields(People.class, DTO.class)
+	.join(People_.address).extractJoin(j -> this.joinAdress = j)
 	.fields()
 		.add(People_.name)
 		.add(joinAdress, Address_.street)
 	.where()
 		.equal(People_.id, 1)
-	.end()
 	.getSingleResult();
 ```
 
 ## Pagination
 ```javascript
 List<Object[]> list = new Select(em)
-	.fromMultiSelect(People.class)
+	.fromCustomFields(People.class)
 	.fields()
 		.add(People_.id)
-	.orderAsc(People_.id)
+	.order().asc(People_.id)
 	.getResultList(2, 3);
 	//(page, limit)
 ```
@@ -187,8 +178,8 @@ List<Object[]> list = new Select(em)
 ## GroupBy
 ```javascript
 List<Object[]> list = new Select(em)
-	.fromMultiSelect(People.class)
-	.join(People_.address).extractJoin(j -> this.joinAddress = j).end()
+	.fromCustomFields(People.class)
+	.join(People_.address).extractJoin(j -> this.joinAddress = j)
 	.fields()
 		.add(this.joinAddress, Address_.street)
 		.count(People_.id)
@@ -206,10 +197,10 @@ list.stream().forEach(o -> {
 ## Distinct
 ```javascript
 List<Object[]> list = new Select(em)
-	.fromMultiSelect(Address.class)
+	.fromCustomFields(Address.class)
 	.distinct()
 	.fields()
 		.add(Address_.street)
-	.orderAsc(Address_.street)
+	.order().asc(Address_.street)
 	.getResultList();
 ```
