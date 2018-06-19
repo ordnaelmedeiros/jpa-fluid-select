@@ -1,8 +1,9 @@
 package com.github.ordnaelmedeiros.jpafluidselect.models;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter @Setter
 public class DTO {
 	
 	private String peopleName;

@@ -14,6 +14,8 @@ import org.junit.runners.MethodSorters;
 import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
+import com.github.ordnaelmedeiros.jpafluidselect.models.Country;
+import com.github.ordnaelmedeiros.jpafluidselect.models.Country_;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Phone_;
@@ -70,6 +72,24 @@ public class JoinSelectTest extends SelectTestBase {
 
 		*/
 		
+	}
+	
+	@Test
+	public void t020DeveBuscarComJoinAdress() {
+		
+		List<People> lista = new FSelect(em)
+			.from(People.class)
+			.join(People_.address)
+				.join(Address_.country)
+					.on()
+						.equal(Country_.name, "Florida")
+			.getResultList()
+			;
+		
+		assertEquals(4, lista.size());
+		//assertEquals(1, lista.get(0).getId().intValue());
+		//assertEquals(5, lista.get(1).getId().intValue());
+
 	}
 	
 }

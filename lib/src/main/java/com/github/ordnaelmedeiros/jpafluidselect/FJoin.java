@@ -1,5 +1,6 @@
 package com.github.ordnaelmedeiros.jpafluidselect;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -22,7 +23,7 @@ public class FJoin<O1, O, T, V, F1, F2> {
 	private PredicateContainer<O, T, FJoin<O1, O, T, V, F1, F2>, F1, F2> on;
 	
 	@SuppressWarnings("rawtypes")
-	private List<FJoin> joins;
+	private List<FJoin> joins = new ArrayList<>();
 
 	private FFrom<F1, F2> fFrom;
 	
@@ -57,18 +58,12 @@ public class FJoin<O1, O, T, V, F1, F2> {
 		return on;
 	}
 	
-	public <A> FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> innerJoin(SingularAttribute<T, A> atribute) {
-		
-		FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> j = new FJoin<>(builder, jpaJoin, atribute, JoinType.INNER, this, this.fFrom);
-		this.joins.add(j);
-		
-		return j;
-		
-	}
-	
 	public void generatePredicate() {
 		if (this.on!=null) {
 			this.jpaJoin.on(on.generatePredicate());
+		}
+		for (@SuppressWarnings("rawtypes") FJoin fJoin : this.joins) {
+			fJoin.generatePredicate();
 		}
 	}
 	
@@ -118,6 +113,23 @@ public class FJoin<O1, O, T, V, F1, F2> {
 	public F2 getSingleResult() {
 		return fFrom.getSingleResult();
 	}
-
+	
+	public <A> FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> join(JoinType type, SingularAttribute<T, A> atribute) {
+		FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> j = new FJoin<>(builder, jpaJoin, atribute, type, this, this.fFrom);
+		this.joins.add(j);
+		return j;
+	}
+	public <A> FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> join(JoinType type, ListAttribute<T, A> atribute) {
+		FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> j = new FJoin<>(builder, jpaJoin, atribute, type, this, this.fFrom);
+		this.joins.add(j);
+		return j;
+	}
+	
+	public <A> FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> join(SingularAttribute<T, A> atribute) {
+		return this.join(JoinType.INNER, atribute);
+	}
+	public <A> FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> join(ListAttribute<T, A> atribute) {
+		return this.join(JoinType.INNER, atribute);
+	}
 	
 }

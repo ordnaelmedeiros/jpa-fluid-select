@@ -3,10 +3,12 @@ package com.github.ordnaelmedeiros.jpafluidselect.models;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter @Setter
 @Entity
 public class Address {
 
@@ -18,12 +20,16 @@ public class Address {
 	@Column(length=200)
 	private String street;
 	
+	@ManyToOne
+	private Country country;
+	
 	public Address() {
 		this.setId(++countId);
 	}
 	
-	public Address(String street) {
+	public Address(Country country, String street) {
 		this();
+		this.country = country;
 		this.street = street;
 	}
 	

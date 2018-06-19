@@ -159,18 +159,14 @@ public class FFrom<T,R> {
 		
 	}
 	
-	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(SingularAttribute<T, A> atribute) {
+	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(JoinType type, SingularAttribute<T, A> atribute) {
 		
-		FJoin<T, T, A, FFrom<T,R>, T, R> j = new FJoin<>(builder, root, atribute, JoinType.INNER, this, this);
+		FJoin<T, T, A, FFrom<T,R>, T, R> j = new FJoin<>(builder, root, atribute, type, this, this);
 		this.joins.add(j);
 		
 		return j;
 	}
 
-	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(ListAttribute<T, A> atribute) {
-		return this.join(JoinType.INNER, atribute);
-	}
-	
 	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(JoinType type, ListAttribute<T, A> atribute) {
 		
 		FJoin<T, T, A, FFrom<T,R>, T, R> j = new FJoin<>(builder, root, atribute, type, this, this);
@@ -178,6 +174,15 @@ public class FFrom<T,R> {
 		
 		return j;
 	}
+	
+	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(SingularAttribute<T, A> atribute) {
+		return this.join(JoinType.INNER, atribute);
+	}
+
+	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(ListAttribute<T, A> atribute) {
+		return this.join(JoinType.INNER, atribute);
+	}
+	
 	
 	public FOrder<T,T,R> order() {
 		return this.order;
