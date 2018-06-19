@@ -8,7 +8,7 @@ https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
 <dependency>
 	<groupId>com.github.ordnaelmedeiros</groupId>
 	<artifactId>jpa-fluid-select</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 </dependency>
 ```
 
