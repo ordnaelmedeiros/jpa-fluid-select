@@ -14,7 +14,6 @@ import org.junit.runners.MethodSorters;
 import com.github.ordnaelmedeiros.jpafluidselect.FSelect;
 import com.github.ordnaelmedeiros.jpafluidselect.base.SelectTestBase;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
-import com.github.ordnaelmedeiros.jpafluidselect.models.Country;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Country_;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;

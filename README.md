@@ -123,6 +123,15 @@ List<People> lista = new Select(em)
 		.like(People_.name, "%a%")
 	.getResultList()
 ```
+```javascript
+List<People> lista = new FSelect(em)
+			.from(People.class)
+			.join(People_.address)
+				.join(Address_.country)
+					.on()
+						.equal(Country_.name, "Florida")
+			.getResultList();
+```
 
 ## CustomFields
 ```javascript
