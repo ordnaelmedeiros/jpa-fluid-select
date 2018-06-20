@@ -8,7 +8,7 @@ https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
 <dependency>
 	<groupId>com.github.ordnaelmedeiros</groupId>
 	<artifactId>jpa-fluid-select</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 </dependency>
 ```
 
@@ -34,7 +34,6 @@ People p = new Select(em)
 		.equal(People_.id, 1)
 	.getSingleResult()
 ```
-
 
 ## OrderBy
 ```javascript
@@ -68,6 +67,15 @@ List<People> lista = new Select(em)
 	.where()
 		.not().equal(People_.id, 1)
 	.getResultList()
+```
+
+## Temporal
+```javascript
+List<People> list = new Select(em)
+	.from(People.class)
+	.where()
+		.equal(People_.created, TemporalFunction.MONTH, 6)
+	.getResultList();
 ```
 
 ## IfCan

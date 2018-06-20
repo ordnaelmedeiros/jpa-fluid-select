@@ -1,14 +1,19 @@
 package com.github.ordnaelmedeiros.jpafluidselect;
 
+import java.time.temporal.Temporal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.metamodel.SingularAttribute;
+
+import com.github.ordnaelmedeiros.jpafluidselect.predicate.TemporalFunction;
 
 public class PredicateContainer<T, D, V, F1, F2> {
 	
@@ -151,13 +156,33 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		add(b().equal(f(field), value));
 		return this;
 	}
-
+	
+	public <A> PredicateContainer<T, D, V, F1, F2> eq(SingularAttribute<D, A> field, A value) {
+		this.equal(field, value);
+		return this;
+	}
+	
+	public <A> PredicateContainer<T, D, V, F1, F2> notEqual(SingularAttribute<D, A> field, A value) {
+		add(b().notEqual(f(field), value));
+		return this;
+	}
+	
+	public <A> PredicateContainer<T, D, V, F1, F2> ne(SingularAttribute<D, A> field, A value) {
+		this.notEqual(field, value);
+		return this;
+	}
+	
 	public PredicateContainer<T, D, V, F1, F2> iEqual(SingularAttribute<D, String> field, String value) {
 		add(b().equal(b().upper(b().trim(f(field))), value.trim().toUpperCase()));
 		return this;
 	}
 	
-	public <A> PredicateContainer<T, D, V, F1, F2> in(SingularAttribute<D, A> field, A[] values) {
+	public <A> PredicateContainer<T, D, V, F1, F2> in(SingularAttribute<D, A> field, A ...values) {
+		add(f(field).in(values));
+		return this;
+	}
+	
+	public <A> PredicateContainer<T, D, V, F1, F2> in(SingularAttribute<D, A> field, Collection<A> values) {
 		add(f(field).in(values));
 		return this;
 	}
@@ -172,23 +197,43 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> greaterThan(SingularAttribute<D, A> field, A value) {
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> greaterThan(SingularAttribute<D, A> field, A value) {
 		add(b().greaterThan(f(field), value));
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> greaterThanOrEqualTo(SingularAttribute<D, A> field, A value) {
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> gt(SingularAttribute<D, A> field, A value) {
+		this.greaterThan(field, value);
+		return this;
+	}
+	
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> greaterThanOrEqualTo(SingularAttribute<D, A> field, A value) {
 		add(b().greaterThanOrEqualTo(f(field), value));
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> lessThan(SingularAttribute<D, A> field, A value) {
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> ge(SingularAttribute<D, A> field, A value) {
+		this.greaterThanOrEqualTo(field, value);
+		return this;
+	}
+	
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> lessThan(SingularAttribute<D, A> field, A value) {
 		add(b().lessThan(f(field), value));
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> lessThanOrEqualTo(SingularAttribute<D, A> field, A value) {
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> lt(SingularAttribute<D, A> field, A value) {
+		this.lessThan(field, value);
+		return this;
+	}
+	
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> lessThanOrEqualTo(SingularAttribute<D, A> field, A value) {
 		add(b().lessThanOrEqualTo(f(field), value));
+		return this;
+	}
+	
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> le(SingularAttribute<D, A> field, A value) {
+		this.lessThan(field, value);
 		return this;
 	}
 	
@@ -197,11 +242,17 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		return this;
 	}
 	
-	public <A extends Comparable<A>> PredicateContainer<T, D, V, F1, F2> between(SingularAttribute<D, A> field, A value1, A value2) {
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> between(SingularAttribute<D, A> field, A value1, A value2) {
 		add(b().between(f(field), value1, value2));
 		return this;
 	}
 	
+	// TEMPORAL
+	public <A extends Temporal> PredicateContainer<T, D, V, F1, F2> equal(SingularAttribute<D, A> field, TemporalFunction extract, Object value) {
+		Expression<Integer> function = b().function(extract.toString().toLowerCase(), Integer.class, f(field));
+		add(b().equal(function, value));
+		return this;
+	}
 	
 	// REDIRECT
 	public CriteriaBuilder getBuilder() {

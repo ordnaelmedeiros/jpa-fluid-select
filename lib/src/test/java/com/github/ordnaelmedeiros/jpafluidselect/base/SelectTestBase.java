@@ -2,6 +2,8 @@ package com.github.ordnaelmedeiros.jpafluidselect.base;
 
 import static org.junit.Assert.assertTrue;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -47,13 +49,20 @@ public abstract class SelectTestBase {
 		Address street6 = save(em, new Address(nevada, "Six"));
 		Address street7 = save(em, new Address(nevada, "Seven"));
 		
-		save(em, new People("Leandro", street1));
-		save(em, new People("Ivana", street2));
-		save(em, new People("Leandro", street3));
-		save(em, new People("Eduardo", street4));
-		save(em, new People("Rafael ", street5));
-		save(em, new People("Matheus", street6));
-		save(em, new People("Fabiano", street7));
+		LocalDateTime now = LocalDateTime.of(2017, 6, 20, 5, 46);
+		LocalDateTime time0 = now;
+		LocalDateTime time1 = now.plusMinutes(1);
+		LocalDateTime time2 = now.plusHours(1);
+		LocalDateTime time3 = now.plusDays(1);
+		LocalDateTime time4 = now.plusMonths(1);
+		
+		save(em, new People("Leandro", street1, time0));
+		save(em, new People("Ivana", street2, time0));
+		save(em, new People("Leandro", street3, time0));
+		save(em, new People("Eduardo", street4, time1));
+		save(em, new People("Rafael ", street5, time2));
+		save(em, new People("Matheus", street6, time3));
+		save(em, new People("Fabiano", street7, time4));
 		
 		em.getTransaction().commit();
 		

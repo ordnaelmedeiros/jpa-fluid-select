@@ -1,5 +1,6 @@
 package com.github.ordnaelmedeiros.jpafluidselect.models;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -23,6 +24,9 @@ public class People {
 	@Column(length=200)
 	private String name;
 	
+	@Column
+	private LocalDateTime created;
+	
 	@ManyToOne
 	private Address address;
 	
@@ -37,10 +41,11 @@ public class People {
 		this.name = name;
 	}
 	
-	public People(String name, Address address) {
+	public People(String name, Address address, LocalDateTime created) {
 		this();
 		this.name = name;
 		this.address = address;
+		this.created = created;
 	}
 	
 }
