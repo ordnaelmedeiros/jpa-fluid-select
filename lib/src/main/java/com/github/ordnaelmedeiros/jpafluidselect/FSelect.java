@@ -29,11 +29,11 @@ public class FSelect {
 	}
 	
 	public <T> FFrom<T, Object[]> fromCustomFields(Class<T> classFrom) {
-		return new FFrom<>(this, classFrom, Object[].class).multiselect();
+		return new FFrom<>(this, classFrom, Object[].class);
 	}
 	
 	public <T, E> FFrom<T, E> fromCustomFields(Class<T> classFrom, Class<E> classRetorno) {
-		return new FFrom<>(this, classFrom, classRetorno).multiselect();
+		return new FFrom<>(this, classFrom, classRetorno);
 	}
 	
 	public FSelect extractBuilder(Consumer<CriteriaBuilder> b) {

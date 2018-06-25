@@ -28,9 +28,20 @@ public class FSelectFields<T, R> {
 	public FFrom<T, R> end() {
 		return this.back;
 	}
-
+	
+	public FSelectFields<T,R> alias(String alias) {
+		lista.get(lista.size()-1).alias(alias);
+		return this;
+	}
+	
 	public <A> FSelectFields<T, R> add(SingularAttribute<T, A> attribute) {
 		Selection<A> s = this.root.get(attribute);
+		lista.add(s);
+		return this;
+	}
+	
+	public <J, Y, A> FSelectFields<T, R> add(Join<J, Y> join, SingularAttribute<Y, A> attribute) {
+		Selection<A> s = join.get(attribute);
 		lista.add(s);
 		return this;
 	}
@@ -98,13 +109,6 @@ public class FSelectFields<T, R> {
 	public List<Selection<?>> getFields() {
 		return this.lista;
 	}
-
-	public <J, Y, A> FSelectFields<T, R> add(Join<J, Y> join, SingularAttribute<Y, A> attribute) {
-		Selection<A> s = join.get(attribute);
-		lista.add(s);
-		return this;
-	}
-	
 	
 	// REDIRECT
 	public CriteriaBuilder getBuilder() {

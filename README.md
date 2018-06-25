@@ -8,7 +8,7 @@ https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
 <dependency>
 	<groupId>com.github.ordnaelmedeiros</groupId>
 	<artifactId>jpa-fluid-select</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 </dependency>
 ```
 
@@ -170,6 +170,7 @@ public class DTO {
 	
 }
 
+// Need Constructor in DTO
 DTO dto = new Select(em)
 	.fromCustomFields(People.class, DTO.class)
 	.join(People_.address).extractJoin(j -> this.joinAdress = j)
@@ -179,6 +180,25 @@ DTO dto = new Select(em)
 	.where()
 		.equal(People_.id, 1)
 	.getSingleResult();
+```
+
+```javascript
+public class DTO2 {
+	
+	private String peopleName;
+	private String peopleStreet;
+	
+}
+
+// No need Constructor in DTO
+List<DTO2> list = new FSelect(em)
+	.fromCustomFields(People.class)
+	.join(People_.address).extractJoin(j -> this.joinAdress = j)
+	.fields()
+		.add(People_.name).alias("peopleName")
+		.add(joinAdress, Address_.street).alias("peopleStreet")
+	.end()
+	.getResultList(DTO2.class);
 ```
 
 ## Pagination

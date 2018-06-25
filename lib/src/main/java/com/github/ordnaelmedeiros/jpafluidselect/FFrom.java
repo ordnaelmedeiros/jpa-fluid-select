@@ -1,6 +1,8 @@
 package com.github.ordnaelmedeiros.jpafluidselect;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -10,8 +12,11 @@ import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.criteria.Selection;
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
+
+import org.hibernate.query.criteria.internal.path.SingularAttributePath;
 
 import lombok.Getter;
 
@@ -59,12 +64,6 @@ public class FFrom<T,R> {
 			Expression<R> e = (Expression<R>)count;
 			this.query.select(e);
 		}
-		return this;
-	}
-	
-
-	protected FFrom<T,R> multiselect() {
-		
 		return this;
 	}
 	
@@ -123,6 +122,52 @@ public class FFrom<T,R> {
 		
 	}
 	
+	private <E> E transform(Object[] r, Class<E> classe) throws Exception {
+		
+		E o = classe.newInstance();
+		int index = 0;
+		for (Selection<?> selection : this.fields().getFields()) {
+			
+			String cName = "";
+			if (selection.getAlias()!=null) {
+				cName = selection.getAlias();
+			} else if (selection instanceof SingularAttributePath) {
+				SingularAttributePath<?> sPath = (SingularAttributePath<?>) selection;
+				cName = sPath.getAttribute().getName();
+			}
+			
+			Field field = classe.getDeclaredField(cName);
+			field.setAccessible(true);
+			field.set(o, r[index]);
+			index++;
+		}
+		
+		return o;
+		
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <E> List<E> getResultList(Class<E> trasnformClass) throws Exception {
+		
+		if (!this.classReturn.equals(Object[].class)) {
+			throw new Exception("Use fromCustomFields");
+		}
+		
+		if (this.fields().getFields().size()==0) {
+			throw new Exception("Use .fields()");
+		}
+		
+		List<E> list = new ArrayList<>();
+		List<Object[]> resultList = (List<Object[]>) this.getResultList();
+		
+		for (Object[] r : resultList) {
+			E transform = this.transform(r, trasnformClass);
+			list.add(transform);
+		}
+		
+		return list;
+	}
+	
 	public List<R> getResultList(Integer page, Integer limit) {
 		
 		if (page==null || page<1) {
@@ -147,6 +192,27 @@ public class FFrom<T,R> {
 		
 	}
 	
+	public <E> E getSingleResult(Class<E> trasnformClass) throws Exception {
+		
+		if (!this.classReturn.equals(Object[].class)) {
+			throw new Exception("Use fromCustomFields");
+		}
+		
+		if (this.fields().getFields().size()==0) {
+			throw new Exception("Use .fields()");
+		}
+		
+		Object[] obj = (Object[]) this.getSingleResult();
+		if (obj==null) {
+			return null;
+		}
+		
+		E transform = this.transform(obj, trasnformClass);
+		
+		return transform;
+		
+	}
+	
 	public R getSingleResult() {
 		
 		Predicate predicate = generatePredicate();
@@ -156,6 +222,104 @@ public class FFrom<T,R> {
 		
 		R result = this.em.createQuery(this.query).getSingleResult();
 		return result;
+		
+	}
+	
+	public FFrom<T, R> print() {
+		
+		List<R> listReturn = this.getResultList();
+		
+		int cLength = 15; 
+		
+		List<String> columns = new ArrayList<>();
+		
+		if (this.classReturn.equals(Object[].class)) {
+			
+			for (Selection<?> selection : this.fields.getFields()) {
+				String cName = "";
+				if (selection.getAlias()!=null) {
+					cName = selection.getAlias();
+				} else if (selection instanceof SingularAttributePath) {
+					SingularAttributePath<?> sPath = (SingularAttributePath<?>) selection;
+					cName = sPath.getAttribute().getName();
+				}
+				columns.add(cName);
+			}
+			
+		} else {
+			
+			for (Field field : this.classReturn.getDeclaredFields()) {
+				columns.add(field.getName());
+			}
+			
+		}
+		
+		System.out.print("|");
+		for (String c : columns) {
+			System.out.print(String.format("%-"+cLength+"s|", c));
+		}
+		
+		if (this.classReturn.equals(Object[].class)) {
+			@SuppressWarnings("unchecked")
+			List<Object[]> list = (List<Object[]>) listReturn;
+			
+			for (Object[] lObj : list) {
+				System.out.println();
+				System.out.print("|");
+				for (Object object : lObj) {
+					if (object==null) {
+						System.out.print(String.format("%"+cLength+"s|", ""));
+					} else {
+						String valor = object.toString();
+						if (valor.length()>cLength) {
+							System.out.print(String.format("%"+cLength+"s|", valor.substring(0,cLength)));
+						} else {
+							System.out.print(String.format("%"+cLength+"s|", valor));
+						}
+					}
+				}
+			}
+			
+		} else {
+			for (R o : listReturn) {
+				
+				System.out.println();
+				System.out.print("|");
+				for (Field field : this.classReturn.getDeclaredFields()) {
+					
+					if (Collection.class.isAssignableFrom(field.getType())) {
+						
+						System.out.print(String.format("%"+cLength+"s|", ""));
+						
+					} else {
+						
+						field.setAccessible(true);
+						
+						Object object = null;
+						try {
+							object = field.get(o);
+						} catch (Exception e) {
+							object = null;
+						}
+						
+						if (object==null) {
+							System.out.print(String.format("%"+cLength+"s|", ""));
+						} else {
+							String valor = object.toString();
+							if (valor.length()>cLength) {
+								System.out.print(String.format("%"+cLength+"s|", valor.substring(0,cLength)));
+							} else {
+								System.out.print(String.format("%"+cLength+"s|", valor));
+							}
+						}
+					}
+						
+				}
+			}
+		}
+		System.out.println();
+		
+		return this;
 		
 	}
 	
