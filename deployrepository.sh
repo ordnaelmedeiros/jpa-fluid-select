@@ -7,7 +7,6 @@ echo "Message: $commitMessage"
 
 git add .
 git commit -m "$commitMessage"
-git push
 
 mvn release:clean -f "lib"
 mvn release:prepare -f "lib"
