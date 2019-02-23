@@ -1,10 +1,10 @@
 package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
 
-import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 
 import org.junit.FixMethodOrder;
@@ -19,15 +19,16 @@ import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class SimpleSelectTest extends SelectTestBase {
 	
-	@Test(expected=NoResultException.class)
 	public void t001NaoDeveTrazerResultado() {
 		
-		new FSelect(em)
+		People people = new FSelect(em)
 			.from(People.class)
 			.where()
 				.equal(People_.id, 9999999l)
 			.getSingleResult()
 			;
+		
+		assertNull(people);
 		
 	}
 	

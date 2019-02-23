@@ -81,13 +81,21 @@ public class FGroupBy<T, D, R> {
 	public List<R> getResultList() {
 		return back.getResultList();
 	}
-
+	
 	public List<R> getResultList(Integer page, Integer limit) {
 		return back.getResultList(page, limit);
 	}
 
 	public R getSingleResult() {
 		return back.getSingleResult();
+	}
+
+	public List<R> getResultList(Class<R> trasnformClass) throws Exception {
+		return back.getResultList(trasnformClass);
+	}
+	
+	public R getSingleResult(Class<R> trasnformClass) throws Exception {
+		return back.getSingleResult(trasnformClass);
 	}
 	
 }

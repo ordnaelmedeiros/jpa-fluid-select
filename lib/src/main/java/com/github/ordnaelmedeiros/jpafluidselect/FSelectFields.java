@@ -150,5 +150,13 @@ public class FSelectFields<T, R> {
 	public R getSingleResult() {
 		return back.getSingleResult();
 	}
+
+	public List<R> getResultList(Class<R> trasnformClass) throws Exception {
+		return back.getResultList(trasnformClass);
+	}
+	
+	public R getSingleResult(Class<R> trasnformClass) throws Exception {
+		return back.getSingleResult(trasnformClass);
+	}
 	
 }

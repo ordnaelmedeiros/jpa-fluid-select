@@ -1,10 +1,9 @@
 package com.github.ordnaelmedeiros.jpafluidselect.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import java.util.List;
-
-import javax.persistence.NoResultException;
 
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -18,28 +17,29 @@ import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 	
-	@Test(expected=NoResultException.class)
 	public void notSucessFindEqualLowerCase() {
 		
-		new FSelect(em)
+		People people = new FSelect(em)
 			.from(People.class)
 			.where()
 				.equal(People_.name, "leandro")
 			.getSingleResult()
 			;
 		
+		assertNull(people);
+		
 	}
 	
-	@Test(expected=NoResultException.class)
 	public void notSucessFindEqualNoTrim() {
 		
-		new FSelect(em)
+		People people = new FSelect(em)
 			.from(People.class)
 			.where()
 				.equal(People_.name, "Rafael")
 			.getSingleResult()
 			;
 		
+		assertNull(people);
 		
 	}
 	
@@ -71,15 +71,16 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 		
 	}
 	
-	@Test(expected=NoResultException.class)
 	public void notSucessFindLowerCaseLike() {
 		
-		new FSelect(em)
+		People people = new FSelect(em)
 			.from(People.class)
 			.where()
 				.like(People_.name, "%le%")
 			.getSingleResult()
 			;
+		
+		assertNull(people);
 		
 	}
 	
@@ -99,15 +100,16 @@ public class IgnoreCaseTrimSelectTest extends SelectTestBase {
 		
 	}
 	
-	@Test(expected=NoResultException.class)
 	public void notSucessFindNoTrimLike() {
 		
-		new FSelect(em)
+		People people = new FSelect(em)
 			.from(People.class)
 			.where()
 				.like(People_.name, "rafael")
 			.getSingleResult()
 			;
+		
+		assertNull(people);
 		
 	}
 	

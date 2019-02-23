@@ -294,6 +294,13 @@ public class PredicateContainer<T, D, V, F1, F2> {
 	public F2 getSingleResult() {
 		return fFrom.getSingleResult();
 	}
-
+	
+	public List<F2> getResultList(Class<F2> trasnformClass) throws Exception {
+		return fFrom.getResultList(trasnformClass);
+	}
+	
+	public F2 getSingleResult(Class<F2> trasnformClass) throws Exception {
+		return fFrom.getSingleResult(trasnformClass);
+	}
 	
 }

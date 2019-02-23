@@ -113,6 +113,14 @@ public class FJoin<O1, O, T, V, F1, F2> {
 	public F2 getSingleResult() {
 		return fFrom.getSingleResult();
 	}
+
+	public List<F2> getResultList(Class<F2> trasnformClass) throws Exception {
+		return fFrom.getResultList(trasnformClass);
+	}
+	
+	public F2 getSingleResult(Class<F2> trasnformClass) throws Exception {
+		return fFrom.getSingleResult(trasnformClass);
+	}
 	
 	public <A> FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> join(JoinType type, SingularAttribute<T, A> atribute) {
 		FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> j = new FJoin<>(builder, jpaJoin, atribute, type, this, this.fFrom);

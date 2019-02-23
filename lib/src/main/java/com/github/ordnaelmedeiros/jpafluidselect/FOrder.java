@@ -111,4 +111,12 @@ public class FOrder<T, D, R> {
 		return fFrom.getSingleResult();
 	}
 
+	public List<R> getResultList(Class<R> trasnformClass) throws Exception {
+		return fFrom.getResultList(trasnformClass);
+	}
+	
+	public R getSingleResult(Class<R> trasnformClass) throws Exception {
+		return fFrom.getSingleResult(trasnformClass);
+	}
+
 }

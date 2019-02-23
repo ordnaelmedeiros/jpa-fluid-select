@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
@@ -220,8 +221,16 @@ public class FFrom<T,R> {
 			this.query.where(predicate);
 		}
 		
-		R result = this.em.createQuery(this.query).getSingleResult();
-		return result;
+		try {
+			
+			R result = this.em.createQuery(this.query).getSingleResult();
+			return result;
+			
+		} catch (NoResultException e) {
+			
+			return null;
+			
+		}
 		
 	}
 	
