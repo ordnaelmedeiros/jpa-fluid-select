@@ -233,7 +233,7 @@ public class PredicateContainer<T, D, V, F1, F2> {
 	}
 	
 	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> le(SingularAttribute<D, A> field, A value) {
-		this.lessThan(field, value);
+		this.lessThanOrEqualTo(field, value);
 		return this;
 	}
 	
