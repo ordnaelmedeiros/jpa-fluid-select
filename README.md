@@ -8,7 +8,7 @@ https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
 <dependency>
 	<groupId>com.github.ordnaelmedeiros</groupId>
 	<artifactId>jpa-fluid-select</artifactId>
-	<version>1.0.3</version>
+	<version>1.0.7</version>
 </dependency>
 ```
 
@@ -170,7 +170,7 @@ List<Address> listAddress = new Select(em)
 	.fields()
 		.add(People_.address)
 	.where()
-		.le(People_.id, 2l)
+		.le(People_.id, 2)
 	.order()
 		.asc(People_.id)
 	.getResultList();
