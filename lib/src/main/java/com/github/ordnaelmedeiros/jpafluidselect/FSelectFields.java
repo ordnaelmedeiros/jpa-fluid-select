@@ -101,6 +101,9 @@ public class FSelectFields<T, R> {
 		return this;
 	}
 	
+	public int size() {
+		return this.lista.size();
+	}
 	
 	public boolean isEmpty() {
 		return this.lista.isEmpty();

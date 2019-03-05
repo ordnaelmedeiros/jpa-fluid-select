@@ -84,10 +84,15 @@ public class FFrom<T,R> {
 		return this.where;
 	}
 
+	@SuppressWarnings("unchecked")
 	private Predicate generatePredicate() {
 		
 		if (this.fields!=null && !this.fields.isEmpty()) {
-			this.query.multiselect(this.fields.getFields());
+			if (this.fields.size()==1) {
+				this.query.select((Selection<? extends R>)this.fields.getFields().get(0));
+			} else {
+				this.query.multiselect(this.fields.getFields());
+			}
 		}
 		
 		if (!this.order.isEmpty()) {

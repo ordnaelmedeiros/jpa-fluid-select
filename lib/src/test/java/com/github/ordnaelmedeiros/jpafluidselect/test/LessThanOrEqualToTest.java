@@ -4,8 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import javax.persistence.NoResultException;
-
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
@@ -18,6 +16,7 @@ import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class LessThanOrEqualToTest extends SelectTestBase {
 	
+	@Test
 	public void deveTrazerDoisRegistros() {
 		
 		List<People> resultList = new FSelect(em)

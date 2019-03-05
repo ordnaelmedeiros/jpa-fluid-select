@@ -133,12 +133,12 @@ List<People> lista = new Select(em)
 ```
 ```javascript
 List<People> lista = new FSelect(em)
-			.from(People.class)
-			.join(People_.address)
-				.join(Address_.country)
-					.on()
-						.equal(Country_.name, "Florida")
-			.getResultList();
+	.from(People.class)
+	.join(People_.address)
+		.join(Address_.country)
+			.on()
+				.equal(Country_.name, "Florida")
+	.getResultList();
 ```
 
 ## CustomFields
@@ -154,6 +154,26 @@ List<Object[]> lista = new Select(em)
 		.in(People_.id, new Long[] {1, 2})
 	.order().asc(People_.id)
 	.getResultList()
+```
+
+```javascript
+Long maxId = new Select(em)
+	.fromCustomFields(People.class, Long.class)
+	.fields()
+		.max(People_.id)
+	.getSingleResult();
+```
+
+```javascript
+List<Address> listAddress = new Select(em)
+	.fromCustomFields(People.class, Address.class)
+	.fields()
+		.add(People_.address)
+	.where()
+		.le(People_.id, 2l)
+	.order()
+		.asc(People_.id)
+	.getResultList();
 ```
 
 ## CustomFieldsTransform
@@ -241,3 +261,15 @@ List<Object[]> list = new Select(em)
 	.order().asc(Address_.street)
 	.getResultList();
 ```
+
+## Finally
+
+```javascript
+if (this.savedYourLife() || this.savedJustALittle()) {
+	System.out.println("Help me buy more coffee?");
+}
+```
+
+|USD|BRL|
+|:---:|:---:|
+|[![paypal](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QR5L9PULKKUCN&item_name=Coffe&currency_code=USD&source=url)|[![paypal](https://www.paypalobjects.com/pt_BR/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=QR5L9PULKKUCN&item_name=Caf%C3%A9&currency_code=BRL&source=url)|
