@@ -8,6 +8,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.From;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
 import javax.persistence.metamodel.ListAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 
@@ -51,6 +52,13 @@ public class FJoin<O1, O, T, V, F1, F2> {
 
 	public V end() {
 		return this.back;
+	}
+	
+	public <A> Path<A> get(String attributeName) {
+		return this.jpaJoin.get(attributeName);
+	}
+	public <A> Path<A> get(SingularAttribute<T, A> attribute) {
+		return this.jpaJoin.get(attribute);
 	}
 	
 	public PredicateContainer<O,T,FJoin<O1, O,T,V, F1, F2>, F1, F2> on() {

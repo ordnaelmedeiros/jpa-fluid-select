@@ -4,6 +4,7 @@ import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -124,7 +125,7 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		return this.builder;
 	}
 	
-	private void add(Predicate p) {
+	public PredicateContainer<T,D,V,F1,F2> add(Predicate p) {
 		
 		if (this.isCan) {
 			
@@ -138,6 +139,8 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		this.isNot = false;
 		this.isCan = true;
 		
+		return this;
+		
 	}
 	
 	private boolean isNot = false;
@@ -149,6 +152,14 @@ public class PredicateContainer<T, D, V, F1, F2> {
 	private boolean isCan = true;
 	public PredicateContainer<T, D, V, F1, F2> ifCan(boolean condition) {
 		this.isCan = condition;
+		return this;
+	}
+	public PredicateContainer<T, D, V, F1, F2> ifCan(boolean condition, Consumer<PredicateContainer<T, D, V, F1, F2>> consumer) {
+		if (condition) {
+			consumer.accept(this);
+		}
+		this.isNot = false;
+		this.isCan = true;
 		return this;
 	}
 	
