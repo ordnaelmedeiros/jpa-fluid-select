@@ -20,7 +20,7 @@ import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class MultSelectClassReturn extends SelectTestBase {
+public class MultSelectClassReturnTest extends SelectTestBase {
 	
 	
 	private Join<People, Address> joinAdress;

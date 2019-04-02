@@ -177,6 +177,7 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		return this;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public <A> PredicateContainer<T, D, V, F1, F2> in(SingularAttribute<D, A> field, A ...values) {
 		if (this.isCan) {
 			add(f(field).in(values));

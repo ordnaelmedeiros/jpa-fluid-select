@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -82,6 +83,11 @@ public class FFrom<T,R> {
 			this.where = new PredicateContainer<>(this.builder, this.root, PredicateContainer.Type.AND, this, this);
 		}
 		return this.where;
+	}
+	
+	public FFrom<T, R> where(Consumer<PredicateContainer<T, T, FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.where());
+		return this;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -343,6 +349,11 @@ public class FFrom<T,R> {
 		this.joins.add(j);
 		
 		return j;
+		
+	}
+	public <A> FFrom<T,R> join(JoinType type, SingularAttribute<T, A> atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(type, atribute));
+		return this;
 	}
 
 	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(JoinType type, ListAttribute<T, A> atribute) {
@@ -353,17 +364,37 @@ public class FFrom<T,R> {
 		return j;
 	}
 	
+	public <A> FFrom<T,R> join(JoinType type, ListAttribute<T, A> atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(type, atribute));
+		return this;
+	}
+	
 	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(SingularAttribute<T, A> atribute) {
 		return this.join(JoinType.INNER, atribute);
+	}
+	
+	public <A> FFrom<T, R> join(SingularAttribute<T, A> atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(atribute));
+		return this;
 	}
 
 	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(ListAttribute<T, A> atribute) {
 		return this.join(JoinType.INNER, atribute);
 	}
 	
+	public <A> FFrom<T,R> join(ListAttribute<T, A> atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(atribute));
+		return this;
+	}
+	
 	
 	public FOrder<T,T,R> order() {
 		return this.order;
+	}
+	
+	public FFrom<T,R> order(Consumer<FOrder<T,T,R>> consumer) {
+		consumer.accept(this.order());
+		return this;
 	}
 	
 	public FGroupBy<T,T,R> group() {

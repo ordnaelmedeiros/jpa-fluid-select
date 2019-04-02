@@ -57,6 +57,10 @@ public class FJoin<O1, O, T, V, F1, F2> {
 		on = new PredicateContainer<>(builder, jpaJoin, PredicateContainer.Type.AND, this, this.fFrom);
 		return on;
 	}
+	public FJoin<O1,O,T,V,F1,F2> on(Consumer<PredicateContainer<O,T,FJoin<O1, O,T,V, F1, F2>, F1, F2>> consumer) {
+		consumer.accept(this.on());
+		return this;
+	}
 	
 	public void generatePredicate() {
 		if (this.on!=null) {
@@ -127,17 +131,35 @@ public class FJoin<O1, O, T, V, F1, F2> {
 		this.joins.add(j);
 		return j;
 	}
+	public <A> FJoin<O1,O,T,V,F1,F2> join(JoinType type, SingularAttribute<T, A> atribute, Consumer<FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2>> consumer) {
+		consumer.accept(this.join(type, atribute));
+		return this;
+	}
+	
 	public <A> FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> join(JoinType type, ListAttribute<T, A> atribute) {
 		FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> j = new FJoin<>(builder, jpaJoin, atribute, type, this, this.fFrom);
 		this.joins.add(j);
 		return j;
 	}
+	public <A> FJoin<O1,O,T,V,F1,F2> join(JoinType type, ListAttribute<T, A> atribute, Consumer<FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2>> consumer) {
+		consumer.accept(this.join(type, atribute));
+		return this;
+	}
 	
 	public <A> FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> join(SingularAttribute<T, A> atribute) {
 		return this.join(JoinType.INNER, atribute);
 	}
+	public <A> FJoin<O1,O,T,V,F1,F2> join(SingularAttribute<T, A> atribute, Consumer<FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2>> consumer) {
+		consumer.accept(this.join(atribute));
+		return this;
+	}
+	
 	public <A> FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2> join(ListAttribute<T, A> atribute) {
 		return this.join(JoinType.INNER, atribute);
+	}
+	public <A> FJoin<O1,O,T,V,F1,F2> join(ListAttribute<T, A> atribute, Consumer<FJoin<O, T, A, FJoin<O1, O, T, V, F1, F2>, F1, F2>> consumer) {
+		consumer.accept(this.join(atribute));
+		return this;
 	}
 	
 }
