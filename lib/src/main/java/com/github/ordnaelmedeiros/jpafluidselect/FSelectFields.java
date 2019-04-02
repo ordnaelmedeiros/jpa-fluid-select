@@ -101,6 +101,12 @@ public class FSelectFields<T, R> {
 		return this;
 	}
 	
+	public <J> FSelectFields<T, R> literal(J value) {
+		Expression<J> e = this.builder.literal(value);
+		lista.add(e);
+		return this;
+	}
+	
 	public int size() {
 		return this.lista.size();
 	}
@@ -154,11 +160,11 @@ public class FSelectFields<T, R> {
 		return back.getSingleResult();
 	}
 
-	public List<R> getResultList(Class<R> trasnformClass) throws Exception {
+	public <E> List<E> getResultList(Class<E> trasnformClass) throws Exception {
 		return back.getResultList(trasnformClass);
 	}
 	
-	public R getSingleResult(Class<R> trasnformClass) throws Exception {
+	public <E> E getSingleResult(Class<E> trasnformClass) throws Exception {
 		return back.getSingleResult(trasnformClass);
 	}
 	

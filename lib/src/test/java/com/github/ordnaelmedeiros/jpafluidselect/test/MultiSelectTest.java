@@ -66,5 +66,32 @@ public class MultiSelectTest extends SelectTestBase {
 		
 	}
 	
+	@Test
+	public void t011DeveBuscarCampoLiteral() throws Exception {
+		
+		List<People> lista = new FSelect(em)
+			.fromCustomFields(People.class)
+			.fields()
+				.literal(Long.valueOf("1")).alias("id")
+				.literal("name literal").alias("name")
+			.where()
+				.in(People_.id, new Long[] {1l, 2l})
+			.order()
+				.asc(People_.id)
+			.end()
+			.print()
+			.getResultList(People.class)
+			;
+		
+		assertEquals(2, lista.size());
+		
+		assertEquals(Long.valueOf("1"), lista.get(0).getId());
+		assertEquals("name literal", lista.get(0).getName());
+		
+		assertEquals(Long.valueOf("1"), lista.get(1).getId());
+		assertEquals("name literal", lista.get(1).getName());
+		
+	}
+	
 }
 

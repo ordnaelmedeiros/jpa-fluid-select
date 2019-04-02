@@ -178,12 +178,20 @@ public class PredicateContainer<T, D, V, F1, F2> {
 	}
 	
 	public <A> PredicateContainer<T, D, V, F1, F2> in(SingularAttribute<D, A> field, A ...values) {
-		add(f(field).in(values));
+		if (this.isCan) {
+			add(f(field).in(values));
+		}
+		this.isCan = true;
+		this.isNot = false;
 		return this;
 	}
 	
 	public <A> PredicateContainer<T, D, V, F1, F2> in(SingularAttribute<D, A> field, Collection<A> values) {
-		add(f(field).in(values));
+		if (this.isCan) {
+			add(f(field).in(values));
+		}
+		this.isCan = true;
+		this.isNot = false;
 		return this;
 	}
 	
@@ -295,11 +303,11 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		return fFrom.getSingleResult();
 	}
 	
-	public List<F2> getResultList(Class<F2> trasnformClass) throws Exception {
+	public <E> List<E> getResultList(Class<E> trasnformClass) throws Exception {
 		return fFrom.getResultList(trasnformClass);
 	}
 	
-	public F2 getSingleResult(Class<F2> trasnformClass) throws Exception {
+	public <E> E getSingleResult(Class<E> trasnformClass) throws Exception {
 		return fFrom.getSingleResult(trasnformClass);
 	}
 	
