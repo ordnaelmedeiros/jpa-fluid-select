@@ -265,45 +265,45 @@ List<Object[]> list = new Select(em)
 ## Lambda expressions
 ```javascript
 
-	List<People> list = new FSelect(em)
-		.from(People.class)
-		.join(People_.address, jAddress -> {
-			jAddress.join(Address_.country, jCountry -> {
-				
-				CriteriaBuilder builder = jCountry.getBuilder();
-				
-				jCountry.on(on -> {
-					on
-						.iLike(Country_.name, "f%")
-						.add(builder.like(jCountry.get("name"), "%a"));
-				});
-				
+List<People> list = new Select(em)
+	.from(People.class)
+	.join(People_.address, jAddress -> {
+		jAddress.join(Address_.country, jCountry -> {
+			
+			CriteriaBuilder builder = jCountry.getBuilder();
+			
+			jCountry.on(on -> {
+				on
+					.iLike(Country_.name, "f%")
+					.add(builder.like(jCountry.get("name"), "%a"));
 			});
-		})
-		.where(w -> {
-			w.orGroup()
-				.equal(People_.id, 1l)
-				.equal(People_.id, 2l)
-				;
-		})
-		.order(o -> {
-			o.asc(People_.id);
-		})
-		.getResultList();
+			
+		});
+	})
+	.where(w -> {
+		w.orGroup()
+			.equal(People_.id, 1)
+			.equal(People_.id, 2)
+			;
+	})
+	.order(o -> {
+		o.asc(People_.id);
+	})
+	.getResultList();
 
 ```
 
 ## Use attribute name
 ```javascript
-	List<Object[]> list = new FSelect(em)
-		.fromCustomFields(People.class)
-		.fields()
-			.add("address.street")
-			.count("id")
-		.group()
-			.add("address.street")
-		.end()
-		.getResultList();
+List<Object[]> list = new Select(em)
+	.fromCustomFields(People.class)
+	.fields()
+		.add("address.street")
+		.count("id")
+	.group()
+		.add("address.street")
+	.end()
+	.getResultList();
 ```
 
 ## Finally
