@@ -2,6 +2,7 @@ package com.github.ordnaelmedeiros.jpafluidselect;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.Expression;
@@ -40,6 +41,10 @@ public class FGroupBy<T, D, R> {
 		groups.add(path);
 		return this;
 	}
+	public FGroupBy<T, D, R> add(String path) {
+		groups.add(this.back.getPath(path));
+		return this;
+	}
 
 	public boolean isEmpty() {
 		return this.groups.isEmpty();
@@ -57,13 +62,25 @@ public class FGroupBy<T, D, R> {
 	public FSelectFields<T, R> fields() {
 		return back.fields();
 	}
+	public FGroupBy<T, D, R> fields(Consumer<FSelectFields<T, R> > consumer) {
+		consumer.accept(back.fields());
+		return this;
+	}
 
 	public FOrder<T, T, R> order() {
 		return back.order();
 	}
-
+	public FGroupBy<T,D,R> order(Consumer<FOrder<T, T, R>> consumer) {
+		consumer.accept(back.order());
+		return this;
+	}
+	
 	public PredicateContainer<T,T,FFrom<T,R>, T, R> where() {
 		return this.back.where();
+	}
+	public FGroupBy<T,D,R> where(Consumer<PredicateContainer<T,T,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(back.where());
+		return this;
 	}
 	/*
 	public <A> FJoin<T, T, A, FFrom<T, R>, T, R> join(ListAttribute<T, A> atribute) {

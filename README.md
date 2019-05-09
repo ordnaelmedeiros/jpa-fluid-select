@@ -8,7 +8,7 @@ https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
 <dependency>
 	<groupId>com.github.ordnaelmedeiros</groupId>
 	<artifactId>jpa-fluid-select</artifactId>
-	<version>1.0.7</version>
+	<version>1.1.0</version>
 </dependency>
 ```
 
@@ -260,6 +260,50 @@ List<Object[]> list = new Select(em)
 		.add(Address_.street)
 	.order().asc(Address_.street)
 	.getResultList();
+```
+
+## Lambda expressions
+```javascript
+
+	List<People> list = new FSelect(em)
+		.from(People.class)
+		.join(People_.address, jAddress -> {
+			jAddress.join(Address_.country, jCountry -> {
+				
+				CriteriaBuilder builder = jCountry.getBuilder();
+				
+				jCountry.on(on -> {
+					on
+						.iLike(Country_.name, "f%")
+						.add(builder.like(jCountry.get("name"), "%a"));
+				});
+				
+			});
+		})
+		.where(w -> {
+			w.orGroup()
+				.equal(People_.id, 1l)
+				.equal(People_.id, 2l)
+				;
+		})
+		.order(o -> {
+			o.asc(People_.id);
+		})
+		.getResultList();
+
+```
+
+## Use attribute name
+```javascript
+	List<Object[]> list = new FSelect(em)
+		.fromCustomFields(People.class)
+		.fields()
+			.add("address.street")
+			.count("id")
+		.group()
+			.add("address.street")
+		.end()
+		.getResultList();
 ```
 
 ## Finally

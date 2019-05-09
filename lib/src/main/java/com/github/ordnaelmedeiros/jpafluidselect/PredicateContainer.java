@@ -121,6 +121,10 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		return this.from.get(field);
 	}
 	
+	private <A> Path<A> f(String field) {
+		return this.fFrom.getPath(field);
+	}
+	
 	private CriteriaBuilder b() {
 		return this.builder;
 	}
@@ -154,16 +158,12 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		this.isCan = condition;
 		return this;
 	}
-	public PredicateContainer<T, D, V, F1, F2> ifCan(boolean condition, Consumer<PredicateContainer<T, D, V, F1, F2>> consumer) {
-		if (condition) {
-			consumer.accept(this);
-		}
-		this.isNot = false;
-		this.isCan = true;
-		return this;
-	}
 	
 	public <A> PredicateContainer<T, D, V, F1, F2> equal(SingularAttribute<D, A> field, A value) {
+		add(b().equal(f(field), value));
+		return this;
+	}
+	public <A> PredicateContainer<T, D, V, F1, F2> equal(String field, A value) {
 		add(b().equal(f(field), value));
 		return this;
 	}
@@ -172,8 +172,16 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		this.equal(field, value);
 		return this;
 	}
+	public <A> PredicateContainer<T, D, V, F1, F2> eq(String field, A value) {
+		this.equal(field, value);
+		return this;
+	}
 	
 	public <A> PredicateContainer<T, D, V, F1, F2> notEqual(SingularAttribute<D, A> field, A value) {
+		add(b().notEqual(f(field), value));
+		return this;
+	}
+	public <A> PredicateContainer<T, D, V, F1, F2> notEqual(String field, A value) {
 		add(b().notEqual(f(field), value));
 		return this;
 	}
@@ -182,14 +190,31 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		this.notEqual(field, value);
 		return this;
 	}
+	public <A> PredicateContainer<T, D, V, F1, F2> ne(String field, A value) {
+		this.notEqual(field, value);
+		return this;
+	}
 	
 	public PredicateContainer<T, D, V, F1, F2> iEqual(SingularAttribute<D, String> field, String value) {
+		add(b().equal(b().upper(b().trim(f(field))), value.trim().toUpperCase()));
+		return this;
+	}
+	public PredicateContainer<T, D, V, F1, F2> iEqual(String field, String value) {
 		add(b().equal(b().upper(b().trim(f(field))), value.trim().toUpperCase()));
 		return this;
 	}
 	
 	@SuppressWarnings("unchecked")
 	public <A> PredicateContainer<T, D, V, F1, F2> in(SingularAttribute<D, A> field, A ...values) {
+		if (this.isCan) {
+			add(f(field).in(values));
+		}
+		this.isCan = true;
+		this.isNot = false;
+		return this;
+	}
+	@SuppressWarnings("unchecked")
+	public <A> PredicateContainer<T, D, V, F1, F2> in(String field, A ...values) {
 		if (this.isCan) {
 			add(f(field).in(values));
 		}
@@ -206,8 +231,20 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		this.isNot = false;
 		return this;
 	}
+	public <A> PredicateContainer<T, D, V, F1, F2> in(String field, Collection<A> values) {
+		if (this.isCan) {
+			add(f(field).in(values));
+		}
+		this.isCan = true;
+		this.isNot = false;
+		return this;
+	}
 	
 	public PredicateContainer<T, D, V, F1, F2> like(SingularAttribute<D, String> field, String value) {
+		add(b().like(f(field), value));
+		return this;
+	}
+	public PredicateContainer<T, D, V, F1, F2> like(String field, String value) {
 		add(b().like(f(field), value));
 		return this;
 	}
@@ -216,8 +253,16 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		add(b().like(b().upper(b().trim(f(field))), value.trim().toUpperCase()));
 		return this;
 	}
+	public PredicateContainer<T, D, V, F1, F2> iLike(String field, String value) {
+		add(b().like(b().upper(b().trim(f(field))), value.trim().toUpperCase()));
+		return this;
+	}
 	
 	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> greaterThan(SingularAttribute<D, A> field, A value) {
+		add(b().greaterThan(f(field), value));
+		return this;
+	}
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> greaterThan(String field, A value) {
 		add(b().greaterThan(f(field), value));
 		return this;
 	}
@@ -226,8 +271,16 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		this.greaterThan(field, value);
 		return this;
 	}
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> gt(String field, A value) {
+		this.greaterThan(field, value);
+		return this;
+	}
 	
 	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> greaterThanOrEqualTo(SingularAttribute<D, A> field, A value) {
+		add(b().greaterThanOrEqualTo(f(field), value));
+		return this;
+	}
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> greaterThanOrEqualTo(String field, A value) {
 		add(b().greaterThanOrEqualTo(f(field), value));
 		return this;
 	}
@@ -236,8 +289,16 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		this.greaterThanOrEqualTo(field, value);
 		return this;
 	}
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> ge(String field, A value) {
+		this.greaterThanOrEqualTo(field, value);
+		return this;
+	}
 	
 	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> lessThan(SingularAttribute<D, A> field, A value) {
+		add(b().lessThan(f(field), value));
+		return this;
+	}
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> lessThan(String field, A value) {
 		add(b().lessThan(f(field), value));
 		return this;
 	}
@@ -246,8 +307,16 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		this.lessThan(field, value);
 		return this;
 	}
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> lt(String field, A value) {
+		this.lessThan(field, value);
+		return this;
+	}
 	
 	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> lessThanOrEqualTo(SingularAttribute<D, A> field, A value) {
+		add(b().lessThanOrEqualTo(f(field), value));
+		return this;
+	}
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> lessThanOrEqualTo(String field, A value) {
 		add(b().lessThanOrEqualTo(f(field), value));
 		return this;
 	}
@@ -256,8 +325,16 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		this.lessThanOrEqualTo(field, value);
 		return this;
 	}
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> le(String field, A value) {
+		this.lessThanOrEqualTo(field, value);
+		return this;
+	}
 	
 	public <A> PredicateContainer<T, D, V, F1, F2> isNull(SingularAttribute<D, A> field) {
+		add(b().isNull(f(field)));
+		return this;
+	}
+	public <A> PredicateContainer<T, D, V, F1, F2> isNull(String field) {
 		add(b().isNull(f(field)));
 		return this;
 	}
@@ -266,9 +343,18 @@ public class PredicateContainer<T, D, V, F1, F2> {
 		add(b().between(f(field), value1, value2));
 		return this;
 	}
+	public <A extends Comparable<? super A>> PredicateContainer<T, D, V, F1, F2> between(String field, A value1, A value2) {
+		add(b().between(f(field), value1, value2));
+		return this;
+	}
 	
 	// TEMPORAL
 	public <A extends Temporal> PredicateContainer<T, D, V, F1, F2> equal(SingularAttribute<D, A> field, TemporalFunction extract, Object value) {
+		Expression<Integer> function = b().function(extract.toString().toLowerCase(), Integer.class, f(field));
+		add(b().equal(function, value));
+		return this;
+	}
+	public <A extends Temporal> PredicateContainer<T, D, V, F1, F2> equal(String field, TemporalFunction extract, Object value) {
 		Expression<Integer> function = b().function(extract.toString().toLowerCase(), Integer.class, f(field));
 		add(b().equal(function, value));
 		return this;
@@ -282,13 +368,25 @@ public class PredicateContainer<T, D, V, F1, F2> {
 	public FSelectFields<F1, F2> fields() {
 		return fFrom.fields();
 	}
+	public PredicateContainer<T,D,V,F1,F2> fields(Consumer<FSelectFields<F1, F2>> consumer) {
+		consumer.accept(fFrom.fields());
+		return this;
+	}
 
 	public FGroupBy<F1, F1, F2> group() {
 		return fFrom.group();
 	}
+	public PredicateContainer<T,D,V,F1,F2> group(Consumer<FGroupBy<F1, F1, F2>> consumer) {
+		consumer.accept(fFrom.group());
+		return this;
+	}
 
 	public FOrder<F1, F1, F2> order() {
 		return fFrom.order();
+	}
+	public PredicateContainer<T,D,V,F1,F2> order(Consumer<FOrder<F1, F1, F2>> consumer) {
+		consumer.accept(fFrom.order());
+		return this;
 	}
 	/*
 	public <A> FJoin<F1, F1, A, FFrom<F1, F2>, F1, F2> join(ListAttribute<F1, A> atribute) {

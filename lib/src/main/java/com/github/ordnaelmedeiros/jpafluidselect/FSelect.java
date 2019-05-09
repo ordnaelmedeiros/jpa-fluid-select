@@ -9,6 +9,8 @@ import lombok.Getter;
 
 public class FSelect {
 
+	public static boolean noResultException = false;
+	
 	@Getter
 	private EntityManager em;
 	
