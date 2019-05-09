@@ -2,6 +2,7 @@ package com.github.ordnaelmedeiros.jpafluidselect;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.From;
@@ -36,7 +37,7 @@ public class FOrder<T, D, R> {
 		orders.add(b().asc(from.get(attribute)));
 		return this;
 	}
-
+	
 	public FOrder<T, D, R> desc(SingularAttribute<D, ?> attribute) {
 		orders.add(b().desc(from.get(attribute)));
 		return this;
@@ -61,6 +62,17 @@ public class FOrder<T, D, R> {
 		orders.add(b().desc(path));
 		return this;
 	}
+	
+	public FOrder<T, D, R> asc(String path) {
+		orders.add(b().asc(fFrom.getPath(path)));
+		return this;
+	}
+	
+	public FOrder<T, D, R> desc(String path) {
+		orders.add(b().desc(fFrom.getPath(path)));
+		return this;
+	}
+	
 
 	public boolean isEmpty() {
 		return this.orders.isEmpty();
@@ -78,13 +90,25 @@ public class FOrder<T, D, R> {
 	public FSelectFields<T, R> fields() {
 		return fFrom.fields();
 	}
+	public FOrder<T,D,R> fields(Consumer<FSelectFields<T, R>> consumer) {
+		consumer.accept(fFrom.fields());
+		return this;
+	}
 
 	public FGroupBy<T, T, R> group() {
 		return fFrom.group();
 	}
+	public FOrder<T,D,R> group(Consumer<FGroupBy<T, T, R>> consumer) {
+		consumer.accept(fFrom.group());
+		return this;
+	}
 
 	public PredicateContainer<T,T,FFrom<T,R>, T, R> where() {
 		return this.fFrom.where();
+	}
+	public FOrder<T,D,R> where(Consumer<PredicateContainer<T,T,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.fFrom.where());
+		return this;
 	}
 	/*
 	public <A> FJoin<T, T, A, FFrom<T, R>, T, R> join(ListAttribute<T, A> atribute) {

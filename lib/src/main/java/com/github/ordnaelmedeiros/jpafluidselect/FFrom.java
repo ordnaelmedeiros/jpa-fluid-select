@@ -1,9 +1,11 @@
 package com.github.ordnaelmedeiros.jpafluidselect;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -11,6 +13,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Selection;
@@ -39,6 +42,20 @@ public class FFrom<T,R> {
 	@SuppressWarnings("rawtypes")
 	@Getter
 	private List<FJoin> joins = new ArrayList<>();
+	
+	@SuppressWarnings("rawtypes")
+	public FJoin getJoin(String name) {
+		if (this.joins==null || this.joins.isEmpty()) {
+			return null;
+		}
+		for (FJoin fJoin : this.joins) {
+			if (fJoin.getName().equals(name)) {
+				return fJoin;
+			}
+		}
+		return null;
+	}
+
 	
 	private FOrder<T, T, R> order;
 	private FGroupBy<T, T, R> groupBy;
@@ -77,11 +94,21 @@ public class FFrom<T,R> {
 		return this.fields;
 	}
 	
+	public FFrom<T, R> fields(Consumer<FSelectFields<T, R>> consumer) {
+		consumer.accept(this.fields());
+		return this;
+	}
+	
 	public PredicateContainer<T, T, FFrom<T,R>, T, R> where() {
 		if (this.where==null) {
 			this.where = new PredicateContainer<>(this.builder, this.root, PredicateContainer.Type.AND, this, this);
 		}
 		return this.where;
+	}
+	
+	public FFrom<T, R> where(Consumer<PredicateContainer<T, T, FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.where());
+		return this;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -233,7 +260,11 @@ public class FFrom<T,R> {
 			
 		} catch (NoResultException e) {
 			
-			return null;
+			if (FSelect.noResultException) {
+				throw e;
+			} else {
+				return null;
+			}
 			
 		}
 		
@@ -263,7 +294,9 @@ public class FFrom<T,R> {
 		} else {
 			
 			for (Field field : this.classReturn.getDeclaredFields()) {
-				columns.add(field.getName());
+				if (!Modifier.isStatic(field.getModifiers())) {
+					columns.add(field.getName());
+				}
 			}
 			
 		}
@@ -301,33 +334,35 @@ public class FFrom<T,R> {
 				System.out.print("|");
 				for (Field field : this.classReturn.getDeclaredFields()) {
 					
-					if (Collection.class.isAssignableFrom(field.getType())) {
+					if (!Modifier.isStatic(field.getModifiers())) {
 						
-						System.out.print(String.format("%"+cLength+"s|", ""));
-						
-					} else {
-						
-						field.setAccessible(true);
-						
-						Object object = null;
-						try {
-							object = field.get(o);
-						} catch (Exception e) {
-							object = null;
-						}
-						
-						if (object==null) {
+						if (Collection.class.isAssignableFrom(field.getType())) {
+							
 							System.out.print(String.format("%"+cLength+"s|", ""));
+							
 						} else {
-							String valor = object.toString();
-							if (valor.length()>cLength) {
-								System.out.print(String.format("%"+cLength+"s|", valor.substring(0,cLength)));
+							
+							field.setAccessible(true);
+							
+							Object object = null;
+							try {
+								object = field.get(o);
+							} catch (Exception e) {
+								object = null;
+							}
+							
+							if (object==null) {
+								System.out.print(String.format("%"+cLength+"s|", ""));
 							} else {
-								System.out.print(String.format("%"+cLength+"s|", valor));
+								String valor = object.toString();
+								if (valor.length()>cLength) {
+									System.out.print(String.format("%"+cLength+"s|", valor.substring(0,cLength)));
+								} else {
+									System.out.print(String.format("%"+cLength+"s|", valor));
+								}
 							}
 						}
 					}
-						
 				}
 			}
 		}
@@ -343,6 +378,11 @@ public class FFrom<T,R> {
 		this.joins.add(j);
 		
 		return j;
+		
+	}
+	public <A> FFrom<T,R> join(JoinType type, SingularAttribute<T, A> atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(type, atribute));
+		return this;
 	}
 
 	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(JoinType type, ListAttribute<T, A> atribute) {
@@ -352,27 +392,95 @@ public class FFrom<T,R> {
 		
 		return j;
 	}
+	public <A> FFrom<T,R> join(JoinType type, ListAttribute<T, A> atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(type, atribute));
+		return this;
+	}
 	
 	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(SingularAttribute<T, A> atribute) {
 		return this.join(JoinType.INNER, atribute);
+	}
+	public <A> FFrom<T, R> join(SingularAttribute<T, A> atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(atribute));
+		return this;
 	}
 
 	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(ListAttribute<T, A> atribute) {
 		return this.join(JoinType.INNER, atribute);
 	}
+	public <A> FFrom<T,R> join(ListAttribute<T, A> atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(atribute));
+		return this;
+	}
 	
+	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(JoinType type, String atribute) {
+		FJoin<T, T, A, FFrom<T,R>, T, R> j = new FJoin<>(builder, root, atribute, type, this, this);
+		this.joins.add(j);
+		return j;
+	}
+	
+	public <A> FJoin<T, T,A,FFrom<T,R>, T, R> join(String atribute) {
+		return this.join(JoinType.INNER, atribute);
+	}
+	public <A> FFrom<T,R> join(String atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(JoinType.INNER, atribute));
+		return this;
+	}
+	public <A> FFrom<T,R> join(JoinType type, String atribute, Consumer<FJoin<T, T,A,FFrom<T,R>, T, R>> consumer) {
+		consumer.accept(this.join(type, atribute));
+		return this;
+	}
 	
 	public FOrder<T,T,R> order() {
 		return this.order;
+	}
+	public FFrom<T,R> order(Consumer<FOrder<T,T,R>> consumer) {
+		consumer.accept(this.order());
+		return this;
 	}
 	
 	public FGroupBy<T,T,R> group() {
 		return this.groupBy;
 	}
+	public FFrom<T,R> group(Consumer<FGroupBy<T,T,R>> consumer) {
+		consumer.accept(this.group());
+		return this;
+	}
 
 	public FFrom<T,R> distinct() {
 		this.query.distinct(true);
 		return this;
+	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public <A> Path<A> getPath(String field) {
+
+		if (field.contains(".")) {
+			
+			String[] path = field.split("\\.");
+			
+			FJoin join = this.getJoin(path[0]); 
+			if (join==null) {
+				join = this.join(path[0]);
+			}
+			
+			if (path.length>2) {
+				for (int i = 1; i < path.length-1; i++) {
+					FJoin other = join.getJoin(path[i]);
+					if (other==null) {
+						join = join.join(path[i]);
+					} else {
+						join = other;
+					}
+				}
+			}
+			
+			return join.get(path[path.length-1]);
+			
+		}
+		
+		return this.root.get(field);
+		
 	}
 
 }
