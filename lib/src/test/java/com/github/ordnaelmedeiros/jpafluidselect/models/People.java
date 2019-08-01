@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -23,6 +25,10 @@ public class People {
 	
 	@Column(length=200)
 	private String name;
+	
+	@Column(length=20)
+	@Enumerated(EnumType.STRING)
+	private Status status;
 	
 	@Column
 	private LocalDateTime created;
@@ -44,8 +50,14 @@ public class People {
 	public People(String name, Address address, LocalDateTime created) {
 		this();
 		this.name = name;
+		this.status = Status.ACTIVE;
 		this.address = address;
 		this.created = created;
+	}
+	
+	@Override
+	public String toString() {
+		return this.getId() + " - " + this.getName() + " - " + this.getCreated();
 	}
 	
 }
