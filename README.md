@@ -21,20 +21,20 @@ https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
 
 ## First
 Start QueryBuilder
-```javascript
+```java
 QueryBuilder queryBuilder = new QueryBuilder(em); // EntityManager
 ```
 
 
 ## Select All
-```javascript
+```java
 List<People> list = queryBuilder
 	.select(People.class)
 	.getResultList();
 ```
 
 ## Where
-```javascript
+```java
 List<People> list = queryBuilder
 	.select(People.class)
 	.where()
@@ -43,7 +43,7 @@ List<People> list = queryBuilder
 ```
 
 ## OrderBy
-```javascript
+```java
 List<People> list1 = queryBuilder
 	.select(People.class)
 	.order()
@@ -60,7 +60,7 @@ List<People> list2 = queryBuilder
 
 
 ## Count
-```javascript
+```java
 
 Long count1 = queryBuilder
 	.select(People.class)
@@ -94,64 +94,64 @@ List<People> list = queryBuilder
 ```
 
 ## Temporal
-```javascript
+```java
 
 ```
 
 ## IfCan
-```javascript
+```java
 
 ```
 
 ## WhereGroup
-```javascript
+```java
 
 ```
 
 ## Join
-```javascript
+```java
 
 ```
 
 ## CustomFields
-```javascript
+```java
 
 ```
 
 ## CustomFieldsTransform
-```javascript
+```java
 
 ```
 
 ## Pagination
-```javascript
+```java
 
 ```
 
 ## GroupBy
-```javascript
+```java
 
 ```
 
 ## Distinct
-```javascript
+```java
 
 ```
 
 ## Lambda expressions
-```javascript
+```java
 
 
 ```
 
 ## Use attribute name
-```javascript
+```java
 
 ```
 
 ## Finally
 
-```javascript
+```java
 if (this.savedYourLife() || this.savedJustALittle()) {
 	System.out.println("Help me buy more coffee?");
 }
