@@ -105,9 +105,18 @@ List<People> list = queryBuilder
 	.getResultList();
 ```
 
-## IfCan
+## Ignore If
 ```java
+boolean isUpdate = false;
 
+List<People> list = queryBuilder
+	.select(People.class)
+	.where()
+		.field(People_.id).ignoreIf(!isUpdate).eq(1l)
+		.field(People_.name).eq("Leandro")
+	.order()
+		.field(People_.id).asc()
+	.getResultList();
 ```
 
 ## WhereGroup

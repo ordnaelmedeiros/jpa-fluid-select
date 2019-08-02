@@ -8,16 +8,12 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilderTestBase;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
-
-import lombok.Getter;
-import lombok.Setter;
 
 public class ExampleTest extends QueryBuilderTestBase {
 	
@@ -146,6 +142,65 @@ public class ExampleTest extends QueryBuilderTestBase {
 		assertThat(list.get(0).getId(), equalTo(6l));
 		assertThat(list.get(1).getId(), equalTo(7l));
 		//list.forEach(System.out::println);
+		
+	}
+	
+	@Test
+	public void selectIgnoreIf() {
+		
+		boolean isUpdate = false;
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.where()
+				.field(People_.id).ignoreIf(!isUpdate).eq(1l)
+				.field(People_.name).eq("Leandro")
+			.order()
+				.field(People_.id).asc()
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), equalTo(2));
+		assertThat(list.get(0).getId(), equalTo(1l));
+		assertThat(list.get(1).getId(), equalTo(3l));
+		//list.forEach(System.out::println);
+		
+	}
+	
+	@Test
+	public void selectGroup() {
+		
+		/*
+		
+		.like(People_.name, "%e%")
+		// and (
+		.orGroup()
+			.equal(People_.id, 1)
+			// or
+			.equal(People_.id, 2)
+			// or
+			.equal(People_.id, 5)
+		.end()
+		
+		*/
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.where()
+				.orGroup()
+					.field(People_.id).eq(1l)
+					.field(People_.id).eq(2l)
+					.field(People_.id).eq(3l)
+				.end()
+			.order()
+				.field(People_.id).asc()
+			.getResultList();
+		
+		//assertThat(list, notNullValue());
+		//assertThat(list.size(), equalTo(2));
+		//assertThat(list.get(0).getId(), equalTo(1l));
+		//assertThat(list.get(1).getId(), equalTo(3l));
+		list.forEach(System.out::println);
 		
 	}
 	
