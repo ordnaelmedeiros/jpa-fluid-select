@@ -84,6 +84,11 @@ public class FieldOperation<OperationBack, Back, T, ValueType> {
 		return this;
 	}
 
+	public FieldOperation<OperationBack, Back, T, ValueType> canIf(boolean can) {
+		this.ignore = !can;
+		return this;
+	}
+	
 	public FieldOperation<OperationBack, Back, T, ValueType> ignoreIf(boolean ignore) {
 		this.ignore = ignore;
 		return this;

@@ -105,11 +105,11 @@ List<People> list = queryBuilder
 	.getResultList();
 ```
 
-## Ignore If
+## Ignore/Can If
 ```java
 boolean isUpdate = false;
 
-List<People> list = queryBuilder
+List<People> list1 = queryBuilder
 	.select(People.class)
 	.where()
 		.field(People_.id).ignoreIf(!isUpdate).eq(1l)
@@ -117,6 +117,16 @@ List<People> list = queryBuilder
 	.order()
 		.field(People_.id).asc()
 	.getResultList();
+
+List<People> list2 = queryBuilder
+	.select(People.class)
+	.where()
+		.field(People_.id).canIf(isUpdate).eq(1l)
+		.field(People_.name).eq("Leandro")
+	.order()
+		.field(People_.id).asc()
+	.getResultList();
+
 ```
 
 ## WhereGroup
