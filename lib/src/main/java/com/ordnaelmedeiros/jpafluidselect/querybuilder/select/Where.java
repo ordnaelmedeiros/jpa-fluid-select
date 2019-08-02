@@ -6,11 +6,14 @@ import java.util.List;
 import javax.persistence.metamodel.Attribute;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.defaults.SelectCount;
 
 import lombok.Getter;
 
-public class Where<T> {
+public class Where<T> implements 
+		SelectCount<T> {
 	
+	@Getter
 	private Select<T> select;
 	
 	@Getter
