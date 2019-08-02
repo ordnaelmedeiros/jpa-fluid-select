@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 
 import org.hamcrest.CoreMatchers;
@@ -44,26 +46,6 @@ public class ExampleTest extends QueryBuilderTestBase {
 		assertThat(list, notNullValue());
 		assertThat(list.size(), equalTo(1));
 		assertThat(list.get(0).getId(), equalTo(1l));
-		//list.forEach(System.out::println);
-		
-	}
-	
-	@Test
-	public void selectWhereNot() {
-		
-		List<People> list = queryBuilder
-			.select(People.class)
-			.where()
-				.field(People_.id).lt(4l)
-				.field(People_.id).not().eq(1l)
-			.order()
-				.field(People_.id).asc()
-			.getResultList();
-		
-		assertThat(list, notNullValue());
-		assertThat(list.size(), equalTo(2));
-		assertThat(list.get(0).getId(), equalTo(2l));
-		assertThat(list.get(1).getId(), equalTo(3l));
 		//list.forEach(System.out::println);
 		
 	}
@@ -125,5 +107,47 @@ public class ExampleTest extends QueryBuilderTestBase {
 		//list.forEach(System.out::println);
 		
 	}
+	
+	@Test
+	public void selectWhereNot() {
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.where()
+				.field(People_.id).lt(4l)
+				.field(People_.id).not().eq(1l)
+			.order()
+				.field(People_.id).asc()
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), equalTo(2));
+		assertThat(list.get(0).getId(), equalTo(2l));
+		assertThat(list.get(1).getId(), equalTo(3l));
+		//list.forEach(System.out::println);
+		
+	}
+	
+
+	@Test
+	public void selectTemporal() {
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.where()
+				.field(People_.created).cast(LocalDate.class).gt(LocalDate.of(2017, Month.JUNE, 20))
+				.field(People_.created).extract("year", Integer.class).eq(2017)
+			.order()
+				.field(People_.id).asc()
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), equalTo(2));
+		assertThat(list.get(0).getId(), equalTo(6l));
+		assertThat(list.get(1).getId(), equalTo(7l));
+		//list.forEach(System.out::println);
+		
+	}
+	
 	
 }

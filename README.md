@@ -93,9 +93,16 @@ List<People> list = queryBuilder
 	.getResultList();
 ```
 
-## Temporal
+## LocalDate and LocalDateTime
 ```java
-
+List<People> list = queryBuilder
+	.select(People.class)
+	.where()
+		.field(People_.created).cast(LocalDate.class).gt(LocalDate.of(2017, Month.JUNE, 20))
+		.field(People_.created).extract("year", Integer.class).eq(2017)
+	.order()
+		.field(People_.id).asc()
+	.getResultList();
 ```
 
 ## IfCan
