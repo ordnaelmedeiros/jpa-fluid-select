@@ -22,6 +22,8 @@ public class Operation {
 	
 	@Getter
 	private List<Object> values = new ArrayList<>();
+
+	private boolean not;
 	
 	public String getParameter() {
 		return this.parameters.get(0);
@@ -63,7 +65,11 @@ public class Operation {
 	}
 	
 	public String toComparator() {
-		return this.comparator.toString(this);
+		if (not) {
+			return " NOT ("+this.comparator.toString(this)+")";
+		} else {
+			return this.comparator.toString(this);
+		}
 	}
 	
 	public void createParameter(Query query) {
@@ -84,6 +90,11 @@ public class Operation {
 		}
 		return this;
 	}
+	public Operation not(boolean not) {
+		this.not = not;
+		return this;
+	}
+	
 	
 	public static Operation equal(QueryBuilder qb, String field, Object value) {
 		return new Operation()

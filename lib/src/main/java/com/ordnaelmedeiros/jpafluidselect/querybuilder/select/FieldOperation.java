@@ -4,6 +4,9 @@ import javax.persistence.metamodel.Attribute;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
 
+import lombok.Getter;
+import lombok.Setter;
+
 public class FieldOperation<T, ValueType> {
 
 	private Where<T> where;
@@ -12,6 +15,9 @@ public class FieldOperation<T, ValueType> {
 	private String cast = null;
 	private String extract = null;
 	
+	@Getter @Setter
+	private boolean not = false;
+	
 	public FieldOperation(QueryBuilder queryBuilder, Where<T> where, String field) {
 		this.queryBuilder = queryBuilder;
 		this.where = where;
@@ -19,7 +25,7 @@ public class FieldOperation<T, ValueType> {
 	}
 	
 	public Where<T> eq(ValueType value) {
-		this.where.add(Operation.equal(queryBuilder, field, value).cast(cast).extract(extract));
+		this.where.add(Operation.equal(queryBuilder, field, value).cast(cast).extract(extract).not(not));
 		return this.where;
 	}
 	
@@ -57,6 +63,11 @@ public class FieldOperation<T, ValueType> {
 		String path = this.field + "." + att.getName();
 		FieldOperation<T, A> fieldOperation = new FieldOperation<T, A>(queryBuilder, this.where, path);
 		return fieldOperation;
+	}
+
+	public FieldOperation<T,ValueType> not() {
+		this.not = true;
+		return this;
 	}
 	
 }

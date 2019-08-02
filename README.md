@@ -4,7 +4,7 @@
 
 ## Maven
 https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
-```html
+```xml
 <dependency>
 	<groupId>com.github.ordnaelmedeiros</groupId>
 	<artifactId>jpa-fluid-select</artifactId>
@@ -82,8 +82,15 @@ List<People> list = select.getResultList();
 ```
 
 ## Not
-```javascript
-
+```java
+List<People> list = queryBuilder
+	.select(People.class)
+	.where()
+		.field(People_.id).lt(4l)
+		.field(People_.id).not().eq(1l)
+	.order()
+		.field(People_.id).asc()
+	.getResultList();
 ```
 
 ## Temporal

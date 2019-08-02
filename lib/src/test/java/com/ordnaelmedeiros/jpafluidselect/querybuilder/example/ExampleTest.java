@@ -49,6 +49,26 @@ public class ExampleTest extends QueryBuilderTestBase {
 	}
 	
 	@Test
+	public void selectWhereNot() {
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.where()
+				.field(People_.id).lt(4l)
+				.field(People_.id).not().eq(1l)
+			.order()
+				.field(People_.id).asc()
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), equalTo(2));
+		assertThat(list.get(0).getId(), equalTo(2l));
+		assertThat(list.get(1).getId(), equalTo(3l));
+		//list.forEach(System.out::println);
+		
+	}
+	
+	@Test
 	public void selectOrdeBy() {
 		
 		List<People> list = queryBuilder
