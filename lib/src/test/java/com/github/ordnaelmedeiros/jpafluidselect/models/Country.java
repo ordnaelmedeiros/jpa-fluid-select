@@ -1,5 +1,7 @@
 package com.github.ordnaelmedeiros.jpafluidselect.models;
 
+import static javax.persistence.FetchType.LAZY;
+
 import java.util.List;
 
 import javax.persistence.Column;
@@ -22,7 +24,7 @@ public class Country {
 	@Column(length=300)
 	private String name;
 	
-	@OneToMany(mappedBy="country")
+	@OneToMany(mappedBy="country", fetch=LAZY)
 	private List<Address> address;
 	
 	public Country() {

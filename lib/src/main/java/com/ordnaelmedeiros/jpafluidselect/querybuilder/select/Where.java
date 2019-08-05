@@ -12,6 +12,7 @@ public class Where<T>
 
 	public Where(Select<T> select, QueryBuilder queryBuilder) {
 		super(select, select, queryBuilder);
+		this.setInitSql(" WHERE ( ");
 	}
-	
+
 }

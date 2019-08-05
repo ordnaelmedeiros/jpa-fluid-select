@@ -3,7 +3,6 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import javax.persistence.TypedQuery;
 
@@ -39,13 +38,8 @@ public class Select<T> {
 	public List<T> getResultList() {
 		
 		String sql = "select c from " + this.klass.getName() + " AS c ";
-		if (!this.where.getOperations().isEmpty()) {
-			StringJoiner strWhere = new StringJoiner(" and ");
-			for (Operation o : this.where.getOperations()) {
-				strWhere.add(o.toComparator());
-			}
-			sql += " where "+strWhere.toString();
-		}
+		
+		sql += this.where.toSql();
 
 		if (!this.order.getOrders().isEmpty()) {
 			StringJoiner strOrder = new StringJoiner(", ");

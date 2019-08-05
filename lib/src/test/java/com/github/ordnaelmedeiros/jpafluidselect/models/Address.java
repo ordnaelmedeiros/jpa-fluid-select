@@ -1,5 +1,7 @@
 package com.github.ordnaelmedeiros.jpafluidselect.models;
 
+import static javax.persistence.FetchType.LAZY;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -20,7 +22,7 @@ public class Address {
 	@Column(length=200)
 	private String street;
 	
-	@ManyToOne
+	@ManyToOne(fetch=LAZY)
 	private Country country;
 	
 	public Address() {

@@ -38,7 +38,7 @@ List<People> list = queryBuilder
 List<People> list = queryBuilder
 	.select(People.class)
 	.where()
-		.field(People_.id).eq(1)
+		.field(People_.id).eq(1l)
 	.getResultList();
 ```
 
@@ -65,13 +65,13 @@ List<People> list2 = queryBuilder
 Long count1 = queryBuilder
 	.select(People.class)
 	.where()
-		.field(People_.id).lt(4)
+		.field(People_.id).lt(4l)
 	.count();
 
 Select<People> select = queryBuilder
 	.select(People.class)
 	.where()
-		.field(People_.id).lt(4)
+		.field(People_.id).lt(4l)
 	.order()
 		.field(People_.id).desc()
 	.getSelect();
@@ -131,7 +131,18 @@ List<People> list2 = queryBuilder
 
 ## WhereGroup
 ```java
-
+List<People> list = queryBuilder
+	.select(People.class)
+	.where()
+		.field(People_.name).like("%a%") // AND (
+		.orGroup()
+			.field(People_.id).eq(1l) // OR
+			.field(People_.id).eq(2l) // OR
+			.field(People_.id).eq(3l)
+		.end() // )
+	.order()
+		.field(People_.id).asc()
+	.getResultList();
 ```
 
 ## Join

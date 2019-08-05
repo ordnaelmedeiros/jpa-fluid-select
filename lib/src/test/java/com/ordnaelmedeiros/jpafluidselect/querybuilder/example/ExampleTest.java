@@ -170,23 +170,10 @@ public class ExampleTest extends QueryBuilderTestBase {
 	@Test
 	public void selectGroup() {
 		
-		/*
-		
-		.like(People_.name, "%e%")
-		// and (
-		.orGroup()
-			.equal(People_.id, 1)
-			// or
-			.equal(People_.id, 2)
-			// or
-			.equal(People_.id, 5)
-		.end()
-		
-		*/
-		
 		List<People> list = queryBuilder
 			.select(People.class)
 			.where()
+				.field(People_.id).not().eq(2l)
 				.orGroup()
 					.field(People_.id).eq(1l)
 					.field(People_.id).eq(2l)
@@ -196,11 +183,13 @@ public class ExampleTest extends QueryBuilderTestBase {
 				.field(People_.id).asc()
 			.getResultList();
 		
-		//assertThat(list, notNullValue());
-		//assertThat(list.size(), equalTo(2));
-		//assertThat(list.get(0).getId(), equalTo(1l));
-		//assertThat(list.get(1).getId(), equalTo(3l));
 		list.forEach(System.out::println);
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), equalTo(2));
+		assertThat(list.get(0).getId(), equalTo(1l));
+		assertThat(list.get(1).getId(), equalTo(3l));
+		//assertThat(list.get(2).getId(), equalTo(3l));
 		
 	}
 	

@@ -97,5 +97,5 @@ public class FieldOperation<OperationBack, Back, T, ValueType> {
 	public Back end() {
 		return this.back;
 	}
-	
+
 }

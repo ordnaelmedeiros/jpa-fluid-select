@@ -1,6 +1,7 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.Query;
@@ -9,7 +10,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
 
 import lombok.Getter;
 
-public class Operation {
+public class Operation implements ToSql {
 
 	@Getter
 	private String field;
@@ -118,6 +119,15 @@ public class Operation {
 				.comparator(Comparator.LESS_THAN)
 				.value(value)
 				.generateParameters(qb);
+	}
+	@Override
+	public String toSql() {
+		return this.toComparator();
+	}
+	
+	@Override
+	public List<Operation> getOperations() {
+		return Arrays.asList(this);
 	}
 	
 }

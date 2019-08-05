@@ -1,5 +1,7 @@
 package com.github.ordnaelmedeiros.jpafluidselect.models;
 
+import static javax.persistence.FetchType.LAZY;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,10 +35,10 @@ public class People {
 	@Column
 	private LocalDateTime created;
 	
-	@ManyToOne
+	@ManyToOne(fetch=LAZY)
 	private Address address;
 	
-	@OneToMany(mappedBy="people")
+	@OneToMany(mappedBy="people", fetch=LAZY)
 	private List<Phone> phones;
 
 	public People() {
