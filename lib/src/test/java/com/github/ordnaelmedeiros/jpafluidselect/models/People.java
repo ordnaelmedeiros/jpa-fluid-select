@@ -49,6 +49,12 @@ public class People {
 		this.name = name;
 	}
 	
+	public People(Long id, String name, LocalDateTime created) {
+		this.id = id;
+		this.name = name;
+		this.created = created;
+	}
+	
 	public People(String name, Address address, LocalDateTime created) {
 		this();
 		this.name = name;
