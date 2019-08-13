@@ -13,6 +13,7 @@ import org.junit.BeforeClass;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Country;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
+import com.github.ordnaelmedeiros.jpafluidselect.models.Status;
 
 public class QueryBuilderTestBase {
 
@@ -53,7 +54,7 @@ public class QueryBuilderTestBase {
 			
 			save(em, new People("Leandro", street1, time0));
 			save(em, new People("Ivana", street2, time0));
-			save(em, new People("Leandro", street3, time0));
+			save(em, new People("Leandro", street3, time0).status(Status.INACTIVE));
 			save(em, new People("Eduardo", street4, time1));
 			save(em, new People("Rafael ", street5, time2));
 			save(em, new People("Matheus", street6, time3));

@@ -11,9 +11,27 @@ public interface FluidSelect<SelectTable> {
 	default List<SelectTable> getResultList() {
 		return this.getSelect().getResultList();
 	}
+	default <T> List<T> getResultList(Class<T> klass) {
+		return this.getSelect().getResultList(klass);
+	}
+	
+	default SelectTable getSingleResult() {
+		return this.getSelect().getSingleResult();
+	}
+	default <T> T getSingleResult(Class<T> klass) {
+		return this.getSelect().getSingleResult(klass);
+	}
 	
 	default List<Object[]> getResultObjects() {
 		return this.getSelect().getResultObjects();
+	}
+	
+	default Select<SelectTable> print() {
+		return this.getSelect().print();
+	}
+	
+	default String resultToString() {
+		return this.getSelect().resultToString();
 	}
 	
 }

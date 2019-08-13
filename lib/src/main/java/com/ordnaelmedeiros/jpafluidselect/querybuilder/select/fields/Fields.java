@@ -28,7 +28,8 @@ public class Fields<SelectTable> implements
 	@Getter
 	private Select<SelectTable> select;
 	
-	protected List<ToSql> list;
+	@Getter
+	private List<ToSql> list;
 	
 	private String aliasFrom; 
 	

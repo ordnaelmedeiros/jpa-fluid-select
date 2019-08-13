@@ -2,12 +2,14 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.Fields;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.groupby.GroupBy;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.join.Join;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
@@ -105,9 +107,29 @@ public class Select<Table> {
 		
 		TypedQuery<Table> query = this.builder.getEm().createQuery(sql, klass);
 		
+		this.param.setParameters(query);
+		
 		List<Table> result = query.getResultList();
 		
 		return result;
+	}
+	
+	public Table getSingleResult() {
+		
+		this.resultType = ResultType.CONSTRUCTOR;
+		
+		String sql = this.toSql();
+		System.out.println("SQL:");
+		System.out.println(sql);
+		
+		TypedQuery<Table> query = this.builder.getEm().createQuery(sql, klass);
+		
+		this.param.setParameters(query);
+		
+		Table result = query.getSingleResult();
+		
+		return result;
+		
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -127,6 +149,114 @@ public class Select<Table> {
 		
 		return result;
 		
+	}
+	
+	public <T> T getSingleResult(Class<T> klass) {
+		
+		this.resultType = ResultType.ARRAY;
+		
+		String sql = this.toSql();
+		System.out.println("SQL:");
+		System.out.println(sql);
+		
+		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+		
+		this.param.setParameters(query);
+		
+		T result = query.getSingleResult();
+		
+		return result;
+	}
+	
+	public <T> List<T> getResultList(Class<T> klass) {
+		
+		this.resultType = ResultType.ARRAY;
+		
+		String sql = this.toSql();
+		System.out.println("SQL:");
+		System.out.println(sql);
+		
+		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+		
+		this.param.setParameters(query);
+		
+		List<T> result = query.getResultList();
+		
+		return result;
+	}
+	
+	private String format(Object object, String replacer, Integer length) {
+		String value;
+		if (object==null) {
+			value = "";
+		} else {
+			value = object.toString();
+		}
+		for (int i = value.length(); i < length; i++) {
+			value += replacer;
+		}
+		return value;
+	}
+	
+	public String resultToString() {
+		
+		StringJoiner sBuilder = new StringJoiner("\n");
+		
+		try {
+			
+			List<Object[]> objects = this.getResultObjects();
+			
+			List<Integer> lenths = new ArrayList<Integer>();
+			
+			this.fields.getList().forEach( f-> {
+				lenths.add(f.toSql().length());
+			});
+			objects.forEach(list-> {
+				for (int i = 0; i < list.length; i++) {
+					Object o = list[i];
+					if (o!=null) {
+						Integer len = o.toString().length();
+						if (len>lenths.get(i)) {
+							lenths.add(i, len);
+						}
+					}
+				}
+			});
+			
+			StringJoiner lines = new StringJoiner("===","==","==");
+			StringJoiner fields = new StringJoiner(" | ","| "," |");
+			
+			for (int j = 0; j < this.fields.getList().size(); j++) {
+				ToSql toSql = this.fields.getList().get(j);
+				lines.add(this.format("=", "=", lenths.get(j)));
+				fields.add(this.format(toSql.toSql(), " ", lenths.get(j)));
+			}
+			
+			sBuilder.add(lines.toString());
+			sBuilder.add(fields.toString());
+			sBuilder.add(lines.toString());
+			
+			objects.forEach(list -> {
+				StringJoiner values = new StringJoiner(" | ","| "," |");	
+				for (int i = 0; i < list.length; i++) {
+					values.add(this.format(list[i], " ", lenths.get(i)));
+				}
+				sBuilder.add(values.toString());
+			});
+			
+			sBuilder.add(lines.toString());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return sBuilder.toString();
+		
+	}
+	
+	public Select<Table> print() {
+		System.out.println(this.resultToString());
+		return this;
 	}
 	
 }

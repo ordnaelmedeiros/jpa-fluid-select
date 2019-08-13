@@ -24,7 +24,7 @@ public class FieldSelect<SelectTable> implements ToSql {
 	}
 	
 	public Fields<SelectTable> end() {
-		this.fields.list.add(this);
+		this.fields.getList().add(this);
 		return fields;
 	}
 

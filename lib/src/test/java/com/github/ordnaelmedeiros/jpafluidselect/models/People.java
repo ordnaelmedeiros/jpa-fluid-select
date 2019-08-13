@@ -67,5 +67,9 @@ public class People {
 	public String toString() {
 		return this.getId() + " - " + this.getName() + " - " + this.getCreated();
 	}
+	public People status(Status status) {
+		this.status = status;
+		return this;
+	}
 	
 }
