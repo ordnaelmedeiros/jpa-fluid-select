@@ -2,6 +2,7 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.results;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
@@ -166,6 +167,66 @@ public class ReturnTest extends QueryBuilderTestBase {
 			
 			assertThat(result.get(0), equalTo("Leandro"));
 			assertThat(result.get(1), equalTo("Ivana"));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+	}
+	
+	@Test
+	public void singleReturnFieldByConstructor() {
+		
+		try {
+				
+			People result = queryBuilder
+				.select(People.class)
+				.fields()
+					.add("id")
+					.add("name")
+				.where()
+					.field("id").eq(1l)
+				.getSingleResultByConstructor(People.class);
+			
+			assertThat(result, notNullValue());
+			assertThat(result.getId(), equalTo(1l));
+			assertThat(result.getName(), equalTo("Leandro"));
+			assertThat(result.getCreated(), nullValue());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+	}
+	
+	@Test
+	public void listReturnFieldByConstructor() {
+		
+		try {
+			
+			List<People> result = queryBuilder
+				.select(People.class)
+				.fields()
+					.add("id")
+					.add("name")
+				.where()
+					.field("id").in(1l, 2l)
+				.order()
+					.asc("id")
+				.getResultListByConstructor(People.class);
+			
+			assertThat(result, notNullValue());
+			assertThat(result.size(), equalTo(2));
+			
+			assertThat(result.get(0).getId(), equalTo(1l));
+			assertThat(result.get(0).getName(), equalTo("Leandro"));
+			assertThat(result.get(0).getCreated(), nullValue());
+			
+			assertThat(result.get(1).getId(), equalTo(2l));
+			assertThat(result.get(1).getName(), equalTo("Ivana"));
+			assertThat(result.get(1).getCreated(), nullValue());
 			
 		} catch (Exception e) {
 			e.printStackTrace();

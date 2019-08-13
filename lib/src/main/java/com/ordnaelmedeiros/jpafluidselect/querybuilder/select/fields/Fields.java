@@ -80,7 +80,7 @@ public class Fields<SelectTable> implements
 			return " "+this.aliasFrom+" ";
 		} else {
 			if (ResultType.CONSTRUCTOR.equals(resultType)) {
-				StringJoiner sql = new StringJoiner(", ", resultClass.getName() + "(", ") ");
+				StringJoiner sql = new StringJoiner(", ", "new " + resultClass.getName() + "(", ") ");
 				this.list.forEach(f -> sql.add(f.toSql()));
 				return sql.toString();
 			} else {

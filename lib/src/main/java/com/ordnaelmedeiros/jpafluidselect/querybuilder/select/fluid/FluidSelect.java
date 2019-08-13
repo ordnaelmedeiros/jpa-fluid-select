@@ -14,6 +14,10 @@ public interface FluidSelect<SelectTable> {
 	default <T> List<T> getResultList(Class<T> klass) {
 		return this.getSelect().getResultList(klass);
 	}
+	default <T> List<T> getResultListByConstructor(Class<T> klass) {
+		return this.getSelect().getResultListByConstructor(klass);
+	}
+	
 	
 	default SelectTable getSingleResult() {
 		return this.getSelect().getSingleResult();
@@ -21,6 +25,11 @@ public interface FluidSelect<SelectTable> {
 	default <T> T getSingleResult(Class<T> klass) {
 		return this.getSelect().getSingleResult(klass);
 	}
+	default <T> T getSingleResultByConstructor(Class<T> klass) {
+		return this.getSelect().getSingleResultByConstructor(klass);
+	}
+	
+	
 	
 	default List<Object[]> getResultObjects() {
 		return this.getSelect().getResultObjects();

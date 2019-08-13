@@ -168,9 +168,42 @@ public class Select<Table> {
 		return result;
 	}
 	
+	public <T> T getSingleResultByConstructor(Class<T> klass) {
+		
+		this.resultType = ResultType.CONSTRUCTOR;
+		
+		String sql = this.toSql();
+		System.out.println("SQL:");
+		System.out.println(sql);
+		
+		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+		
+		this.param.setParameters(query);
+		
+		T result = query.getSingleResult();
+		
+		return result;
+	}
+	
 	public <T> List<T> getResultList(Class<T> klass) {
 		
 		this.resultType = ResultType.ARRAY;
+		
+		String sql = this.toSql();
+		System.out.println("SQL:");
+		System.out.println(sql);
+		
+		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+		
+		this.param.setParameters(query);
+		
+		List<T> result = query.getResultList();
+		
+		return result;
+	}
+	public <T> List<T> getResultListByConstructor(Class<T> klass) {
+		
+		this.resultType = ResultType.CONSTRUCTOR;
 		
 		String sql = this.toSql();
 		System.out.println("SQL:");
