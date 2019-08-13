@@ -7,6 +7,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Operations<ObjBack, SelectTable>
 		extends Container 
@@ -22,6 +23,7 @@ public class Operations<ObjBack, SelectTable>
 	private Select<SelectTable> select;
 	
 	@Getter
+	@Setter
 	private String originAlias;
 	
 	public Operations(ObjBack objBack, Select<SelectTable> select, String originAlias) {

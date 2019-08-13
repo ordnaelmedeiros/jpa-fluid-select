@@ -45,4 +45,10 @@ public class Order<SelectTable> extends Container
 		this.add(new Content(this.aliasOrigin+"."+field + " DESC"));
 		return this;
 	}
+	
+	public FieldOrder<SelectTable> field(String field) {
+		FieldOrder<SelectTable> f = new FieldOrder<>(this, this.aliasOrigin, field);
+		return f;
+	}
+	
 }

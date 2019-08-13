@@ -17,6 +17,9 @@ public interface FluidSelect<SelectTable> {
 	default <T> List<T> getResultListByConstructor(Class<T> klass) {
 		return this.getSelect().getResultListByConstructor(klass);
 	}
+	default <T> List<T> getResultListByTransform(Class<T> klass) {
+		return this.getSelect().getResultListByTransform(klass);
+	}
 	
 	
 	default SelectTable getSingleResult() {
@@ -27,6 +30,9 @@ public interface FluidSelect<SelectTable> {
 	}
 	default <T> T getSingleResultByConstructor(Class<T> klass) {
 		return this.getSelect().getSingleResultByConstructor(klass);
+	}
+	default <T> T getSingleResultByTransform(Class<T> klass) {
+		return this.getSelect().getSingleResultByTransform(klass);
 	}
 	
 	

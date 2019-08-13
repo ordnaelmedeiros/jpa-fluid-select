@@ -77,5 +77,11 @@ public class Join<ObjBack, SelectTable>
 		}
 		return sql;
 	}
+
+	public Join<ObjBack, SelectTable> alias(String value) {
+		this.aliasJoin = value;
+		this.on.setOriginAlias(value);
+		return this;
+	}
 	
 }

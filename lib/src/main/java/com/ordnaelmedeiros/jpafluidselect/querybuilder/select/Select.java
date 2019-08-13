@@ -184,6 +184,13 @@ public class Select<Table> {
 		
 		return result;
 	}
+	public <T> T getSingleResultByTransform(Class<T> klass) {
+		
+		T result = null;
+		
+		return result;
+		
+	}
 	
 	public <T> List<T> getResultList(Class<T> klass) {
 		
@@ -214,6 +221,12 @@ public class Select<Table> {
 		this.param.setParameters(query);
 		
 		List<T> result = query.getResultList();
+		
+		return result;
+	}
+	public <T> List<T> getResultListByTransform(Class<T> klass) {
+
+		List<T> result = null;
 		
 		return result;
 	}

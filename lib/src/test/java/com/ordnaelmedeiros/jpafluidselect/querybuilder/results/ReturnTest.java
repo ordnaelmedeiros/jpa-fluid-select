@@ -235,4 +235,65 @@ public class ReturnTest extends QueryBuilderTestBase {
 		
 	}
 	
+
+	@Test
+	public void singleReturnFieldByTransform() {
+		
+		try {
+				
+			People result = queryBuilder
+				.select(People.class)
+				.fields()
+					.add("id")
+					.add("name")
+				.where()
+					.field("id").eq(1l)
+				.getSingleResultByTransform(People.class);
+			
+			assertThat(result, notNullValue());
+			assertThat(result.getId(), equalTo(1l));
+			assertThat(result.getName(), equalTo("Leandro"));
+			assertThat(result.getCreated(), nullValue());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+	}
+	
+	@Test
+	public void listReturnFieldByTransform() {
+		
+		try {
+			
+			List<People> result = queryBuilder
+				.select(People.class)
+				.fields()
+					.add("id")
+					.add("name")
+				.where()
+					.field("id").in(1l, 2l)
+				.order()
+					.asc("id")
+				.getResultListByTransform(People.class);
+			
+			assertThat(result, notNullValue());
+			assertThat(result.size(), equalTo(2));
+			
+			assertThat(result.get(0).getId(), equalTo(1l));
+			assertThat(result.get(0).getName(), equalTo("Leandro"));
+			assertThat(result.get(0).getCreated(), nullValue());
+			
+			assertThat(result.get(1).getId(), equalTo(2l));
+			assertThat(result.get(1).getName(), equalTo("Ivana"));
+			assertThat(result.get(1).getCreated(), nullValue());
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+		
+	}
+	
 }
