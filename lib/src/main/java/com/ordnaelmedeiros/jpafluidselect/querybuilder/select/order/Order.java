@@ -1,5 +1,10 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import javax.persistence.metamodel.SingularAttribute;
+
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy;
@@ -40,14 +45,36 @@ public class Order<SelectTable> extends Container
 		this.add(new Content(this.aliasOrigin+"."+field + " ASC"));
 		return this;
 	}
-
 	public Order<SelectTable> desc(String field) {
 		this.add(new Content(this.aliasOrigin+"."+field + " DESC"));
 		return this;
 	}
 	
+	public Order<SelectTable> asc(SingularAttribute<SelectTable, ?> field) {
+		this.add(new Content(this.aliasOrigin+"."+field.getName()+ " ASC"));
+		return this;
+	}
+	public Order<SelectTable> desc(SingularAttribute<SelectTable, ?> field) {
+		this.add(new Content(this.aliasOrigin+"."+field.getName()+ " DESC"));
+		return this;
+	}
+	
 	public FieldOrder<SelectTable> field(String field) {
-		FieldOrder<SelectTable> f = new FieldOrder<>(this, this.aliasOrigin, field);
+		FieldOrder<SelectTable> f = new FieldOrder<>(this, this.aliasOrigin+"."+field);
+		return f;
+	}
+	public FieldOrder<SelectTable> field(SingularAttribute<SelectTable, ?> field) {
+		FieldOrder<SelectTable> f = new FieldOrder<>(this, this.aliasOrigin+"."+field.getName());
+		return f;
+	}
+
+	public FieldOrderDate<SelectTable> fieldDate(SingularAttribute<SelectTable, LocalDate> field) {
+		FieldOrderDateTime<SelectTable> f = new FieldOrderDateTime<>(this, this.aliasOrigin+"."+field.getName());
+		return f;
+	}
+	
+	public FieldOrderDateTime<SelectTable> fieldDateTime(SingularAttribute<SelectTable, LocalDateTime> field) {
+		FieldOrderDateTime<SelectTable> f = new FieldOrderDateTime<>(this, this.aliasOrigin+"."+field.getName());
 		return f;
 	}
 	
