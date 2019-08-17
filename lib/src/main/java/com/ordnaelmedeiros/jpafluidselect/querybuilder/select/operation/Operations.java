@@ -66,7 +66,7 @@ public class Operations<ObjBack, SelectTable>
 	}
 
 	public FieldOperation<ObjBack, SelectTable> field(String field) {
-		return new FieldOperation<>(this, field);
+		return new FieldOperation<>(this, originAlias, field);
 	}
 
 }

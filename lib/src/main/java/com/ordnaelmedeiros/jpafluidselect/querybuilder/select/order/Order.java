@@ -1,8 +1,5 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import javax.persistence.metamodel.SingularAttribute;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
@@ -11,7 +8,6 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Container;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Content;
 
 public class Order<SelectTable> extends Container
 		implements
@@ -40,42 +36,61 @@ public class Order<SelectTable> extends Container
 	public Select<SelectTable> end() {
 		return this.select;
 	}
-
+	
+	public FieldOrder<SelectTable> field(String field) {
+		FieldOrder<SelectTable> f = new FieldOrder<>(this, this.aliasOrigin, field);
+		return f;
+	}
+	public FieldOrder<SelectTable> field(SingularAttribute<SelectTable, ?> field) {
+		FieldOrder<SelectTable> f = new FieldOrder<>(this, this.aliasOrigin, field.getName());
+		return f;
+	}
+	
 	public Order<SelectTable> asc(String field) {
-		this.add(new Content(this.aliasOrigin+"."+field + " ASC"));
+		this.field(field).asc();
 		return this;
 	}
 	public Order<SelectTable> desc(String field) {
-		this.add(new Content(this.aliasOrigin+"."+field + " DESC"));
+		this.field(field).desc();
+		return this;
+	}
+	
+	public Order<SelectTable> asc(String ...fields) {
+		for (String f : fields) {
+			this.asc(f);
+		}
+		return this;
+	}
+	public Order<SelectTable> desc(String ...fields) {
+		for (String f : fields) {
+			this.desc(f);
+		}
 		return this;
 	}
 	
 	public Order<SelectTable> asc(SingularAttribute<SelectTable, ?> field) {
-		this.add(new Content(this.aliasOrigin+"."+field.getName()+ " ASC"));
+		this.field(field).asc();
 		return this;
 	}
 	public Order<SelectTable> desc(SingularAttribute<SelectTable, ?> field) {
-		this.add(new Content(this.aliasOrigin+"."+field.getName()+ " DESC"));
+		this.field(field).desc();
 		return this;
 	}
 	
-	public FieldOrder<SelectTable> field(String field) {
-		FieldOrder<SelectTable> f = new FieldOrder<>(this, this.aliasOrigin+"."+field);
-		return f;
+	@SuppressWarnings("unchecked")
+	public Order<SelectTable> asc(SingularAttribute<SelectTable, ?> ...fields) {
+		for (SingularAttribute<SelectTable, ?> f : fields) {
+			this.asc(f);
+		}
+		return this;
 	}
-	public FieldOrder<SelectTable> field(SingularAttribute<SelectTable, ?> field) {
-		FieldOrder<SelectTable> f = new FieldOrder<>(this, this.aliasOrigin+"."+field.getName());
-		return f;
-	}
-
-	public FieldOrderDate<SelectTable> fieldDate(SingularAttribute<SelectTable, LocalDate> field) {
-		FieldOrderDateTime<SelectTable> f = new FieldOrderDateTime<>(this, this.aliasOrigin+"."+field.getName());
-		return f;
+	@SuppressWarnings("unchecked")
+	public Order<SelectTable> desc(SingularAttribute<SelectTable, ?> ...fields) {
+		for (SingularAttribute<SelectTable, ?> f : fields) {
+			this.desc(f);
+		}
+		return this;
 	}
 	
-	public FieldOrderDateTime<SelectTable> fieldDateTime(SingularAttribute<SelectTable, LocalDateTime> field) {
-		FieldOrderDateTime<SelectTable> f = new FieldOrderDateTime<>(this, this.aliasOrigin+"."+field.getName());
-		return f;
-	}
 	
 }

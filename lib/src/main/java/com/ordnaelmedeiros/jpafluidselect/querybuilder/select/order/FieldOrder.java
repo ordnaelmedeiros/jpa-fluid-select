@@ -1,51 +1,64 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Content;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.transforms.FieldOrderTransformCast;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.transforms.FieldOrderTransformDate;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.transforms.FieldOrderTransformTime;
 
-public class FieldOrder<SelectTable> {
+public class FieldOrder<SelectTable> implements 
+		FieldOrderTransformDate<SelectTable>,
+		FieldOrderTransformTime<SelectTable>,
+		FieldOrderTransformCast<SelectTable>
+		{
 
 	protected Order<SelectTable> order;
-	protected String field;
-	protected String cast;
-	protected String ordenation;
-
-	public FieldOrder(Order<SelectTable> order, String field) {
+	
+	private String sql;
+	
+	public FieldOrder(Order<SelectTable> order, String alias, String field) {
 		this.order = order;
-		this.field = field;
+		this.sql = alias+"."+field;
 	}
-	
-	private void addOrder() {
-		if (this.cast==null) {
-			order.add(new Content(this.field + " " + this.ordenation));
-		} else {
-			order.add(new Content("CAST("+this.field +" AS "+ this.cast + ") " + this.ordenation));
-		}
+
+	@Override
+	public void setSql(String sql) {
+		this.sql = sql;
 	}
-	
-	public Order<SelectTable> asc() {
-		this.ordenation = "ASC";
-		this.addOrder();
-		return order;
+
+	@Override
+	public String getSql() {
+		return this.sql;
 	}
-	
-	public Order<SelectTable> desc() {
-		this.ordenation = "DESC";
-		this.addOrder();
-		return order;
-	}
-	/*
-	public FieldOrder<SelectTable> fromAlias(String alias) {
-		this.alias = alias;
+
+	@Override
+	public FieldOrder<SelectTable> end() {
 		return this;
 	}
-	*/
-	public FieldOrder<SelectTable> cast(Class<?> klass) {
-		FieldOrder<SelectTable> f = new FieldOrder<>(order, "CAST("+field+" as "+klass.getName()+")");
-		return f;
+	
+	/**
+	 * Order direction ASC.
+	 * <ul>
+	 * <li>JPQL: ORDER BY c.name ASC
+	 * </ul>
+	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/order#Order_Direction_ASC_DESC">www.objectdb.com</a> 
+	 * @return back Order
+	 */
+	public Order<SelectTable> asc() {
+		order.add(new Content(this.sql + " ASC"));
+		return order;
 	}
 	
-	public FieldOrderDate<SelectTable> castDate() {
-		FieldOrderDate<SelectTable> f = new FieldOrderDate<>(order, "CAST("+field+" as LocalDate)");
-		return f;
+	/**
+	 * Order direction DESC.
+	 * <ul>
+	 * <li>JPQL: ORDER BY c.name DESC
+	 * </ul>
+	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/order#Order_Direction_ASC_DESC">www.objectdb.com</a> 
+	 * @return back Order
+	 */
+	public Order<SelectTable> desc() {
+		order.add(new Content(this.sql + " DESC"));
+		return order;
 	}
+	
 }

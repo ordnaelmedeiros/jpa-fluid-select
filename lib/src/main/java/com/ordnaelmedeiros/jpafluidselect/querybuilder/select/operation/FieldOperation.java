@@ -2,14 +2,17 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation;
 
 import java.util.Arrays;
 
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.FieldControl;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class FieldOperation<ObjBack, SelectTable> implements ToSql {
+public class FieldOperation<ObjBack, SelectTable>
+		extends FieldControl<FieldOperation<ObjBack, SelectTable>>
+		implements ToSql {
 
-	private String field;
+	private Operations<ObjBack, SelectTable> operations;
 	
 	private String operation;
 	
@@ -19,18 +22,17 @@ public class FieldOperation<ObjBack, SelectTable> implements ToSql {
 	@Getter
 	private Object value;
 	
-	private Operations<ObjBack, SelectTable> operations;
-
-	public FieldOperation(Operations<ObjBack, SelectTable> operations, String field) {
+	public FieldOperation(Operations<ObjBack, SelectTable> operations, String alias, String field) {
+		super(alias, field);
+		this.setBack(this);
 		this.operations = operations;
-		this.field = field;
 	}
-
+	
 	public Operations<ObjBack,SelectTable> gt(Object value) {
 		this.value = value;
 		this.operation = " > ";
 		this.operations.addField(this);
-		return this.operations;
+		return operations;
 	}
 	
 	public Operations<ObjBack,SelectTable> eq(Object value) {
@@ -42,14 +44,14 @@ public class FieldOperation<ObjBack, SelectTable> implements ToSql {
 	
 	public Operations<ObjBack,SelectTable> in(Object ...value) {
 		this.value = Arrays.asList(value);
-		this.operation = " in ";
+		this.operation = " IN ";
 		this.operations.addField(this);
 		return this.operations;
 	}
-	
+
 	@Override
 	public String toSql() {
-		return this.operations.getOriginAlias() + "."+field + this.operation +" :" + this.param;
+		return this.getSql() + this.operation +" :" + this.param;
 	}
 	
 }

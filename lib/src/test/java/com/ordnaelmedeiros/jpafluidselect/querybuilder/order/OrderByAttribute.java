@@ -82,7 +82,7 @@ public class OrderByAttribute extends QueryBuilderTestBase {
 				.add("name")
 				.add("created")
 			.order()
-				.fieldDateTime(People_.created).castDate().year().asc()
+				.field(People_.created).year().asc()
 				.field(People_.id).asc()
 			.print();
 			//.getResultObjects();

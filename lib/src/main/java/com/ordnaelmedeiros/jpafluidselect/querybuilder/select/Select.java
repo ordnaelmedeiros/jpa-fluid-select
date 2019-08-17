@@ -1,8 +1,10 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.stream.Stream;
 
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -68,7 +70,15 @@ public class Select<Table> {
 	public Operations<Select<Table>, Table> where() {
 		return this.where;
 	}
-	
+
+	/**
+	 * ORDER BY clause
+	 * <ul>
+	 * <li>JPQL: ORDER BY c.name
+	 * </ul>
+	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/order">www.objectdb.com</a> 
+	 * @return ORDER BY
+	 */
 	public Order<Table> order() {
 		return this.order;
 	}
@@ -246,54 +256,82 @@ public class Select<Table> {
 	
 	public String resultToString() {
 		
-		StringJoiner sBuilder = new StringJoiner("\n");
+		String block = "\n=============================\n";
+		StringJoiner sBuilder = new StringJoiner("\n", block, block);
 		
-		try {
+		if (this.fields.isEmpty()) {
 			
-			List<Object[]> objects = this.getResultObjects();
+			List<Table> result = this.getResultList();
 			
-			List<Integer> lenths = new ArrayList<Integer>();
-			
-			this.fields.getList().forEach( f-> {
-				lenths.add(f.toSql().length());
+			result.forEach(i -> {
+				
+				Stream<Field> fields = Stream.of(this.klass.getDeclaredFields());
+				StringJoiner sRow = new StringJoiner(" - ");
+				
+				fields.forEach(f -> {
+					f.setAccessible(true);
+					try {
+						Object v = f.get(i);
+						if (v!=null) {
+							sRow.add(v.toString());
+						} else {
+							sRow.add("<NULL>");
+						}
+					} catch (Exception e) {
+					}
+				});
+				sBuilder.add(sRow.toString());
 			});
-			objects.forEach(list-> {
-				for (int i = 0; i < list.length; i++) {
-					Object o = list[i];
-					if (o!=null) {
-						Integer len = o.toString().length();
-						if (len>lenths.get(i)) {
-							lenths.add(i, len);
+			
+		} else {
+			
+			try {
+				
+				List<Object[]> objects = this.getResultObjects();
+				
+				List<Integer> lenths = new ArrayList<Integer>();
+				
+				this.fields.getList().forEach( f-> {
+					lenths.add(f.toSql().length());
+				});
+				objects.forEach(list-> {
+					for (int i = 0; i < list.length; i++) {
+						Object o = list[i];
+						if (o!=null) {
+							Integer len = o.toString().length();
+							if (len>lenths.get(i)) {
+								lenths.add(i, len);
+							}
 						}
 					}
+				});
+				
+				StringJoiner lines = new StringJoiner("===","==","==");
+				StringJoiner fields = new StringJoiner(" | ","| "," |");
+				
+				for (int j = 0; j < this.fields.getList().size(); j++) {
+					ToSql toSql = this.fields.getList().get(j);
+					lines.add(this.format("=", "=", lenths.get(j)));
+					fields.add(this.format(toSql.toSql(), " ", lenths.get(j)));
 				}
-			});
-			
-			StringJoiner lines = new StringJoiner("===","==","==");
-			StringJoiner fields = new StringJoiner(" | ","| "," |");
-			
-			for (int j = 0; j < this.fields.getList().size(); j++) {
-				ToSql toSql = this.fields.getList().get(j);
-				lines.add(this.format("=", "=", lenths.get(j)));
-				fields.add(this.format(toSql.toSql(), " ", lenths.get(j)));
+				
+				sBuilder.add(lines.toString());
+				sBuilder.add(fields.toString());
+				sBuilder.add(lines.toString());
+				
+				objects.forEach(list -> {
+					StringJoiner values = new StringJoiner(" | ","| "," |");	
+					for (int i = 0; i < list.length; i++) {
+						values.add(this.format(list[i], " ", lenths.get(i)));
+					}
+					sBuilder.add(values.toString());
+				});
+				
+				sBuilder.add(lines.toString());
+				
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
-			
-			sBuilder.add(lines.toString());
-			sBuilder.add(fields.toString());
-			sBuilder.add(lines.toString());
-			
-			objects.forEach(list -> {
-				StringJoiner values = new StringJoiner(" | ","| "," |");	
-				for (int i = 0; i < list.length; i++) {
-					values.add(this.format(list[i], " ", lenths.get(i)));
-				}
-				sBuilder.add(values.toString());
-			});
-			
-			sBuilder.add(lines.toString());
-			
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 		
 		return sBuilder.toString();
