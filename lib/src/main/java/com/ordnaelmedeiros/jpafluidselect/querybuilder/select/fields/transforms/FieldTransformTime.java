@@ -1,13 +1,11 @@
-package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.transforms;
+package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.transforms;
 
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.FieldOrder;
-
-public interface FieldOrderTransformTime<SelectTable> {
+public interface FieldTransformTime<Back> {
 
 	void setSql(String sql);
 	String getSql();
 	
-	FieldOrder<SelectTable> end();
+	Back end();
 	
 	/**
 	 * Extracting date parts HOUR.
@@ -18,7 +16,7 @@ public interface FieldOrderTransformTime<SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back FieldOrder
 	 */
-	default FieldOrder<SelectTable> hour() {
+	default Back hour() {
 		this.setSql("HOUR(" + this.getSql() + ")");
 		return end();
 	}
@@ -32,7 +30,7 @@ public interface FieldOrderTransformTime<SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back FieldOrder
 	 */
-	default FieldOrder<SelectTable> minute() {
+	default Back minute() {
 		this.setSql("MINUTE(" + this.getSql() + ")");
 		return end();
 	}
@@ -46,7 +44,7 @@ public interface FieldOrderTransformTime<SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back FieldOrder
 	 */
-	default FieldOrder<SelectTable> second() {
+	default Back second() {
 		this.setSql("SECOND(" + this.getSql() + ")");
 		return end();
 	}

@@ -259,7 +259,7 @@ public class Select<Table> {
 		String block = "\n=============================\n";
 		StringJoiner sBuilder = new StringJoiner("\n", block, block);
 		
-		if (this.fields.isEmpty()) {
+		if (this.fields.isEmpty() || this.fields().getList().size()==1) {
 			
 			List<Table> result = this.getResultList();
 			

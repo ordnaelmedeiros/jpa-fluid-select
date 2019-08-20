@@ -1,40 +1,18 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order;
 
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.FieldControl;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Content;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.transforms.FieldOrderTransformCast;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.transforms.FieldOrderTransformDate;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.transforms.FieldOrderTransformTime;
 
-public class FieldOrder<SelectTable> implements 
-		FieldOrderTransformDate<SelectTable>,
-		FieldOrderTransformTime<SelectTable>,
-		FieldOrderTransformCast<SelectTable>
-		{
+public class FieldOrder<SelectTable> extends FieldControl<FieldOrder<SelectTable>> {
 
 	protected Order<SelectTable> order;
 	
-	private String sql;
-	
 	public FieldOrder(Order<SelectTable> order, String alias, String field) {
 		this.order = order;
-		this.sql = alias+"."+field;
+		this.setBack(this);
+		this.setSql(alias+"."+field);
 	}
 
-	@Override
-	public void setSql(String sql) {
-		this.sql = sql;
-	}
-
-	@Override
-	public String getSql() {
-		return this.sql;
-	}
-
-	@Override
-	public FieldOrder<SelectTable> end() {
-		return this;
-	}
-	
 	/**
 	 * Order direction ASC.
 	 * <ul>
@@ -44,7 +22,7 @@ public class FieldOrder<SelectTable> implements
 	 * @return back Order
 	 */
 	public Order<SelectTable> asc() {
-		order.add(new Content(this.sql + " ASC"));
+		order.add(new Content(this.getSql() + " ASC"));
 		return order;
 	}
 	
@@ -57,7 +35,7 @@ public class FieldOrder<SelectTable> implements
 	 * @return back Order
 	 */
 	public Order<SelectTable> desc() {
-		order.add(new Content(this.sql + " DESC"));
+		order.add(new Content(this.getSql() + " DESC"));
 		return order;
 	}
 	

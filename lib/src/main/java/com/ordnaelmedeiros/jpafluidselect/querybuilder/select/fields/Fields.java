@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
 
+import javax.persistence.metamodel.SingularAttribute;
+
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ResultType;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
@@ -14,6 +16,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Container;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Content;
 
 import lombok.Getter;
 
@@ -48,13 +51,21 @@ public class Fields<SelectTable> implements
 		this.list.add(new FieldSelect<>(this, this.aliasFrom, field));
 		return this;
 	}
+	public Fields<SelectTable> add(SingularAttribute<SelectTable, ?> field) {
+		this.list.add(new FieldSelect<>(this, this.aliasFrom, field.getName()));
+		return this;
+	}
 	
 	public FieldSelect<SelectTable> field(String field) {
 		return new FieldSelect<>(this, this.aliasFrom, field);
 	}
+	public FieldSelect<SelectTable> field(SingularAttribute<SelectTable, ?> field) {
+		FieldSelect<SelectTable> f = new FieldSelect<>(this, this.aliasFrom, field.getName());
+		return f;
+	}
 
 	public Fields<SelectTable> count() {
-		this.list.add(new FieldSelect<>(this, "count(*)"));
+		this.list.add(new Content("count(*)"));
 		return this;
 	}
 	public Fields<SelectTable> sum(String field) {

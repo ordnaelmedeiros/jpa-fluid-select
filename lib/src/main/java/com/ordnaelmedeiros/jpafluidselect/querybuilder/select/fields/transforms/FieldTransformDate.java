@@ -1,13 +1,11 @@
-package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.transforms;
+package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.transforms;
 
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.FieldOrder;
-
-public interface FieldOrderTransformDate<SelectTable> {
+public interface FieldTransformDate<Back> {
 
 	void setSql(String sql);
 	String getSql();
 	
-	FieldOrder<SelectTable> end();
+	Back end();
 	
 	/**
 	 * Extracting date parts YEAR.
@@ -18,7 +16,7 @@ public interface FieldOrderTransformDate<SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a> 
 	 * @return back FieldOrder
 	 */
-	default FieldOrder<SelectTable> year() {
+	default Back year() {
 		this.setSql("YEAR(" + this.getSql() + ")");
 		return end();
 	}
@@ -32,7 +30,7 @@ public interface FieldOrderTransformDate<SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back FieldOrder
 	 */
-	default FieldOrder<SelectTable> month() {
+	default Back month() {
 		this.setSql("MONTH(" + this.getSql() + ")");
 		return end();
 	}
@@ -46,7 +44,7 @@ public interface FieldOrderTransformDate<SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back FieldOrder
 	 */
-	default FieldOrder<SelectTable> day() {
+	default Back day() {
 		this.setSql("DAY(" + this.getSql() + ")");
 		return end();
 	}
