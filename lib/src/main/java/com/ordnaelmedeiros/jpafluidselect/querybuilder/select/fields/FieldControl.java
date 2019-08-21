@@ -22,6 +22,10 @@ public class FieldControl<Back> implements
 	public FieldControl() {
 	}
 	
+	public FieldControl(Back back) {
+		this.back = back;
+	}
+	
 	protected void setBack(Back back) {
 		this.back = back;
 	}

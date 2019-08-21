@@ -17,6 +17,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.join.Join;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.Order;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.parameters.Parameters;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.where.Where;
 
 import lombok.Getter;
@@ -340,6 +341,12 @@ public class Select<Table> {
 	
 	public Select<Table> print() {
 		System.out.println(this.resultToString());
+		return this;
+	}
+
+	public Select<Table> ref(Ref<Table> ref) {
+		ref.setKlass(this.klass);
+		ref.setAlias(this.aliasFrom);
 		return this;
 	}
 	

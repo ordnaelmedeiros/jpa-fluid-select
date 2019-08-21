@@ -1,4 +1,4 @@
-package com.ordnaelmedeiros.jpafluidselect.querybuilder.order.string;
+package com.ordnaelmedeiros.jpafluidselect.querybuilder.transform.string;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -15,8 +15,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
-public class OrderByStringTest {
+public class TransformStringTest {
 	
 	private static EntityManagerFactory emf;
 	public EntityManager em;
@@ -36,6 +37,7 @@ public class OrderByStringTest {
 		em.persist(new ObjString(2, "  A"));
 		em.persist(new ObjString(3, "a"));
 		em.persist(new ObjString(4, "A"));
+		em.persist(new ObjString(5, "Leandro Medeiros"));
 		
 		em.getTransaction().commit();
 		
@@ -162,4 +164,144 @@ public class OrderByStringTest {
 		
 	}
 	
+	@Test
+	public void textLocate() {
+		
+		List<Object[]> result = queryBuilder
+			.select(ObjString.class)
+			.fields()
+				.add(ObjString_.id)
+				.add(ObjString_.text)
+				.field(ObjString_.text).upper().locate("D").add()
+			.where()
+				.field("id").eq(5)
+			.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+
+		assertThat(result.get(0)[0], is(5));
+		assertThat(result.get(0)[2], is(5));
+		
+	}
+
+	@Test
+	public void textLocateIndex() {
+		
+		List<Object[]> result = queryBuilder
+			.select(ObjString.class)
+			.fields()
+				.add(ObjString_.id)
+				.add(ObjString_.text)
+				.field(ObjString_.text).locate("e", 3).add()
+			.where()
+				.field("id").eq(5)
+			.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+
+		assertThat(result.get(0)[0], is(5));
+		assertThat(result.get(0)[2], is(10));
+		
+	}
+	
+	@Test
+	public void textSubstringStart() {
+		
+		List<Object[]> result = queryBuilder
+			.select(ObjString.class)
+			.fields()
+				.add(ObjString_.id)
+				.add(ObjString_.text)
+				.field(ObjString_.text).substring(9).upper().add()
+			.where()
+				.field("id").eq(5)
+			.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+
+		assertThat(result.get(0)[0], is(5));
+		assertThat(result.get(0)[2], is("MEDEIROS"));
+		
+	}
+	
+	@Test
+	public void textSubstringStartLength() {
+		
+		List<Object[]> result = queryBuilder
+			.select(ObjString.class)
+			.fields()
+				.add(ObjString_.id)
+				.add(ObjString_.text)
+				.field(ObjString_.text).substring(9, 3).lower().add()
+			.where()
+				.field("id").eq(5)
+			.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+
+		assertThat(result.get(0)[0], is(5));
+		assertThat(result.get(0)[2], is("med"));
+		
+	}
+	
+
+	@Test
+	public void textConcat() {
+		
+		Ref<ObjString> refObjString = new Ref<>();
+		
+		List<Object[]> result = queryBuilder
+			.select(ObjString.class).ref(refObjString)
+			.fields()
+				.add(ObjString_.id)
+				.add(ObjString_.text)
+				.field(ObjString_.text).concat(" - ", "a", " - b").add()
+				.field(ObjString_.id).concat(" - ").concat(refObjString, "text").add()
+				.field(ObjString_.id).concat(" - ").concat(refObjString, ObjString_.text).add()
+			.where()
+				.field("id").eq(5)
+			.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+
+		assertThat(result.get(0)[0], is(5));
+		assertThat(result.get(0)[2], is("Leandro Medeiros - a - b"));
+		assertThat(result.get(0)[3], is("5 - Leandro Medeiros"));
+		assertThat(result.get(0)[4], is("5 - Leandro Medeiros"));
+		
+	}
+	
+	@Test
+	public void textConcatOhh() {
+		
+		Ref<ObjString> ref = new Ref<>();
+		
+		List<Object[]> result = queryBuilder
+			.select(ObjString.class).ref(ref)
+			.fields()
+				.add(ObjString_.id)
+				.add(ObjString_.text)
+				.field(ObjString_.text).substring(1, 7).lower()
+					.concat(" - ")
+					.concat(ref
+						.field(ObjString_.text).substring(9).upper()
+					)
+				.add()
+			.where()
+				.field("id").eq(5)
+			.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+
+		assertThat(result.get(0)[0], is(5));
+		assertThat(result.get(0)[2], is("leandro - MEDEIROS"));
+		
+	}
+
 }
