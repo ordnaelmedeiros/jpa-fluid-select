@@ -14,7 +14,7 @@ public interface FieldTransformTime<Back> {
 	 * <li>in the example is evaluated for 23
 	 * </ul>
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
-	 * @return back FieldOrder
+	 * @return back
 	 */
 	default Back hour() {
 		this.setSql("HOUR(" + this.getSql() + ")");
@@ -28,7 +28,7 @@ public interface FieldTransformTime<Back> {
 	 * <li>in the example is evaluated for 59
 	 * </ul>
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
-	 * @return back FieldOrder
+	 * @return back
 	 */
 	default Back minute() {
 		this.setSql("MINUTE(" + this.getSql() + ")");
@@ -42,7 +42,7 @@ public interface FieldTransformTime<Back> {
 	 * <li>in the example is evaluated for 00
 	 * </ul>
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
-	 * @return back FieldOrder
+	 * @return back
 	 */
 	default Back second() {
 		this.setSql("SECOND(" + this.getSql() + ")");

@@ -12,9 +12,11 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.order.time.OrderByTimeTes
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.results.PrintTest;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.results.ReturnTest;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.transform.string.TransformStringTest;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.where.WhereCastTest;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.where.WhereDateTest;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.where.WhereEqTest;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.where.WhereTest;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.where.WhereTimeTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -28,6 +30,8 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.where.WhereTest;
 	OrderByDateTest.class,
 	OrderByTimeTest.class,
 	WhereDateTest.class,
+	WhereTimeTest.class,
+	WhereCastTest.class,
 	WhereEqTest.class
 })
 public class QueryBuilderSuite {

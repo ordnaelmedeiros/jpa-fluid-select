@@ -14,7 +14,7 @@ public interface FieldTransformDate<Back> {
 	 * <li>in the example is evaluated for 2011
 	 * </ul>
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a> 
-	 * @return back FieldOrder
+	 * @return back
 	 */
 	default Back year() {
 		this.setSql("YEAR(" + this.getSql() + ")");
@@ -28,7 +28,7 @@ public interface FieldTransformDate<Back> {
 	 * <li>in the example is evaluated for 12
 	 * </ul>
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
-	 * @return back FieldOrder
+	 * @return back
 	 */
 	default Back month() {
 		this.setSql("MONTH(" + this.getSql() + ")");
@@ -42,7 +42,7 @@ public interface FieldTransformDate<Back> {
 	 * <li>in the example is evaluated for 31
 	 * </ul>
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
-	 * @return back FieldOrder
+	 * @return back
 	 */
 	default Back day() {
 		this.setSql("DAY(" + this.getSql() + ")");

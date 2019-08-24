@@ -3,7 +3,9 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation;
 import java.util.Arrays;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformCast;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformDate;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformString;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformTime;
 
 import lombok.Getter;
@@ -14,6 +16,8 @@ public class FieldOperation<ObjBack, SelectTable, Type>
 		implements
 			OperationTransformDate<ObjBack, SelectTable>,
 			OperationTransformTime<ObjBack, SelectTable>,
+			OperationTransformCast<ObjBack, SelectTable>,
+			OperationTransformString<ObjBack, SelectTable>,
 			ToSql {
 
 	@Getter
