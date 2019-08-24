@@ -2,56 +2,66 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation;
 
 import java.util.Arrays;
 
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.FieldControl;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformDate;
 
 import lombok.Getter;
 import lombok.Setter;
 
-public class FieldOperation<ObjBack, SelectTable>
-		extends FieldControl<FieldOperation<ObjBack, SelectTable>>
-		implements ToSql {
+public class FieldOperation<ObjBack, SelectTable, Type>
+		//extends FieldControl<FieldOperation<ObjBack, SelectTable>>
+		implements
+			OperationTransformDate<ObjBack, SelectTable>,
+			ToSql {
 
+	@Getter
 	private Operations<ObjBack, SelectTable> operations;
 	
-	private String operation;
+	private String sql;
 	
 	@Setter
 	private String param;
 	
-	@Getter
-	private Object value;
-	
-	public FieldOperation(Operations<ObjBack, SelectTable> operations, String alias, String field) {
-		super(alias, field);
-		this.setBack(this);
+	public FieldOperation(Operations<ObjBack, SelectTable> operations, String sql) {
+		this.sql = sql;
 		this.operations = operations;
 	}
 	
-	public Operations<ObjBack,SelectTable> gt(Object value) {
-		this.value = value;
-		this.operation = " > ";
+	public FieldOperation(Operations<ObjBack, SelectTable> operations, String alias, String field) {
+		this.sql = alias+"."+field;
+		this.operations = operations;
+	}
+	
+	private void createParam(Object value) {
+		this.param = this.operations.getSelect().getParam().create(value);
+	}
+	
+	public Operations<ObjBack,SelectTable> gt(Type value) {
+		this.createParam(value);
+		this.sql = this.sql + " > :" + this.param;
 		this.operations.addField(this);
 		return operations;
 	}
 	
-	public Operations<ObjBack,SelectTable> eq(Object value) {
-		this.value = value;
-		this.operation = " = ";
+	public Operations<ObjBack,SelectTable> eq(Type value) {
+		this.createParam(value);
+		this.sql = this.sql + " = :" + this.param;
 		this.operations.addField(this);
 		return this.operations;
 	}
 	
-	public Operations<ObjBack,SelectTable> in(Object ...value) {
-		this.value = Arrays.asList(value);
-		this.operation = " IN ";
+	@SuppressWarnings("unchecked")
+	public Operations<ObjBack,SelectTable> in(Type ...value) {
+		this.createParam(Arrays.asList(value));
+		this.sql = this.sql + " IN :" + this.param;
 		this.operations.addField(this);
 		return this.operations;
 	}
 
 	@Override
 	public String toSql() {
-		return this.getSql() + this.operation +" :" + this.param;
+		return this.sql;// + this.operation +" :" + this.param;
 	}
+	
 	
 }

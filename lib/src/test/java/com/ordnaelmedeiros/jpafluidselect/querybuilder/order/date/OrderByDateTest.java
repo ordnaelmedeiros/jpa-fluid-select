@@ -17,6 +17,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjDate;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjDate_;
 
 public class OrderByDateTest {
 	
@@ -33,6 +35,7 @@ public class OrderByDateTest {
 		
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
+		em.createQuery("delete from ObjDate").executeUpdate();
 		
 		em.persist(new ObjDate(1, 2016, Month.JUNE, 13));
 		em.persist(new ObjDate(2, 2017, Month.JULY, 14));

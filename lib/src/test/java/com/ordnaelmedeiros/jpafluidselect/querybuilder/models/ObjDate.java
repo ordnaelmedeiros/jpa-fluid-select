@@ -1,4 +1,4 @@
-package com.ordnaelmedeiros.jpafluidselect.querybuilder.order.date;
+package com.ordnaelmedeiros.jpafluidselect.querybuilder.models;
 
 import java.time.LocalDate;
 import java.time.Month;

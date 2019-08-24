@@ -15,6 +15,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjString;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjString_;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
 public class TransformStringTest {
@@ -23,8 +25,6 @@ public class TransformStringTest {
 	public EntityManager em;
 	public QueryBuilder queryBuilder;
 	
-	private final int maxSize = 4;
-	
 	@BeforeClass
 	public static void beforeClass() {
 		
@@ -32,6 +32,7 @@ public class TransformStringTest {
 		
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
+		em.createQuery("delete from ObjString").executeUpdate();
 		
 		em.persist(new ObjString(1, "A"));
 		em.persist(new ObjString(2, "  A"));

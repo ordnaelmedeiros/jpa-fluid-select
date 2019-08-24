@@ -9,12 +9,9 @@ import java.util.List;
 import org.junit.Test;
 
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilderTestBase;
 
-public class OrderStringFieldTest /* extends QueryBuilderTestBase */ {
-	
-	public QueryBuilder queryBuilder;
+public class OrderStringFieldTest extends QueryBuilderTestBase {
 	
 	@Test
 	public void orderByFieldsInOriginTable() {

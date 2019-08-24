@@ -1,5 +1,7 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation;
 
+import javax.persistence.metamodel.Attribute;
+
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy;
@@ -54,9 +56,7 @@ public class Operations<ObjBack, SelectTable>
 		return and;
 	}
 	
-	public void addField(FieldOperation<ObjBack, SelectTable> field) {
-		String param = this.select.getParam().create(field.getValue());
-		field.setParam(param);
+	public void addField(FieldOperation<ObjBack, SelectTable, ?> field) {
 		this.add(field);
 	}
 	
@@ -65,8 +65,12 @@ public class Operations<ObjBack, SelectTable>
 		return objBack;
 	}
 
-	public FieldOperation<ObjBack, SelectTable> field(String field) {
+	public FieldOperation<ObjBack, SelectTable, Object> field(String field) {
 		return new FieldOperation<>(this, originAlias, field);
 	}
-
+	
+	public <T> FieldOperation<ObjBack, SelectTable, T> field(Attribute<SelectTable, T> field) {
+		return new FieldOperation<>(this, originAlias, field.getName());
+	}
+	
 }

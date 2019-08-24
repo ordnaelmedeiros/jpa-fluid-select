@@ -1,4 +1,4 @@
-package com.ordnaelmedeiros.jpafluidselect.querybuilder.order.time;
+package com.ordnaelmedeiros.jpafluidselect.querybuilder.models;
 
 import java.time.LocalTime;
 

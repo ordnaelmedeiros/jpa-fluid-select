@@ -1,4 +1,4 @@
-package com.ordnaelmedeiros.jpafluidselect.querybuilder.transform.string;
+package com.ordnaelmedeiros.jpafluidselect.querybuilder.models;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

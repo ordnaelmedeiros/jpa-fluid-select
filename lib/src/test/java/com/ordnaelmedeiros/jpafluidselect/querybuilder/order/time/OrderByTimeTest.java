@@ -16,6 +16,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjTime;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjTime_;
 
 public class OrderByTimeTest {
 	
@@ -32,6 +34,7 @@ public class OrderByTimeTest {
 		
 		EntityManager em = emf.createEntityManager();
 		em.getTransaction().begin();
+		em.createQuery("delete from ObjTime").executeUpdate();
 		
 		em.persist(new ObjTime(1, 16, 6, 13));
 		em.persist(new ObjTime(2, 17, 7, 14));
