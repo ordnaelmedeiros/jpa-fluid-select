@@ -1,4 +1,4 @@
-package com.ordnaelmedeiros.jpafluidselect.querybuilder.where;
+package com.ordnaelmedeiros.jpafluidselect.querybuilder.where.operation;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -17,6 +17,7 @@ import org.junit.Test;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjString;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjString_;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
 public class WhereEqTest {
 	
@@ -58,7 +59,32 @@ public class WhereEqTest {
 			.where()
 				.orGroup()
 					.field(ObjString_.id).eq(1)
-					.field(ObjString_.text).eq("C")
+					.field(ObjString_.text).equal("C")
+			.order()
+				.asc(ObjString_.id)
+			.print()
+			.getResultList();
+		
+		assertThat(result, notNullValue());
+		assertThat(result.size(), is(2));
+		assertThat(result.get(0).getId(), is(1));
+		assertThat(result.get(0).getText(), is("A"));
+		assertThat(result.get(1).getId(), is(3));
+		assertThat(result.get(1).getText(), is("C"));
+		
+	}
+	
+	@Test
+	public void eqByRef() {
+		
+		Ref<ObjString> ref = new Ref<>();
+		List<ObjString> result = queryBuilder
+			.select(ObjString.class).ref(ref)
+			.where()
+				.field(ObjString_.id).eq(ref.field(ObjString_.id))
+				.orGroup()
+					.field(ObjString_.id).eq(1)
+					.field(ObjString_.text).equal("C")
 			.order()
 				.asc(ObjString_.id)
 			.print()

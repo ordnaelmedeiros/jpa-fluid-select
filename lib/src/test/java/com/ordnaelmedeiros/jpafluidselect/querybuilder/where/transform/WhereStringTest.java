@@ -1,4 +1,4 @@
-package com.ordnaelmedeiros.jpafluidselect.querybuilder.where;
+package com.ordnaelmedeiros.jpafluidselect.querybuilder.where.transform;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
