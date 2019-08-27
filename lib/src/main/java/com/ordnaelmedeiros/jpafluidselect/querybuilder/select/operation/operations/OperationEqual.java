@@ -13,8 +13,7 @@ public interface OperationEqual<ObjBack, SelectTable, Type> extends OperationBas
 	 * @return back
 	 */
 	default Operations<ObjBack,SelectTable> equal(Type value) {
-		this.createParam(value);
-		this.setSql(this.toSql() + " = :" + this.getParam());
+		this.setSql(this.toSql() + " = :" + this.createParam(value));
 		return end();
 	}
 	

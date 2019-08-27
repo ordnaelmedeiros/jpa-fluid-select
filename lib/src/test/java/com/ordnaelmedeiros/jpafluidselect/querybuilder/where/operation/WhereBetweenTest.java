@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
-import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 
@@ -19,9 +18,8 @@ import org.junit.Test;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjDate;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjDate_;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
-public class WhereLeTest {
+public class WhereBetweenTest {
 	
 	private static EntityManagerFactory emf;
 	public EntityManager em;
@@ -54,61 +52,22 @@ public class WhereLeTest {
 	}
 	
 	@Test
-	public void dateYearLessOrEqualThan2017() {
+	public void dateYearGreaterOrEqualThan2019() {
 		
 		List<ObjDate> result = queryBuilder
 			.select(ObjDate.class)
 			.where()
-				.field(ObjDate_.date).year().lessThanOrEqual(2016)
+				.field(ObjDate_.date).year().between(2017, 2018)
 			.order()
 				.asc(ObjDate_.id)
 			.print()
 			.getResultList();
 		
 		assertThat(result, notNullValue());
-		assertThat(result.size(), is(1));
-		assertThat(result.get(0).getId(), is(1));
+		assertThat(result.size(), is(2));
+		assertThat(result.get(0).getId(), is(2));
+		assertThat(result.get(1).getId(), is(3));
 
-	}
-	
-
-	@Test
-	public void dateLessOrEqualThan2017() {
-		
-		List<ObjDate> result = queryBuilder
-			.select(ObjDate.class)
-			.where()
-				.field(ObjDate_.date).le(LocalDate.of(2017, 1, 1))
-			.order()
-				.asc(ObjDate_.id)
-			.print()
-			.getResultList();
-		
-		assertThat(result, notNullValue());
-		assertThat(result.size(), is(1));
-		assertThat(result.get(0).getId(), is(1));
-
-	}
-
-	@Test
-	public void dateYearLessOrEqualThan2017andRef() {
-		
-		Ref<ObjDate> ref = new Ref<>();
-		List<ObjDate> result = queryBuilder
-			.select(ObjDate.class).ref(ref)
-			.where()
-				.field(ObjDate_.date).year().lessThanOrEqual(2016)
-				.field(ObjDate_.id).lessThanOrEqual(ref.field(ObjDate_.date).year())
-				.field(ObjDate_.date).month().le(ref.field(ObjDate_.date).day())
-			.order()
-				.asc(ObjDate_.id)
-			.print()
-			.getResultList();
-		
-		assertThat(result, notNullValue());
-		assertThat(result.size(), is(1));
-		assertThat(result.get(0).getId(), is(1));
-		
 	}
 	
 }

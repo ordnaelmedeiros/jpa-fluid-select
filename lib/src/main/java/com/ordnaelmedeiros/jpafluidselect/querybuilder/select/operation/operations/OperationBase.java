@@ -7,9 +7,8 @@ public interface OperationBase<ObjBack, SelectTable, Type> {
 	Operations<ObjBack, SelectTable> getOperations();
 	String toSql();
 	
-	void createParam(Object value);
+	String createParam(Object value);
 	void setSql(String sql);
-	String getParam();
 	Operations<ObjBack,SelectTable> end();
 	
 }

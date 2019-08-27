@@ -13,8 +13,7 @@ public interface OperationGreaterThan<ObjBack, SelectTable, Type> extends Operat
 	 * @return back
 	 */
 	default Operations<ObjBack,SelectTable> greaterThan(Type value) {
-		this.createParam(value);
-		this.setSql(this.toSql() + " > :" + this.getParam());
+		this.setSql(this.toSql() + " > :" + this.createParam(value));
 		return end();
 	}
 	

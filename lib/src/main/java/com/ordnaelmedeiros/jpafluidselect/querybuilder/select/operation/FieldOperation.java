@@ -3,9 +3,11 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation;
 import java.util.Arrays;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationBetween;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationEqual;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationGreaterOrEqualThan;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationGreaterThan;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationIsNull;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationLessOrEqualThan;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationLessThan;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformCast;
@@ -29,6 +31,8 @@ public class FieldOperation<ObjBack, SelectTable, Type>
 			OperationLessOrEqualThan<ObjBack, SelectTable, Type>,
 			OperationGreaterThan<ObjBack, SelectTable, Type>,
 			OperationGreaterOrEqualThan<ObjBack, SelectTable, Type>,
+			OperationIsNull<ObjBack, SelectTable, Type>,
+			OperationBetween<ObjBack, SelectTable, Type>,
 			
 			ToSql {
 
@@ -37,10 +41,6 @@ public class FieldOperation<ObjBack, SelectTable, Type>
 	
 	@Setter
 	private String sql;
-	
-	@Setter
-	@Getter
-	private String param;
 	
 	public FieldOperation(Operations<ObjBack, SelectTable> operations, String sql) {
 		this.sql = sql;
@@ -52,21 +52,14 @@ public class FieldOperation<ObjBack, SelectTable, Type>
 		this.operations = operations;
 	}
 	
-	public void createParam(Object value) {
-		this.param = this.operations.getSelect().getParam().create(value);
-	}
-	
-	public Operations<ObjBack,SelectTable> gt(Type value) {
-		this.createParam(value);
-		this.sql = this.sql + " > :" + this.param;
-		this.operations.addField(this);
-		return operations;
+	public String createParam(Object value) {
+		return this.operations.getSelect().getParam().create(value);
 	}
 	
 	@SuppressWarnings("unchecked")
 	public Operations<ObjBack,SelectTable> in(Type ...value) {
 		this.createParam(Arrays.asList(value));
-		this.sql = this.sql + " IN :" + this.param;
+		//this.sql = this.sql + " IN :" + this.param;
 		this.operations.addField(this);
 		return this.operations;
 	}
@@ -80,6 +73,5 @@ public class FieldOperation<ObjBack, SelectTable, Type>
 		this.operations.addField(this);
 		return this.operations;
 	}
-	
-	
+
 }

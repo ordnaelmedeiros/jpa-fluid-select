@@ -59,7 +59,7 @@ public class WhereGeTest {
 		List<ObjDate> result = queryBuilder
 			.select(ObjDate.class)
 			.where()
-				.field(ObjDate_.date).year().greaterOrEqualThan(2019)
+				.field(ObjDate_.date).year().greaterThanOrEqual(2019)
 			.order()
 				.asc(ObjDate_.id)
 			.print()
@@ -96,8 +96,8 @@ public class WhereGeTest {
 		List<ObjDate> result = queryBuilder
 			.select(ObjDate.class).ref(ref)
 			.where()
-				.field(ObjDate_.date).year().greaterOrEqualThan(2019)
-				.field(ObjDate_.date).year().greaterOrEqualThan(ref.field(ObjDate_.id))
+				.field(ObjDate_.date).year().greaterThanOrEqual(2019)
+				.field(ObjDate_.date).year().greaterThanOrEqual(ref.field(ObjDate_.id))
 				.field(ObjDate_.date).day().ge(ref.field(ObjDate_.date).month())
 			.order()
 				.asc(ObjDate_.id)
@@ -106,7 +106,7 @@ public class WhereGeTest {
 		
 		assertThat(result, notNullValue());
 		assertThat(result.size(), is(1));
-		assertThat(result.get(0).getId(), is(1));
+		assertThat(result.get(0).getId(), is(4));
 		
 	}
 	

@@ -13,8 +13,7 @@ public interface OperationLessThan<ObjBack, SelectTable, Type> extends Operation
 	 * @return back
 	 */
 	default Operations<ObjBack,SelectTable> lessThan(Type value) {
-		this.createParam(value);
-		this.setSql(this.toSql() + " < :" + this.getParam());
+		this.setSql(this.toSql() + " < :" + this.createParam(value));
 		return end();
 	}
 	

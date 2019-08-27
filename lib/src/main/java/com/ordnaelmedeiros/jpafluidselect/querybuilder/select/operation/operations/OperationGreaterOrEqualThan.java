@@ -12,9 +12,8 @@ public interface OperationGreaterOrEqualThan<ObjBack, SelectTable, Type> extends
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> greaterOrEqualThan(Type value) {
-		this.createParam(value);
-		this.setSql(this.toSql() + " >= :" + this.getParam());
+	default Operations<ObjBack,SelectTable> greaterThanOrEqual(Type value) {
+		this.setSql(this.toSql() + " >= :" + this.createParam(value));
 		return end();
 	}
 	
@@ -26,7 +25,7 @@ public interface OperationGreaterOrEqualThan<ObjBack, SelectTable, Type> extends
 	 * @return back
 	 */
 	default Operations<ObjBack,SelectTable> ge(Type value) {
-		return this.greaterOrEqualThan(value);
+		return this.greaterThanOrEqual(value);
 	}
 	
 	/**
@@ -36,7 +35,7 @@ public interface OperationGreaterOrEqualThan<ObjBack, SelectTable, Type> extends
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> greaterOrEqualThan(FieldRef<?> field) {
+	default Operations<ObjBack,SelectTable> greaterThanOrEqual(FieldRef<?> field) {
 		this.setSql(this.toSql() + " >= " + field.getSql());
 		return this.end();
 	}
@@ -49,7 +48,7 @@ public interface OperationGreaterOrEqualThan<ObjBack, SelectTable, Type> extends
 	 * @return back
 	 */
 	default Operations<ObjBack,SelectTable> ge(FieldRef<?> field) {
-		return this.greaterOrEqualThan(field);
+		return this.greaterThanOrEqual(field);
 	}
 	
 }

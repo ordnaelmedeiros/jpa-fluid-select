@@ -12,9 +12,8 @@ public interface OperationLessOrEqualThan<ObjBack, SelectTable, Type> extends Op
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> lessOrEqualThan(Type value) {
-		this.createParam(value);
-		this.setSql(this.toSql() + " <= :" + this.getParam());
+	default Operations<ObjBack,SelectTable> lessThanOrEqual(Type value) {
+		this.setSql(this.toSql() + " <= :" + this.createParam(value));
 		return end();
 	}
 	
@@ -26,7 +25,7 @@ public interface OperationLessOrEqualThan<ObjBack, SelectTable, Type> extends Op
 	 * @return back
 	 */
 	default Operations<ObjBack,SelectTable> le(Type value) {
-		return this.lessOrEqualThan(value);
+		return this.lessThanOrEqual(value);
 	}
 	
 	/**
@@ -36,7 +35,7 @@ public interface OperationLessOrEqualThan<ObjBack, SelectTable, Type> extends Op
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> lessOrEqualThan(FieldRef<?> field) {
+	default Operations<ObjBack,SelectTable> lessThanOrEqual(FieldRef<?> field) {
 		this.setSql(this.toSql() + " <= " + field.getSql());
 		return this.end();
 	}
@@ -49,7 +48,7 @@ public interface OperationLessOrEqualThan<ObjBack, SelectTable, Type> extends Op
 	 * @return back
 	 */
 	default Operations<ObjBack,SelectTable> le(FieldRef<?> field) {
-		return this.lessOrEqualThan(field);
+		return this.lessThanOrEqual(field);
 	}
 	
 }
