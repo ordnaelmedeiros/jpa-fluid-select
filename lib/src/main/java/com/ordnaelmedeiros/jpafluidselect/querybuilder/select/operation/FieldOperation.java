@@ -1,15 +1,15 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation;
 
-import java.util.Arrays;
-
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationBetween;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationEqual;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationGreaterOrEqualThan;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationGreaterThan;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationIn;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationIsNull;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationLessOrEqualThan;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationLessThan;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationLike;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformCast;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformDate;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformString;
@@ -33,6 +33,8 @@ public class FieldOperation<ObjBack, SelectTable, Type>
 			OperationGreaterOrEqualThan<ObjBack, SelectTable, Type>,
 			OperationIsNull<ObjBack, SelectTable, Type>,
 			OperationBetween<ObjBack, SelectTable, Type>,
+			OperationIn<ObjBack, SelectTable, Type>,
+			OperationLike<ObjBack, SelectTable, Type>,
 			
 			ToSql {
 
@@ -56,14 +58,6 @@ public class FieldOperation<ObjBack, SelectTable, Type>
 		return this.operations.getSelect().getParam().create(value);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public Operations<ObjBack,SelectTable> in(Type ...value) {
-		this.createParam(Arrays.asList(value));
-		//this.sql = this.sql + " IN :" + this.param;
-		this.operations.addField(this);
-		return this.operations;
-	}
-
 	@Override
 	public String toSql() {
 		return this.sql;// + this.operation +" :" + this.param;
@@ -74,4 +68,9 @@ public class FieldOperation<ObjBack, SelectTable, Type>
 		return this.operations;
 	}
 
+	public FieldOperation<ObjBack, SelectTable, Type> not() {
+		this.sql += " NOT ";
+		return this;
+	}
+	
 }

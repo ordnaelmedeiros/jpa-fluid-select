@@ -23,38 +23,4 @@ public class FieldSelect<SelectTable> extends FieldControl<FieldSelect<SelectTab
 		return this.getSql();
 	}
 	
-	/*
-	private Fields<SelectTable> fields;
-	
-	private String field;
-
-	private String aliasFrom;
-
-	private String literal;
-
-	public FieldSelect(Fields<SelectTable> fields, String aliasFrom, String field) {
-		this.fields = fields;
-		this.aliasFrom = aliasFrom;
-		this.field = field;
-	}
-	
-	public FieldSelect(Fields<SelectTable> fields, String literal) {
-		this.fields = fields;
-		this.literal = literal;
-	}
-	
-	public Fields<SelectTable> end() {
-		this.fields.getList().add(this);
-		return fields;
-	}
-
-	@Override
-	public String toSql() {
-		if (this.literal!=null) {
-			return this.literal;
-		} else {
-			return this.aliasFrom+"."+this.field;
-		}
-	}
-	*/
 }

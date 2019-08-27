@@ -1,0 +1,40 @@
+package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations;
+
+import java.util.Arrays;
+import java.util.StringJoiner;
+
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
+
+@SuppressWarnings("unchecked")
+public interface OperationIn<ObjBack, SelectTable, Type> extends OperationBase<ObjBack, SelectTable, Type> {
+	
+	/**
+	 * Execute operation IN
+	 * <ul>
+	 * <li>JPQL: e.firstName IN ('Bob', 'Fred', 'Joe')
+	 * </ul>
+	 * @return back
+	 */
+	default Operations<ObjBack,SelectTable> in(Type ...value) {
+		this.setSql(this.toSql() + " IN :" + this.createParam(Arrays.asList(value)));
+		return end();
+	}
+	
+	/**
+	 * Execute operation IN
+	 * <ul>
+	 * <li>JPQL: e.firstName IN ('Bob', 'Fred', 'Joe')
+	 * </ul>
+	 * @return back
+	 */
+	default Operations<ObjBack,SelectTable> in(FieldRef<?> ...field) {
+		StringJoiner sj = new StringJoiner(", ", "(", ")");
+		for (FieldRef<?> f : field) {
+			sj.add(f.getSql());
+		}
+		this.setSql(this.toSql() + " IN " + sj.toString());
+		return this.end();
+	}
+	
+}

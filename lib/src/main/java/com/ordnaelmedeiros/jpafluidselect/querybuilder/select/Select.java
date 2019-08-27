@@ -35,6 +35,8 @@ public class Select<Table> {
 	private GroupBy<Table> groupBy;
 	private Fields<Table> fields;
 	
+	private boolean distinct = false;
+	
 	@Getter
 	private Parameters<Table> param;
 	
@@ -62,6 +64,11 @@ public class Select<Table> {
 		
 	}
 	
+	public Select<Table> distinct() {
+		this.distinct = true;
+		return this;
+	}
+	
 	public Join<Select<Table>,Table> leftJoin(String field) {
 		Join<Select<Table>, Table> join = new Join<>(this, this, this.aliasFrom, field);
 		this.joins.add(join);
@@ -71,6 +78,7 @@ public class Select<Table> {
 	public Operations<Select<Table>, Table> where() {
 		return this.where;
 	}
+	
 
 	/**
 	 * ORDER BY clause
@@ -95,6 +103,9 @@ public class Select<Table> {
 	private String toSql() {
 		
 		String sql = "SELECT ";
+		if (this.distinct) {
+			sql += "DISTINCT ";
+		}
 		
 		sql += this.fields.toSql(resultType, klass);
 		sql += " FROM " + this.klass.getName()+" " + this.aliasFrom + " \n";

@@ -65,7 +65,7 @@ public class Fields<SelectTable> implements
 	}
 
 	public Fields<SelectTable> count() {
-		this.list.add(new Content("count(*)"));
+		this.list.add(new Content("COUNT(*)"));
 		return this;
 	}
 	public Fields<SelectTable> sum(String field) {
