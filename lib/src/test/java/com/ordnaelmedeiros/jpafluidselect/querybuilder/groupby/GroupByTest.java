@@ -123,4 +123,63 @@ public class GroupByTest {
 		
 	}
 	
+	@Test
+	public void sumField() {
+		
+		List<Object[]> result = queryBuilder
+			.select(ObjString.class)
+			.fields()
+				.field(ObjString_.text).upper().add()
+				.field(ObjString_.id).sum().add()
+			.groupBy()
+				.field(ObjString_.text).upper().add()
+			.order()
+				.field(ObjString_.text).upper().asc()
+			//.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+		assertThat(result.size(), is(2));
+		assertThat(result.get(0)[0], is("A"));
+		assertThat(result.get(0)[1], is(3l));
+		assertThat(result.get(1)[0], is("C"));
+		assertThat(result.get(1)[1], is(7l));
+		
+	}
+	
+	@Test
+	public void minMaxField() {
+		
+		List<Object[]> result = queryBuilder
+			.select(ObjString.class)
+			.fields()
+				.field(ObjString_.id).min().add()
+				.field(ObjString_.id).max().add()
+			//.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+		assertThat(result.size(), is(1));
+		assertThat(result.get(0)[0], is(1));
+		assertThat(result.get(0)[1], is(4));
+		
+	}
+	
+	@Test
+	public void avgField() {
+		
+		List<Object[]> result = queryBuilder
+			.select(ObjString.class)
+			.fields()
+				.field(ObjString_.id).sum().add()
+				.field(ObjString_.id).avg().add()
+			//.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+		assertThat(result.get(0)[0], is(10l));
+		assertThat(result.get(0)[1], is(2.5));
+		
+	}
+	
 }

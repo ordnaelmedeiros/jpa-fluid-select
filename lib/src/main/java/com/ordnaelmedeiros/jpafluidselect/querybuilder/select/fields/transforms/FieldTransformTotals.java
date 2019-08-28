@@ -8,11 +8,7 @@ public interface FieldTransformTotals<Back> {
 	Back end();
 	
 	/**
-	 * Execute function CAST.
-	 * <ul>
-	 * <li>JPQL: CAST('2019-01-01 16:30' AS LocalDate)
-	 * <li>in the example is evaluated to '2019-01-01'
-	 * </ul>
+	 * Execute function COUNT.
 	 * @return back
 	 */
 	default Back count() {
@@ -20,8 +16,48 @@ public interface FieldTransformTotals<Back> {
 		return end();
 	}
 	
+	/**
+	 * Execute function COUNT.
+	 * @return back
+	 */
 	default Back countDistinct() {
 		this.setSql("COUNT(DISTINCT "+this.getSql()+")");
+		return end();
+	}
+	
+	/**
+	 * Execute function SUM
+	 * @return back
+	 */
+	default Back sum() {
+		this.setSql("SUM("+this.getSql()+")");
+		return end();
+	}
+	
+	/**
+	 * Execute function MIN
+	 * @return back
+	 */
+	default Back min() {
+		this.setSql("MIN("+this.getSql()+")");
+		return end();
+	}
+	
+	/**
+	 * Execute function MAX
+	 * @return back
+	 */
+	default Back max() {
+		this.setSql("MAX("+this.getSql()+")");
+		return end();
+	}
+	
+	/**
+	 * Execute function AVG
+	 * @return back
+	 */
+	default Back avg() {
+		this.setSql("AVG("+this.getSql()+")");
 		return end();
 	}
 	
