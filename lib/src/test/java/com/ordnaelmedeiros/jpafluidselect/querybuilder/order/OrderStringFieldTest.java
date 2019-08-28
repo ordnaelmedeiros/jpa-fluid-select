@@ -21,7 +21,7 @@ public class OrderStringFieldTest extends QueryBuilderTestBase {
 			.order()
 				.desc("status")
 				.asc("id")
-			//.print()
+			.print()
 			.getResultList();
 		
 		assertThat(result, notNullValue());

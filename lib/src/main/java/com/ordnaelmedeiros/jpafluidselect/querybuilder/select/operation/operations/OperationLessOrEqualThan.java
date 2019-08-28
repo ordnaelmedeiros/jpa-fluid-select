@@ -3,7 +3,7 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operati
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
 
-public interface OperationLessOrEqualThan<ObjBack, SelectTable, Type> extends OperationBase<ObjBack, SelectTable, Type> {
+public interface OperationLessOrEqualThan<ObjBack, SelectTable, Table, Type> extends OperationBase<ObjBack, SelectTable, Table, Type> {
 	
 	/**
 	 * Execute operation equal ( <= )
@@ -12,7 +12,7 @@ public interface OperationLessOrEqualThan<ObjBack, SelectTable, Type> extends Op
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> lessThanOrEqual(Type value) {
+	default Operations<ObjBack,SelectTable, Table> lessThanOrEqual(Type value) {
 		this.setSql(this.toSql() + " <= :" + this.createParam(value));
 		return end();
 	}
@@ -24,7 +24,7 @@ public interface OperationLessOrEqualThan<ObjBack, SelectTable, Type> extends Op
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> le(Type value) {
+	default Operations<ObjBack,SelectTable, Table> le(Type value) {
 		return this.lessThanOrEqual(value);
 	}
 	
@@ -35,7 +35,7 @@ public interface OperationLessOrEqualThan<ObjBack, SelectTable, Type> extends Op
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> lessThanOrEqual(FieldRef<?> field) {
+	default Operations<ObjBack,SelectTable, Table> lessThanOrEqual(FieldRef<?> field) {
 		this.setSql(this.toSql() + " <= " + field.getSql());
 		return this.end();
 	}
@@ -47,7 +47,7 @@ public interface OperationLessOrEqualThan<ObjBack, SelectTable, Type> extends Op
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> le(FieldRef<?> field) {
+	default Operations<ObjBack,SelectTable, Table> le(FieldRef<?> field) {
 		return this.lessThanOrEqual(field);
 	}
 	

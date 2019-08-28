@@ -3,7 +3,7 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operati
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
 
-public interface OperationLike<ObjBack, SelectTable, Type> extends OperationBase<ObjBack, SelectTable, Type> {
+public interface OperationLike<ObjBack, SelectTable, Table, Type> extends OperationBase<ObjBack, SelectTable, Table, Type> {
 	
 	/**
 	 * Execute operation LIKE
@@ -12,7 +12,7 @@ public interface OperationLike<ObjBack, SelectTable, Type> extends OperationBase
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> like(String value) {
+	default Operations<ObjBack,SelectTable, Table> like(String value) {
 		this.setSql(this.toSql() + " LIKE :" + this.createParam(value));
 		return end();
 	}
@@ -24,7 +24,7 @@ public interface OperationLike<ObjBack, SelectTable, Type> extends OperationBase
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> like(FieldRef<?> field) {
+	default Operations<ObjBack,SelectTable, Table> like(FieldRef<?> field) {
 		this.setSql(this.toSql() + " LIKE " + field.getSql());
 		return this.end();
 	}
@@ -36,7 +36,7 @@ public interface OperationLike<ObjBack, SelectTable, Type> extends OperationBase
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> ilike(String value) {
+	default Operations<ObjBack,SelectTable, Table> ilike(String value) {
 		this.setSql("UPPER("+this.toSql()+") LIKE :" + this.createParam(value.toUpperCase()));
 		return end();
 	}
@@ -48,7 +48,7 @@ public interface OperationLike<ObjBack, SelectTable, Type> extends OperationBase
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> ilike(FieldRef<?> field) {
+	default Operations<ObjBack,SelectTable, Table> ilike(FieldRef<?> field) {
 		this.setSql("UPPER("+this.toSql()+") LIKE UPPER(" + field.getSql()+")");
 		return this.end();
 	}

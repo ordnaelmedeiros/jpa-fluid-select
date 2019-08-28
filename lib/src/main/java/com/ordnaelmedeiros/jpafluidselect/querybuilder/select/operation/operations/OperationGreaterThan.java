@@ -3,7 +3,7 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operati
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
 
-public interface OperationGreaterThan<ObjBack, SelectTable, Type> extends OperationBase<ObjBack, SelectTable, Type> {
+public interface OperationGreaterThan<ObjBack, SelectTable, Table, Type> extends OperationBase<ObjBack, SelectTable, Table, Type> {
 	
 	/**
 	 * Execute operation equal ( > )
@@ -12,7 +12,7 @@ public interface OperationGreaterThan<ObjBack, SelectTable, Type> extends Operat
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> greaterThan(Type value) {
+	default Operations<ObjBack,SelectTable, Table> greaterThan(Type value) {
 		this.setSql(this.toSql() + " > :" + this.createParam(value));
 		return end();
 	}
@@ -24,7 +24,7 @@ public interface OperationGreaterThan<ObjBack, SelectTable, Type> extends Operat
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> gt(Type value) {
+	default Operations<ObjBack,SelectTable, Table> gt(Type value) {
 		return this.greaterThan(value);
 	}
 	
@@ -35,8 +35,8 @@ public interface OperationGreaterThan<ObjBack, SelectTable, Type> extends Operat
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> greaterThan(FieldRef<?> field) {
-		this.setSql(this.toSql() + " < " + field.getSql());
+	default Operations<ObjBack,SelectTable, Table> greaterThan(FieldRef<?> field) {
+		this.setSql(this.toSql() + " > " + field.getSql());
 		return this.end();
 	}
 	
@@ -47,7 +47,7 @@ public interface OperationGreaterThan<ObjBack, SelectTable, Type> extends Operat
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> gt(FieldRef<?> field) {
+	default Operations<ObjBack,SelectTable, Table> gt(FieldRef<?> field) {
 		return this.greaterThan(field);
 	}
 	

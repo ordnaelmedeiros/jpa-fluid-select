@@ -3,9 +3,9 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transfo
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.FieldOperation;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 
-public interface OperationTransformDate<ObjBack, SelectTable> {
+public interface OperationTransformDate<ObjBack, SelectTable, Table> {
 	
-	Operations<ObjBack, SelectTable> getOperations();
+	Operations<ObjBack, SelectTable, Table> getOperations();
 	String toSql();
 	
 	/**
@@ -17,7 +17,7 @@ public interface OperationTransformDate<ObjBack, SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a> 
 	 * @return back
 	 */
-	default FieldOperation<ObjBack, SelectTable, Integer> year() {
+	default FieldOperation<ObjBack, SelectTable, Table, Integer> year() {
 		return new FieldOperation<>(this.getOperations(), "YEAR("+this.toSql()+")");
 	}
 
@@ -30,7 +30,7 @@ public interface OperationTransformDate<ObjBack, SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back
 	 */
-	default FieldOperation<ObjBack, SelectTable, Integer> month() {
+	default FieldOperation<ObjBack, SelectTable, Table, Integer> month() {
 		return new FieldOperation<>(this.getOperations(), "MONTH("+this.toSql()+")");
 	}
 	
@@ -43,7 +43,7 @@ public interface OperationTransformDate<ObjBack, SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back
 	 */
-	default FieldOperation<ObjBack, SelectTable, Integer> day() {
+	default FieldOperation<ObjBack, SelectTable, Table, Integer> day() {
 		return new FieldOperation<>(this.getOperations(), "DAY("+this.toSql()+")");
 	}
 	

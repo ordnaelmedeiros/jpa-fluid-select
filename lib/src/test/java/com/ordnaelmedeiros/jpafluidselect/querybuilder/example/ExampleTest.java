@@ -1,5 +1,6 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.example;
 
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.StringJoiner;
@@ -25,7 +26,7 @@ public class ExampleTest extends QueryBuilderTestBase {
 					.add("name")
 					.add("created")
 					.count()
-					.sum("id")
+					.field("id").sum().add()
 					
 				.leftJoin("address")
 					.on()
@@ -76,7 +77,8 @@ public class ExampleTest extends QueryBuilderTestBase {
 			//throw e;
 		}
 		
-		fail("Siccess!!!");
+		assertTrue(true);
+		//fail("Siccess!!!");
 		
 	}
 		

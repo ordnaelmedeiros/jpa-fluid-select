@@ -11,7 +11,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import lombok.Getter;
 import lombok.Setter;
 
-public class Operations<ObjBack, SelectTable>
+public class Operations<ObjBack, SelectTable, Table>
 		extends Container 
 		implements 
 			FluidEnd<ObjBack>,
@@ -42,21 +42,21 @@ public class Operations<ObjBack, SelectTable>
 		
 	}
 	
-	public Operations<Operations<ObjBack,SelectTable>,SelectTable> orGroup() {
-		Operations<Operations<ObjBack, SelectTable>, SelectTable> or = new Operations<>(this, select, this.originAlias);
+	public Operations<Operations<ObjBack, SelectTable, Table>, SelectTable, Table> orGroup() {
+		Operations<Operations<ObjBack, SelectTable, Table>, SelectTable, Table> or = new Operations<>(this, select, this.originAlias);
 		or.setDelimiter(" OR ");
 		this.add(or);
 		return or;
 	}
 	
-	public Operations<Operations<ObjBack,SelectTable>,SelectTable> andGroup() {
-		Operations<Operations<ObjBack, SelectTable>, SelectTable> and = new Operations<>(this, select, this.originAlias);
+	public Operations<Operations<ObjBack,SelectTable, Table>,SelectTable, Table> andGroup() {
+		Operations<Operations<ObjBack, SelectTable, Table>, SelectTable, Table> and = new Operations<>(this, select, this.originAlias);
 		and.setDelimiter(" AND ");
 		this.add(and);
 		return and;
 	}
 	
-	public void addField(FieldOperation<ObjBack, SelectTable, ?> field) {
+	public void addField(FieldOperation<ObjBack, SelectTable, Table, ?> field) {
 		this.add(field);
 	}
 	
@@ -65,11 +65,11 @@ public class Operations<ObjBack, SelectTable>
 		return objBack;
 	}
 
-	public FieldOperation<ObjBack, SelectTable, Object> field(String field) {
+	public FieldOperation<ObjBack, SelectTable, Table, Object> field(String field) {
 		return new FieldOperation<>(this, originAlias, field);
 	}
 	
-	public <T> FieldOperation<ObjBack, SelectTable, T> field(Attribute<SelectTable, T> field) {
+	public <T> FieldOperation<ObjBack, SelectTable, Table, T> field(Attribute<Table, T> field) {
 		return new FieldOperation<>(this, originAlias, field.getName());
 	}
 	

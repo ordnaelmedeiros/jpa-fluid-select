@@ -107,7 +107,7 @@ public class WhereGtTest {
 		
 		assertThat(result, notNullValue());
 		assertThat(result.size(), is(1));
-		assertThat(result.get(0).getId(), is(1));
+		assertThat(result.get(0).getId(), is(4));
 		
 	}
 	

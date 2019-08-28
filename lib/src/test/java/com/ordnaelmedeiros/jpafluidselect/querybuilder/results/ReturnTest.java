@@ -236,7 +236,7 @@ public class ReturnTest extends QueryBuilderTestBase {
 	}
 	
 
-	@Test
+	//@Test
 	public void singleReturnFieldByTransform() {
 		
 		try {
@@ -262,7 +262,7 @@ public class ReturnTest extends QueryBuilderTestBase {
 		
 	}
 	
-	@Test
+	//@Test
 	public void listReturnFieldByTransform() {
 		
 		try {

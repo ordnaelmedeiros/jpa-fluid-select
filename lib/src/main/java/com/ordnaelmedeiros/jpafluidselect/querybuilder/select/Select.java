@@ -14,6 +14,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.Fields;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.groupby.GroupBy;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.join.Join;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.join.joins.JoinImpl;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.Order;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.parameters.Parameters;
@@ -22,14 +23,15 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.where.Where;
 
 import lombok.Getter;
 
-public class Select<Table> {
+public class Select<Table> implements JoinImpl<Table> {
 
 	private Class<Table> klass;
 	
 	@Getter
 	private QueryBuilder builder;
 	
-	private List<Join<?,?>> joins;
+	@Getter
+	private List<Join<?,?,?>> joins;
 	private Where<Table> where;
 	private Order<Table> order;
 	private GroupBy<Table> groupBy;
@@ -40,6 +42,7 @@ public class Select<Table> {
 	@Getter
 	private Parameters<Table> param;
 	
+	@Getter
 	private String aliasFrom;
 	
 	private ResultType resultType = ResultType.CONSTRUCTOR;
@@ -69,13 +72,7 @@ public class Select<Table> {
 		return this;
 	}
 	
-	public Join<Select<Table>,Table> leftJoin(String field) {
-		Join<Select<Table>, Table> join = new Join<>(this, this, this.aliasFrom, field);
-		this.joins.add(join);
-		return join;
-	}
-	
-	public Operations<Select<Table>, Table> where() {
+	public Operations<Select<Table>, Table, Table> where() {
 		return this.where;
 	}
 	
@@ -109,7 +106,7 @@ public class Select<Table> {
 		
 		sql += this.fields.toSql(resultType, klass);
 		sql += " FROM " + this.klass.getName()+" " + this.aliasFrom + " \n";
-		for (Join<?, ?> join : this.joins) {
+		for (Join<?, ?, ?> join : this.joins) {
 			sql += join.toSql() + "\n";
 		}
 		sql += this.where.toSql() + "\n";
@@ -358,6 +355,11 @@ public class Select<Table> {
 	public Select<Table> ref(Ref<Table> ref) {
 		ref.setKlass(this.klass);
 		ref.setAlias(this.aliasFrom);
+		return this;
+	}
+
+	@Override
+	public Select<Table> getSelect() {
 		return this;
 	}
 	

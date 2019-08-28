@@ -2,7 +2,7 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operati
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 
-public interface OperationIsNull<ObjBack, SelectTable, Type> extends OperationBase<ObjBack, SelectTable, Type> {
+public interface OperationIsNull<ObjBack, SelectTable, Table, Type> extends OperationBase<ObjBack, SelectTable, Table, Type> {
 	
 	/**
 	 * Execute operation IS NULL
@@ -11,7 +11,7 @@ public interface OperationIsNull<ObjBack, SelectTable, Type> extends OperationBa
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> isNull() {
+	default Operations<ObjBack,SelectTable, Table> isNull() {
 		this.setSql(this.toSql() + " IS NULL");
 		return end();
 	}

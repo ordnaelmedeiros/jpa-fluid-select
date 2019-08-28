@@ -17,7 +17,7 @@ public interface FieldTransformTotals<Back> {
 	}
 	
 	/**
-	 * Execute function COUNT.
+	 * Execute function COUNT DISTINCT.
 	 * @return back
 	 */
 	default Back countDistinct() {

@@ -18,38 +18,38 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transfor
 import lombok.Getter;
 import lombok.Setter;
 
-public class FieldOperation<ObjBack, SelectTable, Type>
+public class FieldOperation<ObjBack, SelectTable, Table, Type>
 		//extends FieldControl<FieldOperation<ObjBack, SelectTable>>
 		implements
-			OperationTransformDate<ObjBack, SelectTable>,
-			OperationTransformTime<ObjBack, SelectTable>,
-			OperationTransformCast<ObjBack, SelectTable>,
-			OperationTransformString<ObjBack, SelectTable>,
+			OperationTransformDate<ObjBack, SelectTable, Table>,
+			OperationTransformTime<ObjBack, SelectTable, Table>,
+			OperationTransformCast<ObjBack, SelectTable, Table>,
+			OperationTransformString<ObjBack, SelectTable, Table>,
 			
-			OperationEqual<ObjBack, SelectTable, Type>,
-			OperationLessThan<ObjBack, SelectTable, Type>,
-			OperationLessOrEqualThan<ObjBack, SelectTable, Type>,
-			OperationGreaterThan<ObjBack, SelectTable, Type>,
-			OperationGreaterOrEqualThan<ObjBack, SelectTable, Type>,
-			OperationIsNull<ObjBack, SelectTable, Type>,
-			OperationBetween<ObjBack, SelectTable, Type>,
-			OperationIn<ObjBack, SelectTable, Type>,
-			OperationLike<ObjBack, SelectTable, Type>,
+			OperationEqual<ObjBack, SelectTable, Table, Type>,
+			OperationLessThan<ObjBack, SelectTable, Table, Type>,
+			OperationLessOrEqualThan<ObjBack, SelectTable, Table, Type>,
+			OperationGreaterThan<ObjBack, SelectTable, Table, Type>,
+			OperationGreaterOrEqualThan<ObjBack, SelectTable, Table, Type>,
+			OperationIsNull<ObjBack, SelectTable, Table, Type>,
+			OperationBetween<ObjBack, SelectTable, Table, Type>,
+			OperationIn<ObjBack, SelectTable, Table, Type>,
+			OperationLike<ObjBack, SelectTable, Table, Type>,
 			
 			ToSql {
 
 	@Getter
-	private Operations<ObjBack, SelectTable> operations;
+	private Operations<ObjBack, SelectTable, Table> operations;
 	
 	@Setter
 	private String sql;
 	
-	public FieldOperation(Operations<ObjBack, SelectTable> operations, String sql) {
+	public FieldOperation(Operations<ObjBack, SelectTable, Table> operations, String sql) {
 		this.sql = sql;
 		this.operations = operations;
 	}
 	
-	public FieldOperation(Operations<ObjBack, SelectTable> operations, String alias, String field) {
+	public FieldOperation(Operations<ObjBack, SelectTable, Table> operations, String alias, String field) {
 		this.sql = alias+"."+field;
 		this.operations = operations;
 	}
@@ -63,12 +63,12 @@ public class FieldOperation<ObjBack, SelectTable, Type>
 		return this.sql;// + this.operation +" :" + this.param;
 	}
 	
-	public Operations<ObjBack,SelectTable> end() {
+	public Operations<ObjBack,SelectTable, Table> end() {
 		this.operations.addField(this);
 		return this.operations;
 	}
 
-	public FieldOperation<ObjBack, SelectTable, Type> not() {
+	public FieldOperation<ObjBack, SelectTable, Table, Type> not() {
 		this.sql += " NOT ";
 		return this;
 	}

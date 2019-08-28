@@ -13,6 +13,12 @@ public class FieldSelect<SelectTable> extends FieldControl<FieldSelect<SelectTab
 		this.setSql(aliasFrom+"."+field);
 	}
 	
+	public FieldSelect(Fields<SelectTable> fields, String sql) {
+		this.fields = fields;
+		this.setBack(this);
+		this.setSql(sql);
+	}
+	
 	public Fields<SelectTable> add() {
 		this.fields.getList().add(this);
 		return fields;

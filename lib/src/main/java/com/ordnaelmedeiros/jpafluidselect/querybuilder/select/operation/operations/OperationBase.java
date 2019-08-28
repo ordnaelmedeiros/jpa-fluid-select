@@ -2,13 +2,13 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operati
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 
-public interface OperationBase<ObjBack, SelectTable, Type> {
+public interface OperationBase<ObjBack, SelectTable, Table, Type> {
 	
-	Operations<ObjBack, SelectTable> getOperations();
+	Operations<ObjBack, SelectTable, Table> getOperations();
 	String toSql();
 	
 	String createParam(Object value);
 	void setSql(String sql);
-	Operations<ObjBack,SelectTable> end();
+	Operations<ObjBack, SelectTable, Table> end();
 	
 }

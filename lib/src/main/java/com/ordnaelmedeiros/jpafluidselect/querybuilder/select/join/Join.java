@@ -11,10 +11,11 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
 import lombok.Getter;
 
-public class Join<ObjBack, SelectTable> 
+public class Join<ObjBack, SelectTable, Table> 
 		implements
 			ToSql,
 			FluidEnd<ObjBack>,
@@ -25,9 +26,9 @@ public class Join<ObjBack, SelectTable>
 
 	private ObjBack objBack;
 	
-	private List<Join<?,?>> joins;
+	private List<Join<?,?,?>> joins;
 	
-	private Operations<Join<ObjBack, SelectTable>, SelectTable> on;
+	private Operations<Join<ObjBack, SelectTable, Table>, SelectTable, Table> on;
 	
 	@Getter
 	private Select<SelectTable> select;
@@ -53,13 +54,13 @@ public class Join<ObjBack, SelectTable>
 		this.on.setPrefix("ON (");
 	}
 	
-	public Join<Join<ObjBack, SelectTable>, SelectTable> leftJoin(String field) {
-		Join<Join<ObjBack, SelectTable>, SelectTable> join = new Join<>(this, this.getSelect(), this.aliasJoin, field);
+	public Join<Join<ObjBack, SelectTable, Table>, SelectTable, Table> leftJoin(String field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, Table> join = new Join<>(this, this.getSelect(), this.aliasJoin, field);
 		this.joins.add(join);
 		return join;
 	}
 	
-	public Operations<Join<ObjBack,SelectTable>,SelectTable> on() {
+	public Operations<Join<ObjBack,SelectTable, Table>,SelectTable, Table> on() {
 		return this.on;
 	}
 	
@@ -72,15 +73,23 @@ public class Join<ObjBack, SelectTable>
 	public String toSql() {
 		String sql = "LEFT JOIN "+aliasOrigin+"." + field + " " + aliasJoin + " \n";
 		sql += this.on.toSql() + "\n";
-		for (Join<?, ?> join : this.joins) {
+		for (Join<?, ?, ?> join : this.joins) {
 			sql += join.toSql() + " \n";
 		}
 		return sql;
 	}
 
-	public Join<ObjBack, SelectTable> alias(String value) {
+	public Join<ObjBack, SelectTable, Table> alias(String value) {
 		this.aliasJoin = value;
 		this.on.setOriginAlias(value);
+		return this;
+	}
+
+	public Join<ObjBack, SelectTable, Table> ref(Ref<Table> ref) {
+		
+		//ref.setKlass(this.klass);
+		ref.setAlias(this.aliasJoin);
+		
 		return this;
 	}
 	

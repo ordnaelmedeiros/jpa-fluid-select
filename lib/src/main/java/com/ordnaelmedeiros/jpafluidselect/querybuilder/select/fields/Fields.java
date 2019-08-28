@@ -15,8 +15,8 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Container;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Content;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
 
 import lombok.Getter;
 
@@ -63,21 +63,14 @@ public class Fields<SelectTable> implements
 		FieldSelect<SelectTable> f = new FieldSelect<>(this, this.aliasFrom, field.getName());
 		return f;
 	}
-
+	
+	public FieldSelect<SelectTable> field(FieldRef<?> field) {
+		FieldSelect<SelectTable> f = new FieldSelect<>(this, field.toSql());
+		return f;
+	}
+	
 	public Fields<SelectTable> count() {
 		this.list.add(new Content("COUNT(*)"));
-		return this;
-	}
-	public Fields<SelectTable> sum(String field) {
-		
-		Container con = new Container();
-		con.setPrefix("sum(");
-		con.setSuffix(")");
-		
-		FieldSelect<SelectTable> fieldSelect = new FieldSelect<>(this, this.aliasFrom, field);
-		con.add(fieldSelect);
-		
-		this.list.add(con);
 		return this;
 	}
 	

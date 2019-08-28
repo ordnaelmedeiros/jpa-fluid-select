@@ -7,7 +7,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operatio
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
 
 @SuppressWarnings("unchecked")
-public interface OperationIn<ObjBack, SelectTable, Type> extends OperationBase<ObjBack, SelectTable, Type> {
+public interface OperationIn<ObjBack, SelectTable, Table, Type> extends OperationBase<ObjBack, SelectTable, Table, Type> {
 	
 	/**
 	 * Execute operation IN
@@ -16,7 +16,7 @@ public interface OperationIn<ObjBack, SelectTable, Type> extends OperationBase<O
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> in(Type ...value) {
+	default Operations<ObjBack,SelectTable, Table> in(Type ...value) {
 		this.setSql(this.toSql() + " IN :" + this.createParam(Arrays.asList(value)));
 		return end();
 	}
@@ -28,7 +28,7 @@ public interface OperationIn<ObjBack, SelectTable, Type> extends OperationBase<O
 	 * </ul>
 	 * @return back
 	 */
-	default Operations<ObjBack,SelectTable> in(FieldRef<?> ...field) {
+	default Operations<ObjBack,SelectTable, Table> in(FieldRef<?> ...field) {
 		StringJoiner sj = new StringJoiner(", ", "(", ")");
 		for (FieldRef<?> f : field) {
 			sj.add(f.getSql());

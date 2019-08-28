@@ -7,7 +7,7 @@ public interface FluidWhere<SelectTable> {
 	
 	public Select<SelectTable> getSelect();
 	
-	default Operations<Select<SelectTable>,SelectTable> where() {
+	default Operations<Select<SelectTable>,SelectTable,SelectTable> where() {
 		return this.getSelect().where();
 	}
 

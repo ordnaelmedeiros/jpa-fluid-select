@@ -3,9 +3,9 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transfo
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.FieldOperation;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 
-public interface OperationTransformTime<ObjBack, SelectTable> {
+public interface OperationTransformTime<ObjBack, SelectTable, Table> {
 	
-	Operations<ObjBack, SelectTable> getOperations();
+	Operations<ObjBack, SelectTable, Table> getOperations();
 	String toSql();
 	
 	/**
@@ -17,7 +17,7 @@ public interface OperationTransformTime<ObjBack, SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back
 	 */
-	default FieldOperation<ObjBack, SelectTable, Integer> hour() {
+	default FieldOperation<ObjBack, SelectTable, Table, Integer> hour() {
 		return new FieldOperation<>(this.getOperations(), "HOUR("+this.toSql()+")");
 	}
 
@@ -30,7 +30,7 @@ public interface OperationTransformTime<ObjBack, SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back
 	 */
-	default FieldOperation<ObjBack, SelectTable, Integer> minute() {
+	default FieldOperation<ObjBack, SelectTable, Table, Integer> minute() {
 		return new FieldOperation<>(this.getOperations(), "MINUTE("+this.toSql()+")");
 	}
 
@@ -43,7 +43,7 @@ public interface OperationTransformTime<ObjBack, SelectTable> {
 	 * @see <a href="https://www.objectdb.com/java/jpa/query/jpql/date">www.objectdb.com</a>
 	 * @return back
 	 */
-	default FieldOperation<ObjBack, SelectTable, Integer> second() {
+	default FieldOperation<ObjBack, SelectTable, Table, Integer> second() {
 		return new FieldOperation<>(this.getOperations(), "SECOND("+this.toSql()+")");
 	}
 	

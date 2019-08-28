@@ -3,9 +3,9 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transfo
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.FieldOperation;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 
-public interface OperationTransformCast<ObjBack, SelectTable> {
+public interface OperationTransformCast<ObjBack, SelectTable, Table> {
 	
-	Operations<ObjBack, SelectTable> getOperations();
+	Operations<ObjBack, SelectTable, Table> getOperations();
 	String toSql();
 	
 	/**
@@ -16,7 +16,7 @@ public interface OperationTransformCast<ObjBack, SelectTable> {
 	 * </ul>
 	 * @return back
 	 */
-	default <T> FieldOperation<ObjBack, SelectTable, T> cast(Class<T> klass) {
+	default <T> FieldOperation<ObjBack, SelectTable, Table, T> cast(Class<T> klass) {
 		return new FieldOperation<>(this.getOperations(), "CAST("+this.toSql()+" AS "+klass.getName()+")");
 	}
 
