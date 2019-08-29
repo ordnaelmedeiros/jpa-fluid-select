@@ -8,6 +8,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidFields;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidJoin;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
@@ -25,6 +26,7 @@ public class GroupBy<SelectTable> implements
 		FluidOrder<SelectTable>,
 		FluidWhere<SelectTable>,
 		FluidJoin<SelectTable>,
+		FluidFields<SelectTable>,
 		FluidGroupBy<SelectTable> {
 
 	@Getter

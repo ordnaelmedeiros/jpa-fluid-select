@@ -12,7 +12,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
-import org.hamcrest.CoreMatchers;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,13 +39,36 @@ public class JoinTest {
 		em.createQuery("delete from Employee").executeUpdate();
 		em.createQuery("delete from EmployeePhone").executeUpdate();
 		
+		/*
 		em.persist(Employee.builder()
 				.id(1)
 				.name("Leandro")
 				.birth(LocalDate.of(1986, 9, 17))
 				.phones(Arrays.asList(
-						EmployeePhone.builder().id(1).number("555").build()))
+						EmployeePhone.builder().id(1).number("5546999145929").build()))
 				.build());
+		*/
+		
+		Employee employee = Employee.builder()
+			.id(1)
+			.name("Leandro")
+			.birth(LocalDate.of(1986, 9, 17))
+			.build();
+		
+		employee.setPhones(Arrays.asList(
+				EmployeePhone.builder()
+					.id(1)
+					.employee(employee)
+					.number("5546999145929")
+				.build(),
+				EmployeePhone.builder()
+					.id(2)
+					.employee(employee)
+					.number("5546999145930")
+				.build()
+			));
+		
+		em.persist(employee);
 		
 		em.getTransaction().commit();
 		
@@ -61,18 +83,17 @@ public class JoinTest {
 	}
 	
 	@Test
-	public void joinString() {
+	public void selectEmpJoinPhone() {
 		
-		Ref<Employee> from = new Ref<>();
 		Ref<EmployeePhone> refPhones = new Ref<>();
 		
-		
 		List<Object[]> result = queryBuilder
-			.select(Employee.class).ref(from)
-			
-			.leftJoin(Employee_.phones).ref(refPhones)
-			.end()
-			
+			.select(Employee.class)
+			.innerJoin(Employee_.phones).ref(refPhones)
+				.on()
+					.field(EmployeePhone_.id).eq(1)
+				.end()
+				.leftJoin(EmployeePhone_.employee)
 			.fields()
 				.field(Employee_.id).add()
 				.field(Employee_.name).add()
@@ -83,10 +104,37 @@ public class JoinTest {
 			.getResultObjects();
 		
 		assertThat(result, notNullValue());
-		//assertThat(result.size(), is(1));
-		//assertThat(result.get(0)[0], is(1));
+		assertThat(result.size(), is(1));
+		assertThat(result.get(0)[0], is(1));
+		assertThat(result.get(0)[1], is("Leandro"));
+		assertThat(result.get(0)[2], is("5546999145929"));
 		
 		//CoreMatchers.
+	}
+	
+	@Test
+	public void selectPhoneJoinEmp() {
+		
+		Ref<Employee> refEmp = new Ref<>();
+		
+		List<Object[]> result = queryBuilder
+			.select(EmployeePhone.class)
+			.leftJoin(EmployeePhone_.employee).ref(refEmp).end()
+			.fields()
+				.field(refEmp.field(Employee_.id)).add()
+				.field(refEmp.field(Employee_.name)).upper().add()
+				.field(EmployeePhone_.number).add()
+			.where()
+				.field(EmployeePhone_.id).eq(1)
+			.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+		assertThat(result.size(), is(1));
+		assertThat(result.get(0)[0], is(1));
+		assertThat(result.get(0)[1], is("LEANDRO"));
+		assertThat(result.get(0)[2], is("5546999145929"));
+		
 	}
 	
 }

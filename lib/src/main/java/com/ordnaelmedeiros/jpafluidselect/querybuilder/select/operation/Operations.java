@@ -4,6 +4,7 @@ import javax.persistence.metamodel.Attribute;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidFields;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
@@ -17,6 +18,7 @@ public class Operations<ObjBack, SelectTable, Table>
 			FluidEnd<ObjBack>,
 			FluidSelect<SelectTable>,
 			FluidOrder<SelectTable>,
+			FluidFields<SelectTable>,
 			FluidGroupBy<SelectTable> {
 
 	private ObjBack objBack;

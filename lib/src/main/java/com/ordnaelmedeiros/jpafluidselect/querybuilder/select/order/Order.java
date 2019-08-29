@@ -4,6 +4,7 @@ import javax.persistence.metamodel.SingularAttribute;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidFields;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
@@ -14,6 +15,7 @@ public class Order<SelectTable> extends Container
 			FluidEnd<Select<SelectTable>>,
 			FluidSelect<SelectTable>,
 			FluidWhere<SelectTable>,
+			FluidFields<SelectTable>,
 			FluidGroupBy<SelectTable> {
 
 	private String aliasOrigin;

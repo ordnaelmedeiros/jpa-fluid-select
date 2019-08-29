@@ -3,8 +3,13 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.join;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.metamodel.PluralAttribute;
+import javax.persistence.metamodel.SingularAttribute;
+import javax.persistence.criteria.JoinType;
+
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidFields;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
@@ -14,6 +19,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operatio
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class Join<ObjBack, SelectTable, Table> 
 		implements
@@ -22,6 +28,7 @@ public class Join<ObjBack, SelectTable, Table>
 			FluidSelect<SelectTable>,
 			FluidWhere<SelectTable>,
 			FluidOrder<SelectTable>,
+			FluidFields<SelectTable>,
 			FluidGroupBy<SelectTable> {
 
 	private ObjBack objBack;
@@ -39,6 +46,9 @@ public class Join<ObjBack, SelectTable, Table>
 	private String aliasJoin;
 
 	private String aliasOrigin;
+	
+	@Setter
+	private JoinType joinType  = JoinType.INNER;
 
 	public Join(ObjBack objBack, Select<SelectTable> select, String aliasOrigin, String field) {
 		
@@ -54,12 +64,6 @@ public class Join<ObjBack, SelectTable, Table>
 		this.on.setPrefix("ON (");
 	}
 	
-	public Join<Join<ObjBack, SelectTable, Table>, SelectTable, Table> leftJoin(String field) {
-		Join<Join<ObjBack, SelectTable, Table>, SelectTable, Table> join = new Join<>(this, this.getSelect(), this.aliasJoin, field);
-		this.joins.add(join);
-		return join;
-	}
-	
 	public Operations<Join<ObjBack,SelectTable, Table>,SelectTable, Table> on() {
 		return this.on;
 	}
@@ -71,7 +75,7 @@ public class Join<ObjBack, SelectTable, Table>
 	
 	@Override
 	public String toSql() {
-		String sql = "LEFT JOIN "+aliasOrigin+"." + field + " " + aliasJoin + " \n";
+		String sql = this.joinType+" JOIN "+aliasOrigin+"." + field + " " + aliasJoin + " \n";
 		sql += this.on.toSql() + "\n";
 		for (Join<?, ?, ?> join : this.joins) {
 			sql += join.toSql() + " \n";
@@ -93,4 +97,61 @@ public class Join<ObjBack, SelectTable, Table>
 		return this;
 	}
 	
+	
+	public Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> innerJoin(String field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> join = new Join<>(this, this.getSelect(), this.aliasJoin, field);
+		join.setJoinType(JoinType.INNER);
+		this.joins.add(join);
+		return join;
+	}
+	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> innerJoin(PluralAttribute<Table, ?, T> field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
+		join.setJoinType(JoinType.INNER);
+		this.joins.add(join);
+		return join;
+	}
+	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> innerJoin(SingularAttribute<Table, T> field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
+		join.setJoinType(JoinType.INNER);
+		this.joins.add(join);
+		return join;
+	}
+	
+	public Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> leftJoin(String field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> join = new Join<>(this, this.getSelect(), this.aliasJoin, field);
+		join.setJoinType(JoinType.LEFT);
+		this.joins.add(join);
+		return join;
+	}
+	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> leftJoin(PluralAttribute<Table, ?, T> field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
+		join.setJoinType(JoinType.LEFT);
+		this.joins.add(join);
+		return join;
+	}
+	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> leftJoin(SingularAttribute<Table, T> field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
+		join.setJoinType(JoinType.LEFT);
+		this.joins.add(join);
+		return join;
+	}
+
+	public Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> rightJoin(String field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> join = new Join<>(this, this.getSelect(), this.aliasJoin, field);
+		join.setJoinType(JoinType.RIGHT);
+		this.joins.add(join);
+		return join;
+	}
+	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> rightJoin(PluralAttribute<Table, ?, T> field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
+		join.setJoinType(JoinType.RIGHT);
+		this.joins.add(join);
+		return join;
+	}
+	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> rightJoin(SingularAttribute<Table, T> field) {
+		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
+		join.setJoinType(JoinType.RIGHT);
+		this.joins.add(join);
+		return join;
+	}
 }

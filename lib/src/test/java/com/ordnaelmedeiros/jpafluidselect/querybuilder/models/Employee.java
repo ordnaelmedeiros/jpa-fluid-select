@@ -5,6 +5,7 @@ import static javax.persistence.FetchType.LAZY;
 import java.time.LocalDate;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -30,7 +31,7 @@ public class Employee {
 	@Column
 	private LocalDate birth;
 	
-	@OneToMany(mappedBy="employee", fetch=LAZY)
+	@OneToMany(fetch=LAZY, cascade = CascadeType.ALL, mappedBy = "employee")
 	private List<EmployeePhone> phones;
 	
 }
