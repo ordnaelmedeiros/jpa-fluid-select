@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringJoiner;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import javax.persistence.Query;
@@ -74,6 +75,11 @@ public class Select<Table> implements JoinImpl<Table> {
 	
 	public Operations<Select<Table>, Table, Table> where() {
 		return this.where;
+	}
+	
+	public Select<Table> where(Consumer<Operations<Select<Table>, Table, Table>> where) {
+		where.accept(this.where());
+		return this;
 	}
 	
 

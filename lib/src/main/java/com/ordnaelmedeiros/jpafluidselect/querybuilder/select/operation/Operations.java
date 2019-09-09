@@ -1,5 +1,7 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation;
 
+import java.util.function.Consumer;
+
 import javax.persistence.metamodel.Attribute;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
@@ -50,12 +52,22 @@ public class Operations<ObjBack, SelectTable, Table>
 		this.add(or);
 		return or;
 	}
+
+	public ObjBack orGroup(Consumer<Operations<Operations<ObjBack, SelectTable, Table>, SelectTable, Table>> orGroup) {
+		orGroup.accept(orGroup());
+		return end();
+	}
 	
 	public Operations<Operations<ObjBack,SelectTable, Table>,SelectTable, Table> andGroup() {
 		Operations<Operations<ObjBack, SelectTable, Table>, SelectTable, Table> and = new Operations<>(this, select, this.originAlias);
 		and.setDelimiter(" AND ");
 		this.add(and);
 		return and;
+	}
+	
+	public ObjBack andGroup(Consumer<Operations<Operations<ObjBack, SelectTable, Table>, SelectTable, Table>> andGroup) {
+		andGroup.accept(andGroup());
+		return end();
 	}
 	
 	public void addField(FieldOperation<ObjBack, SelectTable, Table, ?> field) {

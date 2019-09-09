@@ -35,7 +35,10 @@ public class Container implements ToSql {
 		} else {
 			StringJoiner sql = new StringJoiner(delimiter, prefix, suffix);
 			for (ToSql toSql : this.childrens) {
-				sql.add(toSql.toSql());
+				String text = toSql.toSql();
+				if (text!=null) {
+					sql.add(text);
+				}
 			}
 			return sql.toString();
 		}

@@ -52,7 +52,7 @@ public class WhereEqTest {
 	}
 	
 	@Test
-	public void text_1_2_asc() {
+	public void eqOrGroup() {
 		
 		List<ObjString> result = queryBuilder
 			.select(ObjString.class)
@@ -98,5 +98,32 @@ public class WhereEqTest {
 		assertThat(result.get(1).getText(), is("C"));
 		
 	}
-
+	
+	@Test
+	public void eqByIgnore() {
+		
+		boolean condicao = false;
+		
+		Ref<ObjString> ref = new Ref<>();
+		List<ObjString> result = queryBuilder
+			.select(ObjString.class).ref(ref)
+			.where()
+				.orGroup(or -> {
+					or.field(ObjString_.id).eq(1);
+					if (condicao) {
+						or.field(ObjString_.text).equal("C");
+					}
+				})
+			.order()
+				.asc(ObjString_.id)
+			//.print()
+			.getResultList();
+		
+		assertThat(result, notNullValue());
+		assertThat(result.size(), is(1));
+		assertThat(result.get(0).getId(), is(1));
+		assertThat(result.get(0).getText(), is("A"));
+		
+	}
+	
 }

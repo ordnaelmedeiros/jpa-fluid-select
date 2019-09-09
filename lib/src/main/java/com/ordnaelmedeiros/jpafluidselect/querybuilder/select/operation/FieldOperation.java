@@ -10,6 +10,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operatio
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationLessOrEqualThan;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationLessThan;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationLike;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations.OperationNotEqual;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformCast;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformDate;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.transforms.OperationTransformString;
@@ -27,6 +28,7 @@ public class FieldOperation<ObjBack, SelectTable, Table, Type>
 			OperationTransformString<ObjBack, SelectTable, Table>,
 			
 			OperationEqual<ObjBack, SelectTable, Table, Type>,
+			OperationNotEqual<ObjBack, SelectTable, Table, Type>,
 			OperationLessThan<ObjBack, SelectTable, Table, Type>,
 			OperationLessOrEqualThan<ObjBack, SelectTable, Table, Type>,
 			OperationGreaterThan<ObjBack, SelectTable, Table, Type>,
