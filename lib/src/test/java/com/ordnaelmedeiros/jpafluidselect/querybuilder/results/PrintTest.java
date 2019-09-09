@@ -28,7 +28,7 @@ public class PrintTest extends QueryBuilderTestBase {
 					.field("id").in(1l, 2l)
 				.order()
 					.asc("id")
-				//.print()
+				.print()
 				.resultToString();
 			
 			assertThat(result, notNullValue());
@@ -56,7 +56,7 @@ public class PrintTest extends QueryBuilderTestBase {
 					.field("id").in(1l, 2l)
 				.order()
 					.asc("id")
-				//.print()
+				.print()
 				.resultToString();
 			
 			assertThat(result, notNullValue());

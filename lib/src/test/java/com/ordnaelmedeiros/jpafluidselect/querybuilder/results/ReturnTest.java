@@ -12,6 +12,7 @@ import org.junit.Test;
 
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
+import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilderTestBase;
 
 public class ReturnTest extends QueryBuilderTestBase {
@@ -209,7 +210,7 @@ public class ReturnTest extends QueryBuilderTestBase {
 			List<People> result = queryBuilder
 				.select(People.class)
 				.fields()
-					.add("id")
+					//.add("id")
 					.add("name")
 				.where()
 					.field("id").in(1l, 2l)
@@ -220,11 +221,11 @@ public class ReturnTest extends QueryBuilderTestBase {
 			assertThat(result, notNullValue());
 			assertThat(result.size(), equalTo(2));
 			
-			assertThat(result.get(0).getId(), equalTo(1l));
+			//assertThat(result.get(0).getId(), equalTo(1l));
 			assertThat(result.get(0).getName(), equalTo("Leandro"));
 			assertThat(result.get(0).getCreated(), nullValue());
 			
-			assertThat(result.get(1).getId(), equalTo(2l));
+			//assertThat(result.get(1).getId(), equalTo(2l));
 			assertThat(result.get(1).getName(), equalTo("Ivana"));
 			assertThat(result.get(1).getCreated(), nullValue());
 			
@@ -236,24 +237,23 @@ public class ReturnTest extends QueryBuilderTestBase {
 	}
 	
 
-	//@Test
+	@Test
 	public void singleReturnFieldByTransform() {
 		
 		try {
 				
-			People result = queryBuilder
+			PeopleDTO result = queryBuilder
 				.select(People.class)
 				.fields()
-					.add("id")
-					.add("name")
+					.field(People_.id).alias("peopleId")
+					.field("name").alias("peopleName")
 				.where()
 					.field("id").eq(1l)
-				.getSingleResultByTransform(People.class);
+				.getSingleResultByReflect(PeopleDTO.class);
 			
 			assertThat(result, notNullValue());
-			assertThat(result.getId(), equalTo(1l));
-			assertThat(result.getName(), equalTo("Leandro"));
-			assertThat(result.getCreated(), nullValue());
+			assertThat(result.getPeopleId(), equalTo(1l));
+			assertThat(result.getPeopleName(), equalTo("Leandro"));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -262,32 +262,30 @@ public class ReturnTest extends QueryBuilderTestBase {
 		
 	}
 	
-	//@Test
+	@Test
 	public void listReturnFieldByTransform() {
 		
 		try {
 			
-			List<People> result = queryBuilder
+			List<PeopleDTO> result = queryBuilder
 				.select(People.class)
 				.fields()
-					.add("id")
-					.add("name")
+					.field("id").alias("peopleId")
+					.field("name").alias("peopleName")
 				.where()
 					.field("id").in(1l, 2l)
 				.order()
 					.asc("id")
-				.getResultListByTransform(People.class);
+				.getResultListByReflect(PeopleDTO.class);
 			
 			assertThat(result, notNullValue());
 			assertThat(result.size(), equalTo(2));
 			
-			assertThat(result.get(0).getId(), equalTo(1l));
-			assertThat(result.get(0).getName(), equalTo("Leandro"));
-			assertThat(result.get(0).getCreated(), nullValue());
+			assertThat(result.get(0).getPeopleId(), equalTo(1l));
+			assertThat(result.get(0).getPeopleName(), equalTo("Leandro"));
 			
-			assertThat(result.get(1).getId(), equalTo(2l));
-			assertThat(result.get(1).getName(), equalTo("Ivana"));
-			assertThat(result.get(1).getCreated(), nullValue());
+			assertThat(result.get(1).getPeopleId(), equalTo(2l));
+			assertThat(result.get(1).getPeopleName(), equalTo("Ivana"));
 			
 		} catch (Exception e) {
 			e.printStackTrace();

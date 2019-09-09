@@ -14,8 +14,6 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidJoin;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Content;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
 
 import lombok.Getter;
@@ -32,7 +30,7 @@ public class Fields<SelectTable> implements
 	private Select<SelectTable> select;
 	
 	@Getter
-	private List<ToSql> list;
+	private List<FieldSelect<?>> list;
 	
 	private String aliasFrom; 
 	
@@ -70,7 +68,7 @@ public class Fields<SelectTable> implements
 	}
 	
 	public Fields<SelectTable> count() {
-		this.list.add(new Content("COUNT(*)"));
+		this.list.add(new FieldSelect<SelectTable>(this, "COUNT(*)"));
 		return this;
 	}
 	

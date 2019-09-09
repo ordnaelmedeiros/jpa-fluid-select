@@ -10,7 +10,10 @@ import java.util.stream.Stream;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.NonUniqueResultException;
+
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilder;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.FieldSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.Fields;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.groupby.GroupBy;
@@ -209,11 +212,18 @@ public class Select<Table> implements JoinImpl<Table> {
 		
 		return result;
 	}
-	public <T> T getSingleResultByTransform(Class<T> klass) {
+	
+	public <T> T getSingleResultByReflect(Class<T> klass) {
 		
-		T result = null;
+		List<T> results = this.getResultListByReflect(klass);
 		
-		return result;
+		if (results==null || results.isEmpty()) {
+			return null;
+		} else if (results.size()>1) {
+			throw new NonUniqueResultException(results.size());
+		}
+		
+		return results.get(0);
 		
 	}
 	
@@ -249,11 +259,54 @@ public class Select<Table> implements JoinImpl<Table> {
 		
 		return result;
 	}
-	public <T> List<T> getResultListByTransform(Class<T> klass) {
+	public <T> List<T> getResultListByReflect(Class<T> klass) {
 
-		List<T> result = null;
+		try {
+			
+			List<Object[]> results = this.getResultObjects();
+			
+			List<T> result = new ArrayList<>();
+			
+			// create field list
+			
+			List<Field> fieldList = new ArrayList<Field>();
+			
+			for (FieldSelect<?> f : this.fields().getList()) {
+				
+				if (f.getAlias()!=null) {
+					
+					Field field = klass.getDeclaredField(f.getAlias());
+					field.setAccessible(true);
+					fieldList.add(field);
+					
+				} else {
+					fieldList.add(null);
+				}
+				
+			}
+			
+			
+			for (Object[] o : results) {
+				
+				T item = klass.newInstance();
+				
+				for (int i = 0; i < fieldList.size(); i++) {
+					Field f = fieldList.get(i);
+					if (f!=null && o[i]!=null) {
+						f.set(item, o[i]);
+					}
+				}
+				
+				result.add(item);
+				
+			}
+			
+			return result;
 		
-		return result;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+		
 	}
 	
 	private String format(Object object, String replacer, Integer length) {

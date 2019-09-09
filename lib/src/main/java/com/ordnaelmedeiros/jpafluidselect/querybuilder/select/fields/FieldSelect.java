@@ -7,8 +7,21 @@ public class FieldSelect<SelectTable> extends FieldControl<FieldSelect<SelectTab
 	
 	private Fields<SelectTable> fields;
 	
+	private String field;
+	
+	private String alias;
+	
+	public String getAlias() {
+		if (alias!=null) {
+			return alias;
+		} else {
+			return field;
+		}
+	}
+	
 	public FieldSelect(Fields<SelectTable> fields, String aliasFrom, String field) {
 		this.fields = fields;
+		this.field = field;
 		this.setBack(this);
 		this.setSql(aliasFrom+"."+field);
 	}
@@ -20,6 +33,12 @@ public class FieldSelect<SelectTable> extends FieldControl<FieldSelect<SelectTab
 	}
 	
 	public Fields<SelectTable> add() {
+		this.fields.getList().add(this);
+		return fields;
+	}
+	
+	public Fields<SelectTable> alias(String alias) {
+		this.alias = alias;
 		this.fields.getList().add(this);
 		return fields;
 	}
