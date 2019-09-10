@@ -17,6 +17,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Container;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Content;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
 
 import lombok.Getter;
 
@@ -56,12 +57,20 @@ public class GroupBy<SelectTable> implements
 		this.list.add(new FieldGroupBy<>(this, this.aliasFrom, field.getName()));
 		return this;
 	}
+	public GroupBy<SelectTable> add(FieldRef<?> field) {
+		this.field(field).add();
+		return this;
+	}
 	
 	public FieldGroupBy<SelectTable> field(String field) {
 		return new FieldGroupBy<>(this, this.aliasFrom, field);
 	}
 	public FieldGroupBy<SelectTable> field(SingularAttribute<SelectTable, ?> field) {
 		FieldGroupBy<SelectTable> f = new FieldGroupBy<>(this, this.aliasFrom, field.getName());
+		return f;
+	}
+	public FieldGroupBy<SelectTable> field(FieldRef<?> field) {
+		FieldGroupBy<SelectTable> f = new FieldGroupBy<>(this, field.toSql());
 		return f;
 	}
 

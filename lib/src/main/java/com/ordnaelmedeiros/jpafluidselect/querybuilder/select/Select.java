@@ -98,7 +98,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		return this.order;
 	}
 	
-	public GroupBy<Table> groupBy() {
+	public GroupBy<Table> group() {
 		return this.groupBy;
 	}
 	
@@ -106,7 +106,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		return this.fields;
 	}
 	
-	private String toSql() {
+	private String toSql(Class<?> klass) {
 		
 		String sql = "SELECT ";
 		if (this.distinct) {
@@ -129,7 +129,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		
 		this.resultType = ResultType.CONSTRUCTOR;
 		
-		String sql = this.toSql();
+		String sql = this.toSql(this.klass);
 		System.out.println("SQL:");
 		System.out.println(sql);
 		
@@ -146,7 +146,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		
 		this.resultType = ResultType.CONSTRUCTOR;
 		
-		String sql = this.toSql();
+		String sql = this.toSql(this.klass);
 		System.out.println("SQL:");
 		System.out.println(sql);
 		
@@ -165,7 +165,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		
 		resultType = ResultType.ARRAY;
 		
-		String sql = this.toSql();
+		String sql = this.toSql(this.klass);
 		System.out.println("SQL:");
 		System.out.println(sql);
 		
@@ -183,7 +183,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		
 		this.resultType = ResultType.ARRAY;
 		
-		String sql = this.toSql();
+		String sql = this.toSql(klass);
 		System.out.println("SQL:");
 		System.out.println(sql);
 		
@@ -200,7 +200,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		
 		this.resultType = ResultType.CONSTRUCTOR;
 		
-		String sql = this.toSql();
+		String sql = this.toSql(klass);
 		System.out.println("SQL:");
 		System.out.println(sql);
 		
@@ -231,7 +231,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		
 		this.resultType = ResultType.ARRAY;
 		
-		String sql = this.toSql();
+		String sql = this.toSql(klass);
 		System.out.println("SQL:");
 		System.out.println(sql);
 		
@@ -247,7 +247,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		
 		this.resultType = ResultType.CONSTRUCTOR;
 		
-		String sql = this.toSql();
+		String sql = this.toSql(klass);
 		System.out.println("SQL:");
 		System.out.println(sql);
 		

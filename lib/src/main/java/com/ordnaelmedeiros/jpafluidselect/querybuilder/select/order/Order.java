@@ -9,6 +9,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Container;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
 
 public class Order<SelectTable> extends Container
 		implements
@@ -45,6 +46,10 @@ public class Order<SelectTable> extends Container
 	}
 	public FieldOrder<SelectTable> field(SingularAttribute<SelectTable, ?> field) {
 		FieldOrder<SelectTable> f = new FieldOrder<>(this, this.aliasOrigin, field.getName());
+		return f;
+	}
+	public FieldOrder<SelectTable> field(FieldRef<?> field) {
+		FieldOrder<SelectTable> f = new FieldOrder<>(this, field.toSql());
 		return f;
 	}
 	
@@ -94,5 +99,13 @@ public class Order<SelectTable> extends Container
 		return this;
 	}
 	
+	public Order<SelectTable> asc(FieldRef<?> field) {
+		this.field(field).asc();
+		return this;
+	}
+	public Order<SelectTable> desc(FieldRef<?> field) {
+		this.field(field).desc();
+		return this;
+	}
 	
 }

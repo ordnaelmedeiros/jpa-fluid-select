@@ -1,17 +1,344 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.example;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
 
 import org.junit.Test;
 
+import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
+import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
+import com.github.ordnaelmedeiros.jpafluidselect.models.Country_;
+import com.github.ordnaelmedeiros.jpafluidselect.models.DTO;
+import com.github.ordnaelmedeiros.jpafluidselect.models.DTO2;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People;
+import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
+import com.github.ordnaelmedeiros.jpafluidselect.models.Phone_;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilderTestBase;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
 public class ExampleTest extends QueryBuilderTestBase {
+	
+	@Test
+	public void all() {
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(7));
+		
+	}
+	
+	@Test
+	public void where() {
+		
+		People p = queryBuilder
+			.select(People.class)
+			.where()
+				.field(People_.id).eq(1l)
+			.getSingleResult();
+		
+		assertThat(p, notNullValue());
+		
+	}
+	
+	@Test
+	public void orderBy() {
+		
+		List<People> list1 = queryBuilder
+			.select(People.class)
+			.order().desc(People_.id)
+			.getResultList();
+		
+		List<People> list2 = queryBuilder
+			.select(People.class)
+			.order()
+				.asc(People_.name)
+				.desc(People_.id)
+			.getResultList();
+		
+		assertThat(list1, notNullValue());
+		assertThat(list2, notNullValue());
+		
+	}
+	
+	@Test
+	public void count() {
+		
+		Long count = queryBuilder
+			.select(People.class)
+			.fields().count()
+			.where()
+				.field(People_.name).ilike("%le%")
+			.getSingleResult(Long.class);
+		
+		assertThat(count, is(2l));
+		
+	}
+	
+	@Test
+	public void not() {
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.where()
+				.field(People_.id).not().in(1l, 2l)
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(5));
+		
+	}
+	
+	@Test
+	public void conditional() {
+		
+		boolean isUpdate = false; 
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.where(w -> {
+				if (isUpdate) {
+					w.field(People_.id).ne(1l);
+				}
+				w.field(People_.name).eq("Leandro");
+			})
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(2));
+		
+	}
+	
+	@Test
+	public void temporal() {
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.where()
+				.field(People_.created).year().eq(2017)
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(7));
+		
+	}
+	
+	@Test
+	public void whereGroup() {
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.where()
+				.field(People_.name).like("%e%")
+				// and (
+				.orGroup()
+					.field(People_.id).eq(1l)
+					// or
+					.field(People_.id).eq(2l)
+					// or
+					.field(People_.id).eq(3l)
+				// )
+				.end()
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(2));
+		
+	}
+	
+	@Test
+	public void join() {
+		
+		List<People> list1 = queryBuilder
+				.select(People.class)
+				.innerJoin(People_.address)
+					.innerJoin(Address_.country)
+						.on()
+							.field(Country_.name).eq("Florida")
+				.getResultList();
+		
+		assertThat(list1, notNullValue());
+		assertThat(list1.size(), is(4));
+		
+		List<People> list2 = queryBuilder
+				.select(People.class)
+				.innerJoin(People_.address)
+					.on()
+						.orGroup()
+							.field(Address_.street).eq("One")
+							.field(Address_.street).eq("9999")
+						.end()
+					.end()
+				.end()
+				.leftJoin(People_.phones)
+					.on()
+						.field(Phone_.number).eq("123")
+					.end()
+				.where()
+					.field(People_.name).ilike("%a%")
+				.getResultList();
+		
+		assertThat(list2, notNullValue());
+		assertThat(list2.size(), is(2));
+		
+	}
+	
+	@Test
+	public void customFields() {
+		
+		Ref<Address> joinAdress = new Ref<>();
+		
+		List<Object[]> list = queryBuilder
+				.select(People.class)
+				.leftJoin(People_.address).ref(joinAdress) //.extractJoin(j -> this.joinAdress = j)
+				.fields() // fields returns
+					.add(People_.id)
+					.add(People_.name)
+					.add(joinAdress.field(Address_.street))
+				.where()
+					.field(People_.id).in(1l, 2l)
+				.order()
+					.asc(People_.id)
+				.getResultObjects();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(2));
+		
+		Long maxId = queryBuilder
+				.select(People.class)
+				.fields()
+					.field(People_.id).max().add()
+				.getSingleResult(Long.class);
+		
+		assertThat(maxId, is(7l));
+		
+		List<Address> listAddress = queryBuilder
+				.select(People.class)
+				.fields()
+					.add(People_.address)
+				.where()
+					.field(People_.id).eq(1l)
+				.order()
+					.asc(People_.address)
+				.getResultList(Address.class);
+		
+		assertThat(listAddress, notNullValue());
+		assertThat(listAddress.size(), is(1));
+		
+	}
+	
+	@Test
+	public void customFieldsTransform() {
+		
+		Ref<Address> joinAdress = new Ref<>();
+		
+		DTO dto = queryBuilder
+				.select(People.class)
+				.leftJoin(People_.address).ref(joinAdress)//.extractJoin(j -> this.joinAdress = j)
+				.fields()
+					.add(People_.name)
+					.add(joinAdress.field(Address_.street))
+				.where()
+					.field(People_.id).eq(1l)
+				.getSingleResultByConstructor(DTO.class);
+		
+		assertThat(dto, notNullValue());
+		assertThat(dto.getPeopleName(), is("Leandro"));
+		
+		DTO2 dto2 = queryBuilder
+				.select(People.class)
+				.leftJoin(People_.address).ref(joinAdress)//.extractJoin(j -> this.joinAdress = j)
+				.fields()
+					.field(People_.name).alias("peopleName")
+					.field(joinAdress.field(Address_.street)).alias("peopleStreet")
+				.where()
+					.field(People_.id).eq(1l)
+				.getSingleResultByReflect(DTO2.class);
+		
+		assertThat(dto2, notNullValue());
+		assertThat(dto2.getPeopleName(), is("Leandro"));
+		
+	}
+	
+	@Test
+	public void groupBy() {
+		
+		Ref<Address> joinAddress = new Ref<>();
+		
+		List<Object[]> list = queryBuilder
+				.select(People.class)
+				.leftJoin(People_.address).ref(joinAddress)
+				.fields()
+					.add(joinAddress.field(Address_.street))
+					.field(People_.id).count().add()
+				.group()
+					.add(joinAddress.field(Address_.street))
+				.order()
+					.asc(joinAddress.field(Address_.street))
+				.getResultObjects();
+
+			list.stream().forEach(o -> {
+				System.out.println(String.format("%10s count: %02d", o));
+			});
+		
+	}
+	
+	@Test
+	public void distinct() {
+		
+		List<Object[]> list = queryBuilder
+				.select(Address.class)
+				.distinct()
+				.fields()
+					.add(Address_.street)
+				.order().asc(Address_.street)
+				.getResultObjects();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(4));
+		
+	}
+	
+	@Test
+	public void lambdaExpressions() {
+		
+		List<People> list = queryBuilder
+				.select(People.class)
+				.innerJoin(People_.address, jAddress -> {
+					jAddress.innerJoin(Address_.country, jCountry -> {
+						
+						jCountry.on(on -> {
+							on
+								.iLike(Country_.name, "f%")
+								.add(builder.like(jCountry.get("name"), "%a"));
+						});
+						
+					});
+				})
+				.where(w -> {
+					w.orGroup()
+						.field(People_.id).eq(1l)
+						.field(People_.id).eq(2l)
+						;
+				})
+				.order(o -> {
+					o.asc(People_.id);
+				})
+				.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(4));
+		
+	}
 	
 	@Test
 	public void selectTest1() {
@@ -50,7 +377,7 @@ public class ExampleTest extends QueryBuilderTestBase {
 					.asc("name")
 					.asc("created")
 					//.desc("id")
-				.groupBy()
+				.group()
 					.add("name")
 					.add("created")
 					//.add("id")

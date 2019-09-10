@@ -12,6 +12,12 @@ public class FieldOrder<SelectTable> extends FieldControl<FieldOrder<SelectTable
 		this.setBack(this);
 		this.setSql(alias+"."+field);
 	}
+	
+	public FieldOrder(Order<SelectTable> order, String sql) {
+		this.order = order;
+		this.setBack(this);
+		this.setSql(sql);
+	}
 
 	/**
 	 * Order direction ASC.

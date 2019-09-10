@@ -54,6 +54,11 @@ public class Fields<SelectTable> implements
 		return this;
 	}
 	
+	public Fields<SelectTable> add(FieldRef<?> field) {
+		this.list.add(new FieldSelect<>(this, field.toSql()));
+		return this;
+	}
+	
 	public FieldSelect<SelectTable> field(String field) {
 		return new FieldSelect<>(this, this.aliasFrom, field);
 	}

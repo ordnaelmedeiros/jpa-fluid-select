@@ -7,8 +7,8 @@ public interface FluidGroupBy<SelectTable> {
 	
 	public Select<SelectTable> getSelect();
 	
-	default GroupBy<SelectTable> groupBy() {
-		return this.getSelect().groupBy();
+	default GroupBy<SelectTable> group() {
+		return this.getSelect().group();
 	}
 
 }

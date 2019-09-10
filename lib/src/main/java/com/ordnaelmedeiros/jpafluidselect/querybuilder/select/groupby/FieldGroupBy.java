@@ -14,6 +14,12 @@ public class FieldGroupBy<SelectTable> extends FieldControl<FieldGroupBy<SelectT
 		this.setSql(aliasFrom+"."+field);
 	}
 	
+	public FieldGroupBy(GroupBy<SelectTable> fields, String sql) {
+		this.fields = fields;
+		this.setBack(this);
+		this.setSql(sql);
+	}
+	
 	public GroupBy<SelectTable> add() {
 		this.fields.getList().add(this);
 		return fields;

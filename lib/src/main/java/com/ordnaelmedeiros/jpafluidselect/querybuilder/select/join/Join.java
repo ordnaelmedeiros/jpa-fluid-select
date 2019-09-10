@@ -2,10 +2,12 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.join;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
+import javax.persistence.criteria.JoinType;
 import javax.persistence.metamodel.PluralAttribute;
 import javax.persistence.metamodel.SingularAttribute;
-import javax.persistence.criteria.JoinType;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
@@ -91,6 +93,7 @@ public class Join<ObjBack, SelectTable, Table>
 
 	public Join<ObjBack, SelectTable, Table> ref(Ref<Table> ref) {
 		
+		Objects.requireNonNull(ref, "Create instance of Ref: Ref<Entity> ref = new Ref<>()");
 		//ref.setKlass(this.klass);
 		ref.setAlias(this.aliasJoin);
 		
@@ -104,17 +107,31 @@ public class Join<ObjBack, SelectTable, Table>
 		this.joins.add(join);
 		return join;
 	}
+	public Join<ObjBack,SelectTable,Table> innerJoin(String field, Consumer<Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?>> consumer) {
+		consumer.accept(this.innerJoin(field));
+		return this;
+	}
+	
 	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> innerJoin(PluralAttribute<Table, ?, T> field) {
 		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
 		join.setJoinType(JoinType.INNER);
 		this.joins.add(join);
 		return join;
 	}
+	public <T> Join<ObjBack,SelectTable,Table> innerJoin(PluralAttribute<Table, ?, T> field, Consumer<Join<Join<ObjBack, SelectTable, Table>, SelectTable, T>> consumer) {
+		consumer.accept(this.innerJoin(field));
+		return this;
+	}
+	
 	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> innerJoin(SingularAttribute<Table, T> field) {
 		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
 		join.setJoinType(JoinType.INNER);
 		this.joins.add(join);
 		return join;
+	}
+	public <T> Join<ObjBack,SelectTable,Table> innerJoin(SingularAttribute<Table, T> field, Consumer<Join<Join<ObjBack, SelectTable, Table>, SelectTable, T>> consumer) {
+		consumer.accept(this.innerJoin(field));
+		return this;
 	}
 	
 	public Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> leftJoin(String field) {
@@ -123,17 +140,31 @@ public class Join<ObjBack, SelectTable, Table>
 		this.joins.add(join);
 		return join;
 	}
+	public Join<ObjBack,SelectTable,Table> leftJoin(String field, Consumer<Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?>> consumer) {
+		consumer.accept(this.leftJoin(field));
+		return this;
+	}
+	
 	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> leftJoin(PluralAttribute<Table, ?, T> field) {
 		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
 		join.setJoinType(JoinType.LEFT);
 		this.joins.add(join);
 		return join;
 	}
+	public <T> Join<ObjBack,SelectTable,Table> leftJoin(PluralAttribute<Table, ?, T> field, Consumer<Join<Join<ObjBack, SelectTable, Table>, SelectTable, T>> consumer) {
+		consumer.accept(this.leftJoin(field));
+		return this;
+	}
+	
 	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> leftJoin(SingularAttribute<Table, T> field) {
 		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
 		join.setJoinType(JoinType.LEFT);
 		this.joins.add(join);
 		return join;
+	}
+	public <T> Join<ObjBack,SelectTable,Table> leftJoin(SingularAttribute<Table, T> field, Consumer<Join<Join<ObjBack, SelectTable, Table>, SelectTable, T>> consumer) {
+		consumer.accept(this.leftJoin(field));
+		return this;
 	}
 
 	public Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> rightJoin(String field) {
@@ -142,16 +173,32 @@ public class Join<ObjBack, SelectTable, Table>
 		this.joins.add(join);
 		return join;
 	}
+	public Join<ObjBack,SelectTable,Table> rightJoin(String field, Consumer<Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?>> consumer) {
+		consumer.accept(this.rightJoin(field));
+		return this;
+	}
+	
+	
 	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> rightJoin(PluralAttribute<Table, ?, T> field) {
 		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
 		join.setJoinType(JoinType.RIGHT);
 		this.joins.add(join);
 		return join;
 	}
+	public <T> Join<ObjBack,SelectTable,Table> rightJoin(PluralAttribute<Table, ?, T> field, Consumer<Join<Join<ObjBack, SelectTable, Table>, SelectTable, T>> consumer) {
+		consumer.accept(this.rightJoin(field));
+		return this;
+	}
+	
 	public <T> Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> rightJoin(SingularAttribute<Table, T> field) {
 		Join<Join<ObjBack, SelectTable, Table>, SelectTable, T> join = new Join<>(this, getSelect(), this.aliasJoin, field.getName());
 		join.setJoinType(JoinType.RIGHT);
 		this.joins.add(join);
 		return join;
 	}
+	public <T> Join<ObjBack,SelectTable,Table> rightJoin(SingularAttribute<Table, T> field, Consumer<Join<Join<ObjBack, SelectTable, Table>, SelectTable, T>> consumer) {
+		consumer.accept(this.rightJoin(field));
+		return this;
+	}
+	
 }
