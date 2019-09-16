@@ -6,6 +6,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidFields;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidPagination;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Container;
@@ -17,7 +18,8 @@ public class Order<SelectTable> extends Container
 			FluidSelect<SelectTable>,
 			FluidWhere<SelectTable>,
 			FluidFields<SelectTable>,
-			FluidGroupBy<SelectTable> {
+			FluidGroupBy<SelectTable>,
+			FluidPagination<SelectTable> {
 
 	private String aliasOrigin;
 	

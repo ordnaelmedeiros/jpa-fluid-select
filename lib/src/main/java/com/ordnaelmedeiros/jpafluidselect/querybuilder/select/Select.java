@@ -50,6 +50,8 @@ public class Select<Table> implements JoinImpl<Table> {
 	private String aliasFrom;
 	
 	private ResultType resultType = ResultType.CONSTRUCTOR;
+
+	private Integer maxResults = null;
 	
 	public Select(Class<Table> klass, QueryBuilder builder) {
 		
@@ -76,6 +78,16 @@ public class Select<Table> implements JoinImpl<Table> {
 		return this;
 	}
 	
+	/**
+	 * Set the maximum number of results to retrieve
+	 * @param maxResults
+	 * @return SELECT
+	 */
+	public Select<Table> maxResults(int maxResults) {
+		this.maxResults = maxResults;
+		return this;
+	}
+	
 	public Operations<Select<Table>, Table, Table> where() {
 		return this.where;
 	}
@@ -97,13 +109,26 @@ public class Select<Table> implements JoinImpl<Table> {
 	public Order<Table> order() {
 		return this.order;
 	}
+	public Select<Table> order(Consumer<Order<Table>> consumer) {
+		consumer.accept(this.order);
+		return this;
+	}
 	
 	public GroupBy<Table> group() {
 		return this.groupBy;
 	}
+	public Select<Table> group(Consumer<GroupBy<Table>> consumer) {
+		consumer.accept(this.groupBy);
+		return this;
+	}
 	
 	public Fields<Table> fields() {
 		return this.fields;
+	}
+	
+	public Select<Table> fields(Consumer<Fields<Table>> consumer) {
+		consumer.accept(this.fields);
+		return this;
 	}
 	
 	private String toSql(Class<?> klass) {
@@ -125,15 +150,20 @@ public class Select<Table> implements JoinImpl<Table> {
 		return sql;
 	}
 	
+	private void configQuery(Query query) {
+		if (maxResults!=null) {
+			query.setMaxResults(maxResults);
+		}
+	}
+	
 	public List<Table> getResultList() {
 		
 		this.resultType = ResultType.CONSTRUCTOR;
 		
 		String sql = this.toSql(this.klass);
-		System.out.println("SQL:");
-		System.out.println(sql);
 		
 		TypedQuery<Table> query = this.builder.getEm().createQuery(sql, klass);
+		this.configQuery(query);
 		
 		this.param.setParameters(query);
 		
@@ -147,10 +177,9 @@ public class Select<Table> implements JoinImpl<Table> {
 		this.resultType = ResultType.CONSTRUCTOR;
 		
 		String sql = this.toSql(this.klass);
-		System.out.println("SQL:");
-		System.out.println(sql);
 		
 		TypedQuery<Table> query = this.builder.getEm().createQuery(sql, klass);
+		this.configQuery(query);
 		
 		this.param.setParameters(query);
 		
@@ -166,10 +195,9 @@ public class Select<Table> implements JoinImpl<Table> {
 		resultType = ResultType.ARRAY;
 		
 		String sql = this.toSql(this.klass);
-		System.out.println("SQL:");
-		System.out.println(sql);
 		
 		Query query = this.builder.getEm().createQuery(sql);
+		this.configQuery(query);
 		
 		this.param.setParameters(query);
 		
@@ -184,10 +212,9 @@ public class Select<Table> implements JoinImpl<Table> {
 		this.resultType = ResultType.ARRAY;
 		
 		String sql = this.toSql(klass);
-		System.out.println("SQL:");
-		System.out.println(sql);
 		
 		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+		this.configQuery(query);
 		
 		this.param.setParameters(query);
 		
@@ -201,10 +228,9 @@ public class Select<Table> implements JoinImpl<Table> {
 		this.resultType = ResultType.CONSTRUCTOR;
 		
 		String sql = this.toSql(klass);
-		System.out.println("SQL:");
-		System.out.println(sql);
 		
 		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+		this.configQuery(query);
 		
 		this.param.setParameters(query);
 		
@@ -232,10 +258,9 @@ public class Select<Table> implements JoinImpl<Table> {
 		this.resultType = ResultType.ARRAY;
 		
 		String sql = this.toSql(klass);
-		System.out.println("SQL:");
-		System.out.println(sql);
 		
 		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+		this.configQuery(query);
 		
 		this.param.setParameters(query);
 		
@@ -248,10 +273,9 @@ public class Select<Table> implements JoinImpl<Table> {
 		this.resultType = ResultType.CONSTRUCTOR;
 		
 		String sql = this.toSql(klass);
-		System.out.println("SQL:");
-		System.out.println(sql);
 		
 		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+		this.configQuery(query);
 		
 		this.param.setParameters(query);
 		

@@ -9,6 +9,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidFields;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidPagination;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 
 import lombok.Getter;
@@ -21,7 +22,8 @@ public class Operations<ObjBack, SelectTable, Table>
 			FluidSelect<SelectTable>,
 			FluidOrder<SelectTable>,
 			FluidFields<SelectTable>,
-			FluidGroupBy<SelectTable> {
+			FluidGroupBy<SelectTable>,
+			FluidPagination<SelectTable> {
 
 	private ObjBack objBack;
 	

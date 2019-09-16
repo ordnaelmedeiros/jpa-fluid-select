@@ -12,6 +12,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidEnd;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidJoin;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidPagination;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidWhere;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.FieldRef;
@@ -24,7 +25,8 @@ public class Fields<SelectTable> implements
 		FluidOrder<SelectTable>,
 		FluidWhere<SelectTable>,
 		FluidJoin<SelectTable>,
-		FluidGroupBy<SelectTable> {
+		FluidGroupBy<SelectTable>,
+		FluidPagination<SelectTable> {
 
 	@Getter
 	private Select<SelectTable> select;

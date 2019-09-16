@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Address_;
+import com.github.ordnaelmedeiros.jpafluidselect.models.Country;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Country_;
 import com.github.ordnaelmedeiros.jpafluidselect.models.DTO;
 import com.github.ordnaelmedeiros.jpafluidselect.models.DTO2;
@@ -311,15 +312,17 @@ public class ExampleTest extends QueryBuilderTestBase {
 	@Test
 	public void lambdaExpressions() {
 		
+		Ref<Country> refCoutry = new Ref<>();
+		
 		List<People> list = queryBuilder
 				.select(People.class)
 				.innerJoin(People_.address, jAddress -> {
 					jAddress.innerJoin(Address_.country, jCountry -> {
 						
-						jCountry.on(on -> {
+						jCountry.ref(refCoutry).on(on -> {
 							on
-								.iLike(Country_.name, "f%")
-								.add(builder.like(jCountry.get("name"), "%a"));
+								.field(Country_.name).ilike("f%")
+								.field("name").like("%a");
 						});
 						
 					});
@@ -336,7 +339,57 @@ public class ExampleTest extends QueryBuilderTestBase {
 				.getResultList();
 		
 		assertThat(list, notNullValue());
+		assertThat(list.size(), is(2));
+		
+	}
+	
+	@Test
+	public void attributeName() {
+		
+		List<Object[]> list = queryBuilder
+				.select(People.class)
+				.fields()
+					.add("address.street")
+					.field("id").count().add()
+				.group()
+					.add("address.street")
+				.order()
+					.asc("address.street")
+				.print()
+				.getResultObjects();
+		
+		assertThat(list, notNullValue());
 		assertThat(list.size(), is(4));
+		assertThat(list.get(0)[1], is(2l));
+		assertThat(list.get(1)[1], is(1l));
+		assertThat(list.get(2)[1], is(2l));
+		assertThat(list.get(3)[1], is(2l));
+		
+	}
+	
+	@Test
+	public void limit() {
+		
+		List<People> list = queryBuilder
+			.select(People.class)
+			.order().asc(People_.id)
+			.maxResults(3)
+			.getResultList();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(3));
+		assertThat(list.get(0).getId(), is(1l));
+		assertThat(list.get(1).getId(), is(2l));
+		assertThat(list.get(2).getId(), is(3l));
+		
+		People people = queryBuilder
+			.select(People.class)
+			.order().asc(People_.id)
+			.maxResults(1)
+			.getSingleResult();
+		
+		assertThat(people, notNullValue());
+		assertThat(people.getId(), is(1l));
 		
 	}
 	
