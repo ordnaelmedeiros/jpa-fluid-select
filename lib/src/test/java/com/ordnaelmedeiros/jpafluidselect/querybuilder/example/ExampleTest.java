@@ -22,6 +22,8 @@ import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Phone_;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilderTestBase;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjDate;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjDate_;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
 public class ExampleTest extends QueryBuilderTestBase {
@@ -390,6 +392,31 @@ public class ExampleTest extends QueryBuilderTestBase {
 		
 		assertThat(people, notNullValue());
 		assertThat(people.getId(), is(1l));
+		
+	}
+	
+	@Test
+	public void function() {
+		
+		List<Object[]> list = queryBuilder
+			.select(People.class)
+			.fields()
+				.add(People_.id)
+				.add(People_.created)
+				.field(People_.created).function("TO_CHAR(:field, 'dd/MM/yyyy')").add()
+			.where()
+				.field(People_.id).in(1l, 2l)
+			.order()
+				.asc(People_.id)
+			.print()
+			.getResultObjects();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(2));
+		assertThat(list.get(0)[0], is(1l));
+		assertThat(list.get(1)[0], is(2l));
+		
+		//<a href="https://vladmihalcea.com/hibernate-sql-function-jpql-criteria-api-query/">hibernate-sql-function-jpql</a>
 		
 	}
 	

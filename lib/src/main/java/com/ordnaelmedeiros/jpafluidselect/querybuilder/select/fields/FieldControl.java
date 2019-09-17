@@ -2,6 +2,7 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.transforms.FieldTransformCast;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.transforms.FieldTransformDate;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.transforms.FieldTransformFunction;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.transforms.FieldTransformString;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.transforms.FieldTransformTime;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fields.transforms.FieldTransformTotals;
@@ -14,7 +15,7 @@ public class FieldControl<Back> implements
 		FieldTransformTime<Back>,
 		FieldTransformString<Back>,
 		FieldTransformCast<Back>,
-		
+		FieldTransformFunction<Back>,
 		FieldTransformTotals<Back> {
 	
 	@Getter @Setter
