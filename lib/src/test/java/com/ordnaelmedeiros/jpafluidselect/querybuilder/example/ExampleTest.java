@@ -22,8 +22,6 @@ import com.github.ordnaelmedeiros.jpafluidselect.models.People;
 import com.github.ordnaelmedeiros.jpafluidselect.models.People_;
 import com.github.ordnaelmedeiros.jpafluidselect.models.Phone_;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.QueryBuilderTestBase;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjDate;
-import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.ObjDate_;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
 public class ExampleTest extends QueryBuilderTestBase {
@@ -418,6 +416,35 @@ public class ExampleTest extends QueryBuilderTestBase {
 		
 		//<a href="https://vladmihalcea.com/hibernate-sql-function-jpql-criteria-api-query/">hibernate-sql-function-jpql</a>
 		
+	}
+
+	@Test
+	public void free() {
+		
+		Ref<People> refPeople = new Ref<>();
+		List<Object[]> list = queryBuilder
+			.select(People.class).ref(refPeople)
+			.fields()
+				.add(People_.id)
+				.add(People_.name)
+				.free(()->"CAST(id as java.lang.String)")
+			.where()
+				.free(()-> {
+					String txt = "";
+					txt += ":people.id = 1";
+					txt += "OR :people.id = 2";
+					return txt.replace(":people", refPeople.getAlias());
+				})
+			.order()
+				.asc(People_.id)
+			.print()
+			.getResultObjects();
+		
+		assertThat(list, notNullValue());
+		assertThat(list.size(), is(2));
+		assertThat(list.get(0)[0], is(1l));
+		assertThat(list.get(1)[0], is(2l));
+	
 	}
 	
 	@Test

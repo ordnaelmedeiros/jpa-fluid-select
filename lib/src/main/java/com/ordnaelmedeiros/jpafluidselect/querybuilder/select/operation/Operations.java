@@ -11,6 +11,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidGroupBy
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidPagination;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -87,6 +88,18 @@ public class Operations<ObjBack, SelectTable, Table>
 	
 	public <T> FieldOperation<ObjBack, SelectTable, Table, T> field(Attribute<Table, T> field) {
 		return new FieldOperation<>(this, originAlias, field.getName());
+	}
+	
+	public Operations<ObjBack, SelectTable, Table> free(ToSql toSql) {
+		
+		Container c = new Container();
+		c.setPrefix("(");
+		c.setSuffix(")");
+		c.add(toSql);
+		this.add(c);
+		
+		return this;
+		
 	}
 	
 }
