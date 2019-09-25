@@ -419,7 +419,7 @@ public class ExampleTest extends QueryBuilderTestBase {
 	}
 
 	@Test
-	public void free() {
+	public void sql() {
 		
 		Ref<People> refPeople = new Ref<>();
 		List<Object[]> list = queryBuilder
@@ -427,9 +427,9 @@ public class ExampleTest extends QueryBuilderTestBase {
 			.fields()
 				.add(People_.id)
 				.add(People_.name)
-				.free(()->"CAST(id as java.lang.String)")
+				.jpql(()->"CAST(id as java.lang.String)")
 			.where()
-				.free(()-> {
+				.jpql(()-> {
 					String txt = "";
 					txt += ":people.id = 1";
 					txt += "OR :people.id = 2";

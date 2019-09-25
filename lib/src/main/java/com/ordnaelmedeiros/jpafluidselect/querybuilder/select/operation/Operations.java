@@ -90,7 +90,7 @@ public class Operations<ObjBack, SelectTable, Table>
 		return new FieldOperation<>(this, originAlias, field.getName());
 	}
 	
-	public Operations<ObjBack, SelectTable, Table> free(ToSql toSql) {
+	public Operations<ObjBack, SelectTable, Table> jpql(ToSql toSql) {
 		
 		Container c = new Container();
 		c.setPrefix("(");

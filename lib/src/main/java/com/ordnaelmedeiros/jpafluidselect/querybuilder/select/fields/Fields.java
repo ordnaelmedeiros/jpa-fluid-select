@@ -81,7 +81,7 @@ public class Fields<SelectTable> implements
 	}
 	
 
-	public Fields<SelectTable> free(ToSql toSql) {
+	public Fields<SelectTable> jpql(ToSql toSql) {
 		this.list.add(new FieldSelect<SelectTable>(this, "("+toSql.toSql()+")"));
 		return this;
 	}
@@ -93,7 +93,9 @@ public class Fields<SelectTable> implements
 
 	public String toSql(ResultType resultType, Class<?> resultClass) {
 		
-		if (this.isEmpty()) {
+		if (ResultType.COUNT.equals(resultType)) {
+			return " COUNT(*) ";
+		} else if (this.isEmpty()) {
 			return " "+this.aliasFrom+" ";
 		} else {
 			if (ResultType.CONSTRUCTOR.equals(resultType)) {

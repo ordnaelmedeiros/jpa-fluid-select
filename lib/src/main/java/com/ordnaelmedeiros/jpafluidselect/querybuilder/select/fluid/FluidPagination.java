@@ -1,6 +1,7 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.pagination.Pagination;
 
 public interface FluidPagination<SelectTable> {
 	
@@ -15,5 +16,8 @@ public interface FluidPagination<SelectTable> {
 		return this.getSelect().maxResults(maxResults);
 	}
 	
+	default Pagination<SelectTable> pagination() {
+		return this.getSelect().pagination();
+	}
 	
 }

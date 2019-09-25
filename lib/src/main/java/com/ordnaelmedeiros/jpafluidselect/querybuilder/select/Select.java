@@ -7,6 +7,7 @@ import java.util.StringJoiner;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
@@ -21,6 +22,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.join.Join;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.join.joins.JoinImpl;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.order.Order;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.pagination.Pagination;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.parameters.Parameters;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.where.Where;
@@ -51,7 +53,11 @@ public class Select<Table> implements JoinImpl<Table> {
 	
 	private ResultType resultType = ResultType.CONSTRUCTOR;
 
+	@Getter
 	private Integer maxResults = null;
+	
+	@Getter
+	private Integer firstResult = null;
 	
 	public Select(Class<Table> klass, QueryBuilder builder) {
 		
@@ -70,7 +76,6 @@ public class Select<Table> implements JoinImpl<Table> {
 		this.joins = new ArrayList<>();
 		this.param = new Parameters<>(this);
 		
-		
 	}
 	
 	public Select<Table> distinct() {
@@ -85,6 +90,16 @@ public class Select<Table> implements JoinImpl<Table> {
 	 */
 	public Select<Table> maxResults(int maxResults) {
 		this.maxResults = maxResults;
+		return this;
+	}
+	
+	/**
+	 * Set the position of the first result to retrieve
+	 * @param maxResults
+	 * @return SELECT
+	 */
+	public Select<Table> firstResult(int firstResult) {
+		this.firstResult = firstResult;
 		return this;
 	}
 	
@@ -131,6 +146,10 @@ public class Select<Table> implements JoinImpl<Table> {
 		return this;
 	}
 	
+	public Pagination<Table> pagination() {
+		return new Pagination<Table>(this);
+	}
+	
 	private String toSql(Class<?> klass) {
 		
 		String sql = "SELECT ";
@@ -145,7 +164,9 @@ public class Select<Table> implements JoinImpl<Table> {
 		}
 		sql += this.where.toSql() + "\n";
 		sql += this.groupBy.toSql() + "\n";
-		sql += this.order.toSql() + "\n";
+		if (!ResultType.COUNT.equals(this.resultType)) {
+			sql += this.order.toSql() + "\n";
+		}
 		
 		return sql;
 	}
@@ -154,89 +175,150 @@ public class Select<Table> implements JoinImpl<Table> {
 		if (maxResults!=null) {
 			query.setMaxResults(maxResults);
 		}
+		if (firstResult!=null) {
+			query.setFirstResult(firstResult);
+		}
 	}
 	
 	public List<Table> getResultList() {
+
+		try {
+
+			this.resultType = ResultType.CONSTRUCTOR;
+			
+			String sql = this.toSql(this.klass);
+			
+			TypedQuery<Table> query = this.builder.getEm().createQuery(sql, klass);
+			this.configQuery(query);
+			
+			this.param.setParameters(query);
+			
+			List<Table> result = query.getResultList();
+			
+			return result;
+			
+		} catch (NoResultException e) {
+			return new ArrayList<>();
+		}
 		
-		this.resultType = ResultType.CONSTRUCTOR;
-		
-		String sql = this.toSql(this.klass);
-		
-		TypedQuery<Table> query = this.builder.getEm().createQuery(sql, klass);
-		this.configQuery(query);
-		
-		this.param.setParameters(query);
-		
-		List<Table> result = query.getResultList();
-		
-		return result;
 	}
 	
 	public Table getSingleResult() {
 		
-		this.resultType = ResultType.CONSTRUCTOR;
-		
-		String sql = this.toSql(this.klass);
-		
-		TypedQuery<Table> query = this.builder.getEm().createQuery(sql, klass);
-		this.configQuery(query);
-		
-		this.param.setParameters(query);
-		
-		Table result = query.getSingleResult();
-		
-		return result;
+		try {
+				
+			this.resultType = ResultType.CONSTRUCTOR;
+			
+			String sql = this.toSql(this.klass);
+			
+			TypedQuery<Table> query = this.builder.getEm().createQuery(sql, klass);
+			this.configQuery(query);
+			
+			this.param.setParameters(query);
+			
+			Table result = query.getSingleResult();
+			
+			return result;
+			
+		} catch (NoResultException e) {
+			return null;
+		}
 		
 	}
 	
 	@SuppressWarnings("unchecked")
 	public List<Object[]> getResultObjects() {
 		
-		resultType = ResultType.ARRAY;
+		try {
+			
+			resultType = ResultType.ARRAY;
+			
+			String sql = this.toSql(this.klass);
+			
+			Query query = this.builder.getEm().createQuery(sql);
+			this.configQuery(query);
+			
+			this.param.setParameters(query);
+			
+			List<Object[]> result = query.getResultList();
+			
+			return result;
 		
-		String sql = this.toSql(this.klass);
+		} catch (NoResultException e) {
+			return new ArrayList<>();
+		}
 		
-		Query query = this.builder.getEm().createQuery(sql);
-		this.configQuery(query);
+	}
+	
+	public Long count() {
 		
-		this.param.setParameters(query);
-		
-		List<Object[]> result = query.getResultList();
-		
-		return result;
+		try {
+
+			Class<Long> klass = Long.class;
+			
+			this.resultType = ResultType.COUNT;
+			
+			String sql = this.toSql(klass);
+			
+			TypedQuery<Long> query = this.builder.getEm().createQuery(sql, klass);
+			this.configQuery(query);
+			
+			this.param.setParameters(query);
+			
+			Long result = query.getSingleResult();
+			
+			return result;
+			
+		} catch (NoResultException e) {
+			return 0l;
+		}
 		
 	}
 	
 	public <T> T getSingleResult(Class<T> klass) {
 		
-		this.resultType = ResultType.ARRAY;
+		try {
+			
+			this.resultType = ResultType.ARRAY;
+			
+			String sql = this.toSql(klass);
+			
+			TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+			this.configQuery(query);
+			
+			this.param.setParameters(query);
+			
+			T result = query.getSingleResult();
+			
+			return result;
+			
+		} catch (NoResultException e) {
+			return null;
+		}
 		
-		String sql = this.toSql(klass);
-		
-		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
-		this.configQuery(query);
-		
-		this.param.setParameters(query);
-		
-		T result = query.getSingleResult();
-		
-		return result;
 	}
 	
 	public <T> T getSingleResultByConstructor(Class<T> klass) {
 		
-		this.resultType = ResultType.CONSTRUCTOR;
+		try {
+			
+			this.resultType = ResultType.CONSTRUCTOR;
+			
+			String sql = this.toSql(klass);
+			
+			TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+			this.configQuery(query);
+			
+			this.param.setParameters(query);
+			
+			T result = query.getSingleResult();
+			
+			return result;
+			
+		} catch (NoResultException e) {
+			return null;
+		}
 		
-		String sql = this.toSql(klass);
-		
-		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
-		this.configQuery(query);
-		
-		this.param.setParameters(query);
-		
-		T result = query.getSingleResult();
-		
-		return result;
 	}
 	
 	public <T> T getSingleResultByReflect(Class<T> klass) {
@@ -255,33 +337,47 @@ public class Select<Table> implements JoinImpl<Table> {
 	
 	public <T> List<T> getResultList(Class<T> klass) {
 		
-		this.resultType = ResultType.ARRAY;
+		try {
+			
+			this.resultType = ResultType.ARRAY;
+			
+			String sql = this.toSql(klass);
+			
+			TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+			this.configQuery(query);
+			
+			this.param.setParameters(query);
+			
+			List<T> result = query.getResultList();
+			
+			return result;
+			
+		} catch (NoResultException e) {
+			return new ArrayList<>();
+		}
 		
-		String sql = this.toSql(klass);
-		
-		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
-		this.configQuery(query);
-		
-		this.param.setParameters(query);
-		
-		List<T> result = query.getResultList();
-		
-		return result;
 	}
 	public <T> List<T> getResultListByConstructor(Class<T> klass) {
 		
-		this.resultType = ResultType.CONSTRUCTOR;
+		try {
+			
+			this.resultType = ResultType.CONSTRUCTOR;
+			
+			String sql = this.toSql(klass);
+			
+			TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
+			this.configQuery(query);
+			
+			this.param.setParameters(query);
+			
+			List<T> result = query.getResultList();
+			
+			return result;
+			
+		} catch (NoResultException e) {
+			return new ArrayList<>();
+		}
 		
-		String sql = this.toSql(klass);
-		
-		TypedQuery<T> query = this.builder.getEm().createQuery(sql, klass);
-		this.configQuery(query);
-		
-		this.param.setParameters(query);
-		
-		List<T> result = query.getResultList();
-		
-		return result;
 	}
 	public <T> List<T> getResultListByReflect(Class<T> klass) {
 
@@ -327,6 +423,8 @@ public class Select<Table> implements JoinImpl<Table> {
 			
 			return result;
 		
+		} catch (NoResultException e) {
+			return new ArrayList<>();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
