@@ -33,14 +33,21 @@ public class Container implements ToSql {
 		if (this.childrens.isEmpty()) {
 			return "";
 		} else {
+			boolean adicionou = false;
 			StringJoiner sql = new StringJoiner(delimiter, prefix, suffix);
 			for (ToSql toSql : this.childrens) {
 				String text = toSql.toSql();
-				if (text!=null) {
+				if (text!=null && !text.isEmpty()) {
+					adicionou = true;
 					sql.add(text);
 				}
 			}
-			return sql.toString();
+			if (adicionou) {
+				return sql.toString();
+			} else {
+				return "";
+			}
+			
 		}
 	}
 
