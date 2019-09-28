@@ -95,7 +95,7 @@ public class Select<Table> implements JoinImpl<Table> {
 	
 	/**
 	 * Set the position of the first result to retrieve
-	 * @param maxResults
+	 * @param firstResult
 	 * @return SELECT
 	 */
 	public Select<Table> firstResult(int firstResult) {
