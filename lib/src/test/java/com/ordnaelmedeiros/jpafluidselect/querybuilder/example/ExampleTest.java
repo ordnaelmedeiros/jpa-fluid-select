@@ -1,11 +1,14 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.example;
 
+import static java.time.Month.SEPTEMBER;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.time.LocalDate;
+import java.time.Month;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
@@ -122,14 +125,21 @@ public class ExampleTest extends QueryBuilderTestBase {
 	@Test
 	public void temporal() {
 		
-		List<People> list = queryBuilder
+		List<People> list1 = queryBuilder
 			.select(People.class)
 			.where()
 				.field(People_.created).year().eq(2017)
 			.getResultList();
 		
-		assertThat(list, notNullValue());
-		assertThat(list.size(), is(7));
+		assertThat(list1, notNullValue());
+		assertThat(list1.size(), is(7));
+		
+
+		List<People> list2 = queryBuilder
+			.select(People.class)
+			.where()
+				.field(People_.created).cast(LocalDate.class).eq(LocalDate.of(1986, SEPTEMBER, 17))
+			.getResultList();
 		
 	}
 	
