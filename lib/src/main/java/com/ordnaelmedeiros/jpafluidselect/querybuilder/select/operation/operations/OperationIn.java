@@ -1,7 +1,7 @@
 package com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.operations;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Collection;
 import java.util.StringJoiner;
 
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.operation.Operations;
@@ -18,8 +18,19 @@ public interface OperationIn<ObjBack, SelectTable, Table, Type> extends Operatio
 	 * @return back
 	 */
 	default Operations<ObjBack,SelectTable, Table> in(Type ...value) {
-		List<Type> asList = Arrays.asList(value);
-		this.setSql(this.toSql() + " IN :" + this.createParam(asList));
+		this.in(Arrays.asList(value));
+		return end();
+	}
+	
+	/**
+	 * Execute operation IN
+	 * <ul>
+	 * <li>JPQL: e.firstName IN ('Bob', 'Fred', 'Joe')
+	 * </ul>
+	 * @return back
+	 */
+	default Operations<ObjBack,SelectTable, Table> in(Collection<Type> value) {
+		this.setSql(this.toSql() + " IN :" + this.createParam(value));
 		return end();
 	}
 	

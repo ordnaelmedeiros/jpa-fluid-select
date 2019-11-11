@@ -5,6 +5,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
 
 import java.time.Month;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -89,6 +90,21 @@ public class WhereInTest {
 		assertThat(result.get(0).getId(), is(1));
 		assertThat(result.get(1).getId(), is(3));	
 
+		List<Integer> years = Arrays.asList(2017, 2019);
+		
+		result = queryBuilder
+			.select(ObjDate.class)
+			.where()
+				.field(ObjDate_.date).year().not().in(years)
+			.order()
+				.asc(ObjDate_.id)
+			.print()
+			.getResultList();
+		
+		assertThat(result, notNullValue());
+		assertThat(result.size(), is(2));
+		assertThat(result.get(0).getId(), is(1));
+		assertThat(result.get(1).getId(), is(3));	
 	}
 	
 	
