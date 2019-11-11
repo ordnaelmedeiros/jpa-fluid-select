@@ -95,6 +95,14 @@ public class Fields<SelectTable> implements
 		
 		if (ResultType.COUNT.equals(resultType)) {
 			return " COUNT(*) ";
+		} else if (ResultType.COUNT_DISTINCT.equals(resultType)) {
+			if (this.isEmpty()) {
+				return " COUNT(DISTINCT "+this.aliasFrom+") ";
+			} else {
+				StringJoiner sql = new StringJoiner(", ", "COUNT(DISTINCT", ")");
+				this.list.forEach(f -> sql.add(f.toSql()));
+				return sql.toString();
+			}
 		} else if (this.isEmpty()) {
 			return " "+this.aliasFrom+" ";
 		} else {

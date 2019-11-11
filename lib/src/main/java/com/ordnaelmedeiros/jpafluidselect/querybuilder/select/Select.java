@@ -43,6 +43,7 @@ public class Select<Table> implements JoinImpl<Table> {
 	private GroupBy<Table> groupBy;
 	private Fields<Table> fields;
 	
+	@Getter
 	private boolean distinct = false;
 	
 	@Getter
@@ -152,8 +153,10 @@ public class Select<Table> implements JoinImpl<Table> {
 	
 	private String toSql(Class<?> klass) {
 		
+		boolean isCount = this.resultType.equals(ResultType.COUNT) || this.resultType.equals(ResultType.COUNT_DISTINCT);
+		
 		String sql = "SELECT ";
-		if (this.distinct) {
+		if (this.distinct && !isCount) {
 			sql += "DISTINCT ";
 		}
 		
@@ -164,7 +167,7 @@ public class Select<Table> implements JoinImpl<Table> {
 		}
 		sql += this.where.toSql() + "\n";
 		sql += this.groupBy.toSql() + "\n";
-		if (!ResultType.COUNT.equals(this.resultType)) {
+		if (!isCount) {
 			sql += this.order.toSql() + "\n";
 		}
 		
@@ -257,6 +260,31 @@ public class Select<Table> implements JoinImpl<Table> {
 			Class<Long> klass = Long.class;
 			
 			this.resultType = ResultType.COUNT;
+			
+			String sql = this.toSql(klass);
+			
+			TypedQuery<Long> query = this.builder.getEm().createQuery(sql, klass);
+			this.configQuery(query);
+			
+			this.param.setParameters(query);
+			
+			Long result = query.getSingleResult();
+			
+			return result;
+			
+		} catch (NoResultException e) {
+			return 0l;
+		}
+		
+	}
+	
+	public Long countDistinct() {
+		
+		try {
+
+			Class<Long> klass = Long.class;
+			
+			this.resultType = ResultType.COUNT_DISTINCT;
 			
 			String sql = this.toSql(klass);
 			

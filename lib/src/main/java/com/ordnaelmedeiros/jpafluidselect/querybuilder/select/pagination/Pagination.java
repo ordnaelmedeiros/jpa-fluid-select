@@ -14,7 +14,7 @@ public class Pagination<SelectTable> {
 	
 	public Pagination(Select<SelectTable> select) {
 		this.select = select;
-		this.createPage();
+		//this.createPage();
 //		if (this.select.getMaxResults()!=null) {
 //			this.maxResults = this.select.getMaxResults();
 //		}
@@ -44,7 +44,12 @@ public class Pagination<SelectTable> {
 		result.setPageNumber(this.page);
 		result.setPageSize(this.numRows);
 		
-		Long total = select.count();
+		Long total = 0l;
+		if (select.isDistinct()) {
+			total = select.countDistinct();
+		} else {
+			total = select.count();
+		}
 		result.setTotalRows(total);
 		
 		long lastPage = (total/numRows);

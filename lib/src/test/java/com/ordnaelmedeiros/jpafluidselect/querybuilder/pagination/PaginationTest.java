@@ -114,7 +114,9 @@ public class PaginationTest {
 	@Test
 	public void testLe15page3() {
 		
-		PaginationResult<ObjString> page = queryBuilder.select(ObjString.class)
+		PaginationResult<ObjString> page = queryBuilder
+			.select(ObjString.class)
+			.distinct()
 			.where()
 				.field(ObjString_.id).le(15)
 			.order()
