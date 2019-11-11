@@ -67,4 +67,22 @@ public class WhereIsNullTest {
 		
 	}
 	
+	@Test
+	public void textIsNotNull() {
+		
+		List<ObjString> result = queryBuilder
+			.select(ObjString.class)
+			.where()
+				.field(ObjString_.text).isNotNull()
+			.order()
+				.asc(ObjString_.id)
+			.print()
+			.getResultList();
+		
+		assertThat(result, notNullValue());
+		assertThat(result.size(), is(1));
+		assertThat(result.get(0).getId(), is(1));
+		
+	}
+	
 }

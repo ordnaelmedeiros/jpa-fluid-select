@@ -16,4 +16,16 @@ public interface OperationIsNull<ObjBack, SelectTable, Table, Type> extends Oper
 		return end();
 	}
 	
+	/**
+	 * Execute operation IS NOT NULL
+	 * <ul>
+	 * <li>JPQL: e.endDate IS NOT NULL
+	 * </ul>
+	 * @return back
+	 */
+	default Operations<ObjBack,SelectTable, Table> isNotNull() {
+		this.setSql(this.toSql() + " IS NOT NULL");
+		return end();
+	}
+	
 }

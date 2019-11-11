@@ -8,7 +8,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
-import java.time.Month;
 import java.util.List;
 import java.util.StringJoiner;
 import java.util.stream.Stream;
@@ -140,6 +139,9 @@ public class ExampleTest extends QueryBuilderTestBase {
 			.where()
 				.field(People_.created).cast(LocalDate.class).eq(LocalDate.of(1986, SEPTEMBER, 17))
 			.getResultList();
+		
+		assertThat(list2, notNullValue());
+		assertThat(list2.size(), is(0));
 		
 	}
 	
