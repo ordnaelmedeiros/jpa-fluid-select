@@ -113,6 +113,33 @@ public class JoinTest {
 	}
 	
 	@Test
+	public void selectEmpJoinPhoneRef() {
+		
+		Ref<EmployeePhone> refPhones = new Ref<>();
+		
+		List<Object[]> result = queryBuilder
+			.select(Employee.class)
+			.innerJoin(Employee_.phones).ref(refPhones)
+			.fields()
+				.field(Employee_.id).add()
+				.field(Employee_.name).add()
+				.field(refPhones.field(EmployeePhone_.number)).add()
+			.where()
+				.field(Employee_.id).eq(1)
+				.field(refPhones, EmployeePhone_.id).eq(1)
+			.print()
+			.getResultObjects();
+		
+		assertThat(result, notNullValue());
+		assertThat(result.size(), is(1));
+		assertThat(result.get(0)[0], is(1));
+		assertThat(result.get(0)[1], is("Leandro"));
+		assertThat(result.get(0)[2], is("5546999145929"));
+		
+		//CoreMatchers.
+	}
+	
+	@Test
 	public void selectPhoneJoinEmp() {
 		
 		Ref<Employee> refEmp = new Ref<>();

@@ -12,6 +12,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidOrder;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidPagination;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.FluidSelect;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.fluid.ToSql;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -88,6 +89,14 @@ public class Operations<ObjBack, SelectTable, Table>
 	
 	public <T> FieldOperation<ObjBack, SelectTable, Table, T> field(Attribute<Table, T> field) {
 		return new FieldOperation<>(this, originAlias, field.getName());
+	}
+
+	public <T> FieldOperation<ObjBack, SelectTable, Table, Object> field(Ref<T> ref, String att) {
+		return new FieldOperation<>(this, ref.getAlias(), att);
+	}
+	
+	public <T, F> FieldOperation<ObjBack, SelectTable, Table, F> field(Ref<T> ref, Attribute<T, F> att) {
+		return new FieldOperation<>(this, ref.getAlias(), att.getName());
 	}
 	
 	public Operations<ObjBack, SelectTable, Table> jpql(ToSql toSql) {
