@@ -21,6 +21,7 @@ import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.Employee;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.EmployeePhone;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.EmployeePhone_;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.models.Employee_;
+import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.Select;
 import com.ordnaelmedeiros.jpafluidselect.querybuilder.select.ref.Ref;
 
 public class JoinTest {
@@ -135,6 +136,35 @@ public class JoinTest {
 		assertThat(result.get(0)[0], is(1));
 		assertThat(result.get(0)[1], is("Leandro"));
 		assertThat(result.get(0)[2], is("5546999145929"));
+		
+		//CoreMatchers.
+	}
+	
+
+	@Test
+	public void selectEmpJoinPhoneRef2() {
+		
+		Ref<EmployeePhone> refPhones = new Ref<>();
+		
+		Select<Employee> select = queryBuilder
+			.select(Employee.class);
+		List<Employee> result = select
+			.innerJoin(Employee_.phones).ref(refPhones)
+			.fields()
+				.field(Employee_.id).add()
+				.field(Employee_.name).add()
+				.field(refPhones.field(EmployeePhone_.number)).alias("numero")
+			.where()
+				.field(Employee_.id).eq(1)
+				.field(refPhones, EmployeePhone_.id).eq(1)
+			.print()
+			.getResultListByReflect(Employee.class);
+		
+		assertThat(result, notNullValue());
+		assertThat(result.size(), is(1));
+		//assertThat(result.get(0)[0], is(1));
+		//assertThat(result.get(0)[1], is("Leandro"));
+		//assertThat(result.get(0)[2], is("5546999145929"));
 		
 		//CoreMatchers.
 	}
