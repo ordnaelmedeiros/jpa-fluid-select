@@ -153,7 +153,7 @@ public class JoinTest {
 			.fields()
 				.field(Employee_.id).add()
 				.field(Employee_.name).add()
-				.field(refPhones.field(EmployeePhone_.number)).alias("numero")
+				.field(refPhones.field(EmployeePhone_.number)).add()
 			.where()
 				.field(Employee_.id).eq(1)
 				.field(refPhones, EmployeePhone_.id).eq(1)
