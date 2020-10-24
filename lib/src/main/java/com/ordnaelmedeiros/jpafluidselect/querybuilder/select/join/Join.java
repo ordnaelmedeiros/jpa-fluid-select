@@ -54,6 +54,8 @@ public class Join<ObjBack, SelectTable, Table>
 	@Setter
 	private JoinType joinType  = JoinType.INNER;
 
+	private String fetchFlag = "";
+
 	public Join(ObjBack objBack, Select<SelectTable> select, String aliasOrigin, String field) {
 		
 		this.aliasOrigin = aliasOrigin;
@@ -84,7 +86,7 @@ public class Join<ObjBack, SelectTable, Table>
 	
 	@Override
 	public String toSql() {
-		String sql = this.joinType+" JOIN "+aliasOrigin+"." + field + " " + aliasJoin + " \n";
+		String sql = this.joinType+" JOIN "+fetchFlag+aliasOrigin+"." + field + " " + aliasJoin + " \n";
 		sql += this.on.toSql() + "\n";
 		for (Join<?, ?, ?> join : this.joins) {
 			sql += join.toSql() + " \n";
@@ -106,8 +108,13 @@ public class Join<ObjBack, SelectTable, Table>
 		
 		return this;
 	}
-	
-	
+
+	public Join<ObjBack, SelectTable, Table> fetch() {
+		this.fetchFlag = " FETCH ";
+		return this;
+	}
+
+
 	public Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> innerJoin(String field) {
 		Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> join = new Join<>(this, this.getSelect(), this.aliasJoin, field);
 		join.setJoinType(JoinType.INNER);
