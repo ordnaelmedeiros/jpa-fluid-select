@@ -9,7 +9,7 @@ https://mvnrepository.com/artifact/com.github.ordnaelmedeiros/jpa-fluid-select
 <dependency>
 	<groupId>com.github.ordnaelmedeiros</groupId>
 	<artifactId>jpa-fluid-select</artifactId>
-	<version>2.0.2</version>
+	<version>2.0.3</version>
 </dependency>
 ```
 
@@ -273,7 +273,15 @@ List<Object[]> list = queryBuilder
 		.add(Address_.street)
 	.order().asc(Address_.street)
 	.getResultObjects();
+```
 
+## Fetch
+```java
+Employee employee = new QueryBuilder(em)
+	.select(Employee.class)
+	.innerJoin(Employee_.phones).fetch().end()
+	.maxResults(1)
+	.getSingleResult();
 ```
 
 ## Lambda expressions

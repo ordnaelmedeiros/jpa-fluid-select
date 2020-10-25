@@ -101,20 +101,24 @@ public class Join<ObjBack, SelectTable, Table>
 	}
 
 	public Join<ObjBack, SelectTable, Table> ref(Ref<Table> ref) {
-		
 		Objects.requireNonNull(ref, "Create instance of Ref: Ref<Entity> ref = new Ref<>()");
-		//ref.setKlass(this.klass);
 		ref.setAlias(this.aliasJoin);
-		
 		return this;
 	}
 
 	public Join<ObjBack, SelectTable, Table> fetch() {
-		this.fetchFlag = " FETCH ";
+		return this.fetch(true);
+	}
+	
+	public Join<ObjBack, SelectTable, Table> fetch(boolean fetch) {
+		if (fetch) {
+			this.fetchFlag = " FETCH ";
+		} else {
+			this.fetchFlag = "";
+		}
 		return this;
 	}
-
-
+	
 	public Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> innerJoin(String field) {
 		Join<Join<ObjBack, SelectTable, Table>, SelectTable, ?> join = new Join<>(this, this.getSelect(), this.aliasJoin, field);
 		join.setJoinType(JoinType.INNER);
