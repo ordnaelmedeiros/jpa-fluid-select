@@ -3,6 +3,7 @@ package com.ordnaelmedeiros.jpafluidselect.querybuilder.join;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -12,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.hibernate.LazyInitializationException;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -193,5 +195,37 @@ public class JoinTest {
 		assertThat(result.get(0)[2], is("5546999145929"));
 		
 	}
-	
+
+	@Test
+	public void expectLazyInitializationExceptionFromDetachList() {
+
+		Employee employee = new QueryBuilder(em)
+			.select(Employee.class)
+			.innerJoin(Employee_.phones).end()
+			.maxResults(1)
+			.getSingleResult();
+
+		em.detach(employee);
+		try {
+			employee.getPhones().get(0);
+			fail("should have thrown a LazyInitializationException");
+		} catch(LazyInitializationException e) {
+			// Expected result
+		}
+	}
+
+	@Test
+	public void fetchJoin() {
+
+		Employee employee = new QueryBuilder(em)
+			.select(Employee.class)
+			.innerJoin(Employee_.phones).fetch().end()
+			.maxResults(1)
+			.getSingleResult();
+
+		em.detach(employee);
+		EmployeePhone phone = employee.getPhones().get(0);
+		assertThat(phone, notNullValue());
+	}
+
 }
